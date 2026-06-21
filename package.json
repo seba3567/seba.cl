@@ -23,6 +23,7 @@
 		"test": "vitest",
 		"test:run": "vitest run",
 		"test:ui": "vitest --ui",
+		"lhci": "lhci autorun",
 		"lint": "biome check .",
 		"lint:check": "biome check src/ scripts/",
 		"lint:fix": "biome check --write src/ scripts/ && biome format --write src/ scripts/",

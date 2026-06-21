@@ -64,3 +64,15 @@ jobs:
 					# optimize:images and prerender don't try to reach
 					# the dev intranet.
 					PUBLIC_API_URL: http://localhost:3000
+
+			# Lighthouse CI: spins up `bun run preview`, runs
+			# Lighthouse against all 4 public pages, asserts perf /
+			# a11y / best-practices / SEO. Marked as continue-on-error
+			# so a regression in the build doesn't block the PR
+			# (Lighthouse thresholds are aspirational — the warning
+			# is still visible in the workflow logs).
+			- name: Lighthouse CI
+				run: bun run lhci
+				continue-on-error: true
+				env:
+					PUBLIC_API_URL: http://localhost:3000
