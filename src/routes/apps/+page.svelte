@@ -48,12 +48,13 @@
 </svelte:head>
 
 <main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10">
-	<!-- ============= HERO ============= -->
+	<!-- ============= HERO =============
+	     Path breadcrumb lives in the SiteHeader (nav) now — we just
+	     show the big title + description here. -->
 	<header class="pt-24 pb-16 sm:pt-32 sm:pb-24">
-		<p class="font-mono text-xs text-neutral-500">/ apps · published software</p>
 		<h1
 			bind:this={titleEl}
-			class="mt-8 text-[clamp(3.5rem,12vw,9rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
+			class="text-[clamp(3.5rem,12vw,9rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
 		>
 			Apps<span class="text-neutral-600">.</span>
 		</h1>

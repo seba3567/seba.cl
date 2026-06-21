@@ -257,25 +257,28 @@
 				>
 			</a>
 
-			<!-- Dynamic breadcrumb: / inicio | / apps | / anticall.
-			     Terminal segment (current page) is non-link. -->
+			<!-- Dynamic breadcrumb: inicio / apps / anticall.
+			     Each segment is a link except the terminal one (current
+			     page). Segments are separated by a vertical divider for
+			     clarity (no leading '/' so the nav doesn't start with a
+			     stray slash). -->
 			<nav
 				aria-label="Breadcrumb"
-				class="hidden items-center gap-1 font-mono text-[10px] text-neutral-500 sm:flex"
+				class="hidden items-center gap-2 font-mono text-[10px] text-neutral-500 sm:flex"
 			>
 				{#each crumbs as c, i (i)}
 					{#if i > 0}
-						<span class="text-neutral-700" aria-hidden="true">/</span>
+						<span class="text-neutral-800" aria-hidden="true">/</span>
 					{/if}
 					{#if c.href}
 						<a
 							href={c.href}
-							class="transition-colors hover:text-neutral-200"
+							class="rounded px-1 transition-colors hover:text-neutral-200"
 						>
 							{c.label}
 						</a>
 					{:else}
-						<span class="text-neutral-300">{c.label}</span>
+						<span class="rounded px-1 text-neutral-300">{c.label}</span>
 					{/if}
 				{/each}
 			</nav>

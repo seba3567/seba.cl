@@ -125,7 +125,10 @@
 	<header class="pt-24 pb-12 sm:pt-36 sm:pb-16">
 		<div class="grid grid-cols-12 items-end gap-6">
 			<div class="col-span-12 lg:col-span-8">
-				<p class="font-mono text-xs text-neutral-500">/{data.username} · live from GitHub API</p>
+				<!-- Path breadcrumb (seba3567/proyectos) lives in the
+				     SiteHeader. This header keeps the data-source note
+				     (live from GitHub API) + the big title. -->
+				<p class="font-mono text-xs text-neutral-500">live from GitHub API</p>
 				<h1
 					bind:this={titleEl}
 					class="mt-10 text-[clamp(3rem,10vw,7.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
