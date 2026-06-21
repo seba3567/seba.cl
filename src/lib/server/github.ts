@@ -238,6 +238,18 @@ export type RepoStats = {
 const repoListUrl = (user: string) =>
 	`https://api.github.com/users/${user}/repos?per_page=100&sort=updated&type=owner`;
 
+/**
+ * Cache keys for the two public getters. They MUST be different
+ * because they cache different types: getCachedRepos stores
+ * `PublicRepo[]` (with `languages` per repo), getCachedTopRepos
+ * stores `GitHubRepo[]` (raw, no languages). If they shared a key,
+ * the second to write would overwrite the first, and the reader
+ * expecting the richer type would crash on `r.languages` being
+ * undefined (e.g. `Object.entries(undefined)`).
+ */
+const repoListCacheKey = (user: string) => `${repoListUrl(user)}#full`;
+const repoTopCacheKey = (user: string) => `${repoListUrl(user)}#top`;
+
 let backgroundRefreshInFlight = new Set<string>();
 
 function triggerBackgroundRefresh(user: string, fn: () => Promise<unknown>) {
@@ -270,7 +282,7 @@ function triggerBackgroundRefresh(user: string, fn: () => Promise<unknown>) {
  * renders an empty state instead of a 500.
  */
 export async function getCachedRepos(user: string): Promise<PublicRepo[]> {
-	const key = repoListUrl(user);
+	const key = repoListCacheKey(user);
 	const cached = cache.get(key);
 
 	if (cached) {
@@ -303,7 +315,7 @@ export async function getCachedTopRepos(
 	user: string,
 	limit: number,
 ): Promise<GitHubRepo[]> {
-	const key = repoListUrl(user);
+	const key = repoTopCacheKey(user);
 	const cached = cache.get(key);
 
 	if (cached) {
@@ -336,7 +348,11 @@ export function computeStats(repos: PublicRepo[]): RepoStats {
 	const langBytes = new Map<string, number>();
 	const topicCount = new Map<string, number>();
 	for (const r of repos) {
-		for (const [lang, bytes] of Object.entries(r.languages)) {
+		// Defensive: old cache entries (or repos GitHub returned without
+		// a languages field) might have r.languages as null/undefined.
+		// Object.entries would throw on that — coerce to {} instead.
+		const langs = r.languages ?? {};
+		for (const [lang, bytes] of Object.entries(langs)) {
 			langCount.set(lang, (langCount.get(lang) ?? 0) + 1);
 			langBytes.set(lang, (langBytes.get(lang) ?? 0) + bytes);
 		}
