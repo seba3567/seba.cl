@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"predev": "bun run optimize:images",
 		"prebuild": "bun run optimize:images",
 		"build": "vite build",
 		"preview": "vite preview",
