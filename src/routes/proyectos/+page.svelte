@@ -7,6 +7,7 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
+	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
 	let { data }: { data: PageData } = $props();
@@ -288,7 +289,7 @@
 				class="h-1 flex-1 bg-white/5"
 			/>
 			<span class="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-				{filteredRepos.length} / {data.repos.length}
+				{filteredRepos.length} / {data.repos.length} resultados
 			</span>
 		</div>
 
@@ -371,7 +372,9 @@
 
 	<footer class="border-t border-white/5 py-10">
 		<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
-			{filteredRepos.length} / {data.repos.length} shown · @{data.username}
+			{filteredRepos.length} / {data.repos.length} mostrados · @{data.username}
 		</p>
 	</footer>
+
+	<SiteFooter />
 </main>

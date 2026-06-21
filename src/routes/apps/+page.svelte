@@ -10,6 +10,7 @@
 	} from 'phosphor-svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
+	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import { Separator } from '$lib/components/ui/separator';
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
 	import { revealOnScroll, revealChars } from '$lib/animations';
@@ -262,4 +263,6 @@
 			© {new Date().getFullYear()} · /apps · /proyectos · seba3567.cl
 		</p>
 	</footer>
+
+	<SiteFooter />
 </main>

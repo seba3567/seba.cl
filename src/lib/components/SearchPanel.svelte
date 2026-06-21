@@ -13,6 +13,7 @@
 		GithubLogo,
 		ShieldCheck,
 		ArrowUpRight,
+		Globe,
 		X,
 	} from 'phosphor-svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
@@ -124,6 +125,16 @@
 			keywords: ['repos', 'repositorios', 'lista', 'github', 'todos'],
 			external: true,
 			icon: Folder,
+		},
+		{
+			id: 'ext-intranet',
+			title: 'Intranet seba3567',
+			subtitle: 'intranet.seba3567.cl',
+			href: 'https://intranet.seba3567.cl/',
+			group: 'Externo',
+			keywords: ['intranet', 'panel', 'admin', 'privado'],
+			external: true,
+			icon: Globe,
 		},
 	];
 
@@ -314,7 +325,7 @@
 					bind:this={inputEl}
 					bind:value={query}
 					onkeydown={handleKey}
-					placeholder="Buscar páginas, apps, repos…"
+					placeholder="Buscar páginas, apps, repositorios…"
 					class="w-full bg-transparent text-base text-neutral-100 placeholder:text-neutral-500 focus:outline-none"
 					autocomplete="off"
 					spellcheck="false"
@@ -335,7 +346,7 @@
 							{#if query.trim()}
 								Sin resultados para "{query}"
 							{:else}
-								Empezá a escribir para buscar
+								Empezá a escribir para buscar…
 							{/if}
 						</p>
 					</div>
@@ -408,11 +419,11 @@
 					</span>
 					<span class="flex items-center gap-1">
 						<kbd class="rounded border border-white/10 bg-white/5 px-1 py-0.5">↵</kbd>
-						abrir
+						ir
 					</span>
 					<span class="flex items-center gap-1">
 						<kbd class="rounded border border-white/10 bg-white/5 px-1 py-0.5">/</kbd>
-						abrir desde teclado
+						abrir con teclado
 					</span>
 				</div>
 				<span class="font-mono text-[10px] text-neutral-600">Fuse.js</span>

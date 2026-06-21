@@ -18,6 +18,7 @@
 	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
 	import Lightbox from '$lib/components/Lightbox.svelte';
 	import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
+	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import { revealOnScroll, revealChars } from '$lib/animations';
 
 	const PLAY_STORE =
@@ -615,6 +616,8 @@
 			© {new Date().getFullYear()} · AntiCallCL · Flutter + Kotlin · seba3567.cl
 		</p>
 	</footer>
+
+	<SiteFooter />
 </main>
 
 <Lightbox

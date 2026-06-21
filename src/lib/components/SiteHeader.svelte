@@ -33,7 +33,6 @@
 
 	let searchOpen = $state(false);
 	let mobileOpen = $state(false);
-	let scrollProgress = $state(0);
 	let searchTriggerEl: HTMLButtonElement | undefined = $state();
 
 	type NavGroup = {
@@ -109,16 +108,8 @@
 		return /^https?:|^mailto:/.test(href);
 	}
 
-	// Scroll progress
+	// Scroll progress removed (BackToTop + horizontal scroll handle this now)
 	onMount(() => {
-		const onScroll = () => {
-			const h = document.documentElement;
-			const max = h.scrollHeight - h.clientHeight;
-			scrollProgress = max > 0 ? Math.min(1, h.scrollTop / max) : 0;
-		};
-		onScroll();
-		window.addEventListener('scroll', onScroll, { passive: true });
-		window.addEventListener('resize', onScroll);
 
 		// Listen for global "open search" events from anywhere
 		const onOpenSearch = () => (searchOpen = true);
@@ -154,22 +145,28 @@
 		triggerPulse();
 
 		return () => {
-			window.removeEventListener('scroll', onScroll);
-			window.removeEventListener('resize', onScroll);
 			window.removeEventListener('seba:open-search', onOpenSearch as EventListener);
 			window.removeEventListener('keydown', onKey);
 			if (pulseTimer) clearTimeout(pulseTimer);
 		};
 	});
+
+	function scrollToSection(e: MouseEvent, id: string) {
+		// If we're on the home page, intercept the click and horizontal-scroll
+		// the home track. Otherwise let the link navigate normally.
+		if (typeof window === 'undefined') return;
+		const onHome = window.location.pathname === '/';
+		const target = document.getElementById(id);
+		if (!onHome || !target) return;
+		e.preventDefault();
+		const track = document.getElementById('home-track');
+		if (!track) return;
+		const left = target.offsetLeft - track.offsetLeft;
+		track.scrollTo({ left, behavior: 'smooth' });
+	}
 </script>
 
-<!-- Scroll progress bar -->
-<div class="scroll-progress-track">
-	<div
-		class="scroll-progress-bar"
-		style="transform: scaleX({scrollProgress})"
-	></div>
-</div>
+<!-- Scroll progress bar removed: replaced by BackToTop button + horizontal scroll. -->
 
 <header class="sticky top-4 z-40 mx-auto w-full max-w-6xl px-4">
 	<div
