@@ -2,7 +2,6 @@
 	import './layout.css';
 	import { onMount } from 'svelte';
 	import { t } from 'svelte-i18n';
-	import favicon from '$lib/assets/favicon.svg';
 	import BackgroundBlobs from '$lib/components/BackgroundBlobs.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
@@ -68,7 +67,18 @@
 </script>
 
 	<svelte:head>
-		<link rel="icon" href={favicon} />
+		<!--
+		  Favicon stack. The script `bun run fetch:favicon`
+		  (or predev/prebuild) pulls the GitHub profile avatar
+		  and writes 7 variants to /static. We link the SVG
+		  first because modern browsers prefer it (sharp at any
+		  resolution), then the ICO for legacy tabs, then the
+		  PNG as a fallback.
+		-->
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 		<link rel="manifest" href="/manifest.webmanifest" />
 		<meta name="theme-color" content="#0a0a0a" />
 		<meta name="color-scheme" content="dark" />
