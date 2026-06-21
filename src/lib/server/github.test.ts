@@ -67,7 +67,9 @@ function makeRepo(over: Partial<RepoFixture> = {}): RepoFixture {
 	};
 }
 
-function mockFetchSequence(responses: Array<{ ok: boolean; status?: number; body: unknown }>) {
+function mockFetchSequence(
+	responses: Array<{ ok: boolean; status?: number; body: unknown }>,
+) {
 	let i = 0;
 	return vi.fn(async () => {
 		const r = responses[i++] ?? responses[responses.length - 1];
@@ -92,9 +94,7 @@ afterEach(() => {
 describe('getCachedRepos (cold start)', () => {
 	it('hits GitHub on first call, caches the result, returns from cache on the second', async () => {
 		const repos = [makeRepo({ id: 1 }), makeRepo({ id: 2, name: 'two' })];
-		const fetchMock = mockFetchSequence([
-			{ ok: true, body: repos },
-		]);
+		const fetchMock = mockFetchSequence([{ ok: true, body: repos }]);
 		vi.stubGlobal('fetch', fetchMock);
 
 		const { getCachedRepos } = await import('./github');
@@ -126,7 +126,10 @@ describe('getCachedRepos (cold start)', () => {
 
 		// Two concurrent cold-start calls. The dedup Map should make
 		// them share the same in-flight promise.
-		const [a, b] = await Promise.all([getCachedRepos('seba3567'), getCachedRepos('seba3567')]);
+		const [a, b] = await Promise.all([
+			getCachedRepos('seba3567'),
+			getCachedRepos('seba3567'),
+		]);
 
 		expect(a).toEqual(b);
 		// One list fetch (langs blocked by cooldown), not two of
@@ -171,7 +174,10 @@ describe('getCachedTopRepos', () => {
 
 		const { getCachedTopRepos } = await import('./github');
 
-		const [a, b] = await Promise.all([getCachedTopRepos('seba3567', 8), getCachedTopRepos('seba3567', 8)]);
+		const [a, b] = await Promise.all([
+			getCachedTopRepos('seba3567', 8),
+			getCachedTopRepos('seba3567', 8),
+		]);
 		expect(a).toEqual(b);
 		expect(fetchMock).toHaveBeenCalledTimes(1);
 	});

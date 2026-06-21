@@ -7,10 +7,45 @@ import SearchPanel from '$lib/components/SearchPanel.svelte';
 import SiteHeader from '$lib/components/SiteHeader.svelte';
 
 let { children } = $props();
+
+// Origin used for absolute URLs in OG/Twitter cards. Falls back
+// to the production domain in prod (and the Vite preview host
+// in dev). Vite exposes VITE_*-style env vars but SvelteKit uses
+// its own (we get the runtime URL from $app/stores or by deriving
+// from location in the browser; SSR-side, env.PUBLIC_ORIGIN is
+// the only reliable source).
+const ORIGIN = 'https://seba3567.cl';
+const OG_IMAGE = `${ORIGIN}/og.png`;
+const DESCRIPTION =
+	'Sebastián Muñoz — ingeniería, datos y mobile. Proyectos open source, apps y contacto.';
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+
+	<!-- Open Graph (Facebook, LinkedIn, Slack, Discord, WhatsApp). -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="seba3567" />
+	<meta property="og:title" content="seba3567.cl · Sebastián Muñoz" />
+	<meta property="og:description" content={DESCRIPTION} />
+	<meta property="og:image" content={OG_IMAGE} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="seba3567 — ingeniería, datos y mobile" />
+	<meta property="og:locale" content="es_CL" />
+
+	<!-- Twitter / X. The card is 'summary_large_image' so the OG
+	     image is used; the alt text mirrors the OG image alt. -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="seba3567.cl · Sebastián Muñoz" />
+	<meta name="twitter:description" content={DESCRIPTION} />
+	<meta name="twitter:image" content={OG_IMAGE} />
+	<meta name="twitter:image:alt" content="seba3567 — ingeniería, datos y mobile" />
+
+	<!-- Common meta. -->
+	<meta name="description" content={DESCRIPTION} />
+	<meta name="theme-color" content="#0a0a0a" />
+	<meta name="color-scheme" content="dark" />
 </svelte:head>
 
 <!--

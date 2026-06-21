@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"predev": "bun run optimize:images",
-		"prebuild": "bun run optimize:images",
+		"predev": "bun run optimize:images && bun run generate:og",
+		"prebuild": "bun run optimize:images && bun run generate:og",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
@@ -23,7 +23,8 @@
 		"format": "biome format --write .",
 		"skills": "autoskills",
 		"skills:check": "autoskills --dry-run",
-		"optimize:images": "bun run scripts/optimize-images.mjs"
+		"optimize:images": "bun run scripts/optimize-images.mjs",
+		"generate:og": "bun run scripts/generate-og-image.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.0",
