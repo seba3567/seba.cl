@@ -20,9 +20,10 @@
 	<!--
 	  Single horizontal bar:
 	  - Left:  brand handle + socials (compact)
-	  - Right: discreet slogan button that also doubles as the
-	           intranet entry point. On the home page the slogan
-	           is just a slogan (intranet lives in SearchPanel).
+	  - Right: discreet slogan. On non-home pages the slogan
+	           area also hosts a tiny text-link to the intranet,
+	           so it never draws attention (passes desapercibida
+	           per AGENTS.md).
 	-->
 	<GlassCard variant="strong" class="rounded-xl px-6 py-5 sm:px-7 sm:py-5">
 		<div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -53,9 +54,9 @@
 			</div>
 
 			<!-- Right: discreet slogan. On non-home pages the slogan
-			     becomes a low-key entry point to the intranet (tiny
-			     link, no card, no mint accent). On the home page it's
-			     plain text. -->
+			     area also has a tiny text-link to the intranet (no
+			     card, no mint accent) so it passes desapercibida
+			     per AGENTS.md. -->
 			<div class="flex items-center gap-2 text-[11px] text-neutral-500">
 				<span class="font-mono uppercase tracking-[0.18em]">
 					{$t('footer.copyright', { values: { year } })}

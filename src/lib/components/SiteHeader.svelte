@@ -1,23 +1,21 @@
 <script lang="ts">
-import { animate } from 'animejs';
-import {
-	ArrowUpRight,
-	CaretDown,
-	DeviceMobile,
-	GithubLogo,
-	List,
-	MagnifyingGlass,
-	type ShieldCheck,
-} from 'phosphor-svelte';
-import { onMount, type Snippet } from 'svelte';
-import { t } from 'svelte-i18n';
-import { page } from '$app/state';
-import { Badge } from '$lib/components/ui/badge';
-import { Button } from '$lib/components/ui/button';
-import * as NavigationMenu from '$lib/components/ui/navigation-menu';
-import { Separator } from '$lib/components/ui/separator';
-import * as Sheet from '$lib/components/ui/sheet';
-import SearchPanel from './SearchPanel.svelte';
+	import { animate } from 'animejs';
+	import {
+		ArrowUpRight,
+		CaretDown,
+		DeviceMobile,
+		GithubLogo,
+		List,
+		type ShieldCheck,
+	} from 'phosphor-svelte';
+	import { onMount, type Snippet } from 'svelte';
+	import { t } from 'svelte-i18n';
+	import { page } from '$app/state';
+	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
+	import * as NavigationMenu from '$lib/components/ui/navigation-menu';
+	import { Separator } from '$lib/components/ui/separator';
+	import * as Sheet from '$lib/components/ui/sheet';
 
 type Props = {
 	username?: string;
@@ -57,9 +55,7 @@ const crumbs = $derived.by<Crumb[]>(() => {
 	return out;
 });
 
-let searchOpen = $state(false);
 let mobileOpen = $state(false);
-let searchTriggerEl: HTMLButtonElement | undefined = $state();
 let avatarEl: HTMLDivElement | undefined = $state();
 let avatarWrapEl: HTMLDivElement | undefined = $state();
 
@@ -109,41 +105,6 @@ function isExternal(href: string): boolean {
 
 // Scroll progress removed (BackToTop + horizontal scroll handle this now)
 onMount(() => {
-	// Listen for global "open search" events from anywhere
-	const onOpenSearch = () => (searchOpen = true);
-	window.addEventListener('seba:open-search', onOpenSearch as EventListener);
-
-	// '/' opens search globally
-	const onKey = (e: KeyboardEvent) => {
-		const t = e.target;
-		const isTyping =
-			t instanceof HTMLElement &&
-			(t.tagName === 'INPUT' ||
-				t.tagName === 'TEXTAREA' ||
-				t.isContentEditable);
-		if (e.key === '/' && !searchOpen && !isTyping) {
-			e.preventDefault();
-			searchOpen = true;
-		}
-	};
-	window.addEventListener('keydown', onKey);
-
-	// Tiny pulse on the search button to draw attention
-	let pulseTimer: ReturnType<typeof setTimeout> | null = null;
-	const triggerPulse = () => {
-		if (!searchTriggerEl) return;
-		pulseTimer = setTimeout(() => {
-			if (searchTriggerEl && !searchOpen) {
-				animate(searchTriggerEl, {
-					scale: [1, 1.04, 1],
-					duration: 600,
-					ease: 'inOut(2)',
-				});
-			}
-		}, 1500);
-	};
-	triggerPulse();
-
 	// 3D avatar: entrance (scale + rotateY) + hover tilt
 	let avatarCleanups: Array<() => void> = [];
 	const aEl = avatarEl;
@@ -203,12 +164,6 @@ onMount(() => {
 	}
 
 	return () => {
-		window.removeEventListener(
-			'seba:open-search',
-			onOpenSearch as EventListener,
-		);
-		window.removeEventListener('keydown', onKey);
-		if (pulseTimer) clearTimeout(pulseTimer);
 		avatarCleanups.forEach((fn) => {
 			fn();
 		});
@@ -409,22 +364,8 @@ function scrollToSection(e: MouseEvent, id: string) {
 			</NavigationMenu.List>
 		</NavigationMenu.Root>
 
-		<!-- Right cluster: search + GitHub + mobile menu -->
+		<!-- Right cluster: GitHub + language switcher + mobile menu -->
 		<div class="flex items-center gap-2">
-			<button
-				bind:this={searchTriggerEl}
-				type="button"
-				onclick={() => (searchOpen = true)}
-				aria-label={$t('common.search')}
-				class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-white/10 sm:inline-flex"
-			>
-				<MagnifyingGlass size={12} weight="bold" />
-				<span class="font-mono">{$t('common.search')}…</span>
-				<kbd
-					class="rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono text-[9px] text-neutral-500"
-				>/</kbd>
-			</button>
-
 			<a
 				href="https://github.com/{username}"
 				target="_blank"
@@ -452,20 +393,6 @@ function scrollToSection(e: MouseEvent, id: string) {
 						<Sheet.Description class="text-xs text-neutral-500">seba3567.cl</Sheet.Description>
 					</Sheet.Header>
 					<nav class="flex flex-col p-2">
-						<button
-							type="button"
-							onclick={() => {
-								mobileOpen = false;
-								searchOpen = true;
-							}}
-							class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-white/5 hover:text-neutral-100"
-						>
-							<MagnifyingGlass size={14} weight="bold" />
-							{$t('common.search')}…
-							<kbd
-								class="ml-auto rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono text-[9px] text-neutral-500"
-							>/</kbd>
-						</button>
 						<div class="my-2">
 							<Separator class="bg-white/5" />
 						</div>
@@ -544,8 +471,6 @@ function scrollToSection(e: MouseEvent, id: string) {
 		</div>
 	</div>
 </header>
-
-<SearchPanel />
 
 <style>
 	/* ===== 3D avatar card =====

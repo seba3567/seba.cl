@@ -6,7 +6,6 @@
 	import BackgroundBlobs from '$lib/components/BackgroundBlobs.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
 	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
-	import SearchPanel from '$lib/components/SearchPanel.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
 	import SiteHeader from '$lib/components/SiteHeader.svelte';
 	import { resolveInitialLocale, setupI18n } from '$lib/i18n';
@@ -122,5 +121,4 @@
 	<SiteFooter />
 </div>
 
-<SearchPanel />
 <BackToTop />
