@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { ArrowUpRight, GithubLogo } from 'phosphor-svelte';
+	import { ArrowUpRight, GithubLogo, X } from 'phosphor-svelte';
 	import type { PageData } from './$types';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import * as Progress from '$lib/components/ui/progress';
@@ -55,6 +55,13 @@
 	]);
 
 	const featured3 = $derived(data.repos.slice(0, 3));
+
+	const tabs = [
+		{ value: 'all', label: 'Todos' },
+		{ value: 'live', label: 'Live' },
+		{ value: 'wip', label: 'Activos' },
+		{ value: 'archived', label: 'Archivados' },
+	] as const;
 
 	let titleEl: HTMLElement | undefined = $state();
 
@@ -249,10 +256,10 @@
 			</Tabs.List>
 		</Tabs.Root>
 
-		<!-- Search + lang filter -->
-		<div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+		<!-- Search + lang filter (chips) -->
+		<div class="mb-6 flex flex-col gap-3">
 			<div
-				class="relative flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5"
+				class="relative flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 focus-within:border-white/20"
 			>
 				<svg
 					class="size-4 shrink-0 text-neutral-500"
@@ -271,15 +278,109 @@
 					class="w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none"
 				/>
 			</div>
-			<select
-				bind:value={language}
-				class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-neutral-200 focus:border-white/20 focus:outline-none"
-			>
-				<option value={null}>Todos los lenguajes</option>
+
+			<!-- Language chips -->
+			<div class="flex flex-wrap items-center gap-1.5">
+				<span
+					class="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
+					>Lenguaje</span
+				>
+				<button
+					type="button"
+					onclick={() => (language = null)}
+					class="group/lang inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all {language ===
+					null
+						? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
+						: 'border-white/10 bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:bg-white/[0.05] hover:text-neutral-200'}"
+				>
+					Todos
+					<span
+						class="font-mono text-[9px] {language === null
+							? 'text-emerald-300/70'
+							: 'text-neutral-500'}"
+						>{counts.all}</span
+					>
+				</button>
 				{#each data.languages as lang (lang)}
-					<option value={lang}>{lang}</option>
+					{@const langCount = data.repos.filter((r) => r.language === lang).length}
+					<button
+						type="button"
+						onclick={() => (language = language === lang ? null : lang)}
+						class="group/lang inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-all {language ===
+						lang
+							? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-200'
+							: 'border-white/10 bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:bg-white/[0.05] hover:text-neutral-200'}"
+					>
+						<span
+							class="inline-block size-1.5 rounded-full transition-transform group-hover/lang:scale-125"
+							style="background-color: {langColor(lang)}"
+						></span>
+						{lang}
+						<span
+							class="font-mono text-[9px] {language === lang
+								? 'text-emerald-300/70'
+								: 'text-neutral-500'}"
+							>{langCount}</span
+						>
+					</button>
 				{/each}
-			</select>
+			</div>
+
+			<!-- Active filter chips + clear -->
+			{#if language || query || statusTab !== 'all'}
+				<div class="flex flex-wrap items-center gap-1.5">
+					<span
+						class="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
+						>Activo</span
+					>
+					{#if statusTab !== 'all'}
+						<button
+							type="button"
+							onclick={() => (statusTab = 'all')}
+							class="inline-flex items-center gap-1 rounded-full border border-violet-400/30 bg-violet-500/10 px-2.5 py-1 text-[11px] font-medium text-violet-200 transition-colors hover:bg-violet-500/20"
+						>
+							{tabs.find((t) => t.value === statusTab)?.label}
+							<X size={10} weight="bold" />
+						</button>
+					{/if}
+					{#if language}
+						<button
+							type="button"
+							onclick={() => (language = null)}
+							class="inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-medium text-emerald-200 transition-colors hover:bg-emerald-500/20"
+						>
+							<span
+								class="inline-block size-1.5 rounded-full"
+								style="background-color: {langColor(language)}"
+							></span>
+							{language}
+							<X size={10} weight="bold" />
+						</button>
+					{/if}
+					{#if query}
+						<button
+							type="button"
+							onclick={() => (query = '')}
+							class="inline-flex items-center gap-1 rounded-full border border-amber-400/30 bg-amber-500/10 px-2.5 py-1 text-[11px] font-medium text-amber-200 transition-colors hover:bg-amber-500/20"
+						>
+							“{query}”
+							<X size={10} weight="bold" />
+						</button>
+					{/if}
+					<button
+						type="button"
+						onclick={() => {
+							language = null;
+							query = '';
+							statusTab = 'all';
+							onlyFeatured = false;
+						}}
+						class="ml-1 font-mono text-[10px] text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-200 hover:underline"
+					>
+						Limpiar
+					</button>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Match indicator (Progress bar) -->

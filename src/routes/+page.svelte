@@ -18,7 +18,11 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
 	import GlassCard from '$lib/components/GlassCard.svelte';
+	import ChileFlag from '$lib/components/ChileFlag.svelte';
 	import { animate, stagger } from 'animejs';
+	import type { PageData } from './$types';
+
+	let { data }: { data: PageData } = $props();
 
 	const AVATAR_URL = 'https://avatars.githubusercontent.com/u/44386561?v=4';
 
@@ -30,74 +34,6 @@
 		intro:
 			'Backend, datos, mobile, QA. Combino análisis de datos, arquitectura backend y calidad de software para convertir requerimientos en soluciones mantenibles y medibles.',
 	};
-
-	const work = [
-		{
-			n: '01',
-			title: 'AntiCallCL.',
-			sub: 'App Android · Kotlin',
-			tags: ['Kotlin', 'Android', 'Play Store'],
-			href: '/apps/anticall',
-			span: 'col-span-12 lg:col-span-7 row-span-2',
-			featured: true,
-		},
-		{
-			n: '02',
-			title: 'autoskills.',
-			sub: 'TypeScript · CLI',
-			tags: ['TS', 'Node', 'NPM'],
-			href: 'https://github.com/seba3567/autoskills',
-			span: 'col-span-6 lg:col-span-5',
-		},
-		{
-			n: '03',
-			title: 'frontend.skeleton.',
-			sub: 'Svelte 5 · Tailwind v4',
-			tags: ['Svelte', 'Bun'],
-			href: 'https://github.com/seba3567/frontend.skeleton',
-			span: 'col-span-6 lg:col-span-3',
-		},
-		{
-			n: '04',
-			title: 'telefonia_ido.',
-			sub: 'Python · REST',
-			tags: ['Python', 'SQL'],
-			href: 'https://github.com/seba3567/telefonia_ido',
-			span: 'col-span-6 lg:col-span-2',
-		},
-		{
-			n: '05',
-			title: 'Svelte advanced.',
-			sub: 'Svelte · TS',
-			tags: ['Svelte', 'TS'],
-			href: 'https://github.com/seba3567/Svelte-avanced-components',
-			span: 'col-span-6 lg:col-span-5',
-		},
-		{
-			n: '06',
-			title: 'seba.cl.',
-			sub: 'este sitio',
-			tags: ['Svelte', 'Tailwind'],
-			href: '/proyectos',
-			span: 'col-span-6 lg:col-span-3',
-		},
-		{
-			n: '07',
-			title: 'seba_flutter_skeleton.',
-			sub: 'Dart · Flutter',
-			tags: ['Dart'],
-			href: 'https://github.com/seba3567/seba_flutter_skeleton',
-			span: 'col-span-6 lg:col-span-2',
-		},
-		{
-			n: '08',
-			title: 'PROYECTO-OPS.',
-			sub: 'TypeScript',
-			tags: ['TS'],
-			href: 'https://github.com/seba3567/PROYECTO-OPS',
-			span: 'col-span-6 lg:col-span-2',
-		},
-	];
 
 	const stack = [
 		{ label: 'En uso', items: 'TypeScript · Django · SQL · Python', value: 4 },
@@ -360,6 +296,23 @@
 			magneticCleanups.forEach((fn) => fn());
 		};
 	});
+
+	function langColor(name: string | null): string {
+		if (!name) return '#888';
+		const map: Record<string, string> = {
+			TypeScript: '#3178c6',
+			JavaScript: '#f1e05a',
+			Python: '#3572A5',
+			Svelte: '#ff3e00',
+			Kotlin: '#A97BFF',
+			Dart: '#00B4AB',
+			Go: '#00ADD8',
+			Rust: '#dea584',
+			HTML: '#e34c26',
+			Java: '#b07219',
+		};
+		return map[name] ?? '#888';
+	}
 </script>
 
 <svelte:head>
@@ -382,21 +335,32 @@
 		>
 			<!-- LEFT: name, intro, CTAs -->
 			<div>
-				<div class="flex items-center gap-3" data-panel-anim>
-					<Badge
-						variant="outline"
-						class="border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-300"
+				<div class="flex flex-wrap items-center gap-2.5" data-panel-anim>
+					<!-- Status: rounded rectangle with a live pulse dot -->
+					<div
+						class="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-500/[0.08] py-1 pl-2 pr-3"
 					>
-						<span class="size-1.5 rounded-full bg-emerald-300"></span>
-						Disponible para colaborar
-					</Badge>
-					<Badge
-						variant="outline"
-						class="border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-neutral-300"
+						<span class="relative flex size-2">
+							<span
+								class="absolute inset-0 animate-ping rounded-full bg-emerald-400 opacity-60"
+							></span>
+							<span class="relative inline-flex size-2 rounded-full bg-emerald-300"></span>
+						</span>
+						<span
+							class="text-[11px] font-medium tracking-tight text-emerald-200"
+							>Disponible para colaborar</span
+						>
+					</div>
+
+					<!-- Location: rounded rectangle with the actual Chile flag -->
+					<div
+						class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-1.5 pr-3"
 					>
-						<DeviceMobile size={10} weight="duotone" class="mr-1" />
-						{profile.location}
-					</Badge>
+						<ChileFlag size={16} />
+						<span class="text-[11px] font-medium tracking-tight text-neutral-200"
+							>{profile.location}</span
+						>
+					</div>
 				</div>
 
 				<h1
@@ -511,7 +475,7 @@
 						variant="outline"
 						class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 					>
-						01 — 08
+						01 — {String(data.repos.length).padStart(2, '0')}
 					</Badge>
 					<h2 class="mt-3 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
 						Selección.
@@ -531,64 +495,80 @@
 				</a>
 			</div>
 
-			<div class="grid auto-rows-[170px] grid-cols-12 gap-3">
-				{#each work as w (w.n)}
-					<Card.Root
+			<div class="grid auto-rows-[180px] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+				{#each data.repos as r, i (r.id)}
+					{@const featured = r.name === 'anticall_chile' || r.topics?.includes('app')}
+					<a
 						data-panel-anim
-						data-slot="card"
-						class="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border-white/5 bg-white/[0.015] p-0 transition-all duration-500 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.04] {w
-							.span}"
+						data-grid-item
+						href={r.html_url}
+						target="_blank"
+						rel="noreferrer noopener"
+						class="group/repo relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] p-5 transition-all duration-500 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.04]"
 					>
-						<a
-							href={w.href}
-							target={w.href.startsWith('/') ? undefined : '_blank'}
-							rel={w.href.startsWith('/') ? undefined : 'noreferrer noopener'}
-							class="flex h-full flex-col justify-between p-5"
-						>
-							<div class="flex items-start justify-between">
-								<span
-									class="font-mono text-[11px] text-neutral-600 transition-colors group-hover:text-neutral-400"
-									>{w.n}</span
+						<div class="flex items-start justify-between">
+							<span
+								class="font-mono text-[11px] text-neutral-600 transition-colors group-hover/repo:text-neutral-400"
+								>{String(i + 1).padStart(2, '0')}</span
+							>
+							<ArrowUpRight
+								size={14}
+								weight="bold"
+								class="text-neutral-600 transition-all group-hover/repo:-translate-y-0.5 group-hover/repo:translate-x-0.5 group-hover/repo:text-neutral-200"
+							/>
+						</div>
+						<div>
+							<h3
+								class="text-base font-semibold tracking-[-0.02em] text-neutral-100 sm:text-lg"
+							>
+								{r.name}
+							</h3>
+							{#if r.description}
+								<p
+									class="mt-1 line-clamp-2 text-[11px] leading-relaxed text-neutral-500"
 								>
-								<ArrowUpRight
-									size={14}
-									weight="bold"
-									class="text-neutral-600 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
-								/>
+									{r.description}
+								</p>
+							{/if}
+							<div class="mt-3 flex flex-wrap items-center gap-1.5">
+								{#if r.language}
+									<span
+										class="inline-flex items-center gap-1.5 rounded-md border border-white/5 bg-white/[0.02] px-1.5 py-0.5 text-[10px] font-normal text-neutral-300"
+									>
+										<span
+											class="inline-block size-1.5 rounded-full"
+											style="background-color: {langColor(r.language)}"
+										></span>
+										{r.language}
+									</span>
+								{/if}
+								{#if r.stargazers_count > 0}
+									<span
+										class="inline-flex items-center gap-1 font-mono text-[10px] text-neutral-500"
+									>
+										★ {r.stargazers_count}
+									</span>
+								{/if}
+								{#if featured}
+									<span
+										class="ml-auto inline-flex items-center gap-1 rounded-md border border-violet-400/20 bg-violet-500/5 px-1.5 py-0.5 text-[9px] font-normal text-violet-300"
+									>
+										<PhoneX size={8} weight="duotone" />
+										App
+									</span>
+								{/if}
 							</div>
-							<div>
-								<Card.Title
-									class="text-base font-semibold tracking-[-0.02em] text-neutral-100 sm:text-lg md:text-xl"
-								>
-									{w.title}
-								</Card.Title>
-								<Card.Description class="mt-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-									{w.sub}
-								</Card.Description>
-								<div class="mt-2.5 flex flex-wrap items-center gap-1">
-									{#each w.tags as t (t)}
-										<Badge
-											variant="outline"
-											class="border-white/5 bg-white/[0.02] px-1.5 py-0 text-[9px] font-normal text-neutral-500"
-										>
-											{t}
-										</Badge>
-									{/each}
-									{#if w.featured}
-										<Badge
-											variant="outline"
-											class="ml-auto border-violet-400/20 bg-violet-500/5 px-1.5 py-0 text-[9px] font-normal text-violet-300"
-										>
-											<PhoneX size={8} weight="duotone" data-icon="inline-start" />
-											App
-										</Badge>
-									{/if}
-								</div>
-							</div>
-						</a>
-					</Card.Root>
+						</div>
+					</a>
 				{/each}
 			</div>
+			{#if data.loadError}
+				<p
+					class="mt-6 rounded-2xl border border-amber-400/20 bg-amber-500/5 p-4 text-xs text-amber-200/80"
+				>
+					⚠ GitHub API unavailable ({data.loadError}). Showing fallback list.
+				</p>
+			{/if}
 		</div>
 	</section>
 

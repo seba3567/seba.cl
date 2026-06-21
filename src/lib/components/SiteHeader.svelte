@@ -12,6 +12,8 @@
 		ShieldCheck,
 		Storefront,
 		Tabs,
+		CaretDown,
+		ArrowUpRight,
 	} from 'phosphor-svelte';
 	import * as NavigationMenu from '$lib/components/ui/navigation-menu';
 	import * as Sheet from '$lib/components/ui/sheet';
@@ -42,7 +44,7 @@
 		trigger: string;
 		href: string;
 		match: (path: string) => boolean;
-		items: Array<{ title: string; href: string; description: string; icon: typeof ShieldCheck }>;
+		items: Array<{ title: string; href: string; description: string; icon: typeof ShieldCheck; tag?: string }>;
 	};
 
 	const navGroups: NavGroup[] = [
@@ -62,44 +64,22 @@
 					href: '/apps/anticall',
 					description: 'Gestor de llamadas no deseadas · Android',
 					icon: ShieldCheck,
+					tag: 'App',
 				},
 				{
 					title: 'Unirme a la beta',
 					href: 'https://play.google.com/apps/testing/com.seba3567.anticall_chile',
 					description: 'Programa de testing en Google Play',
 					icon: Flask,
+					tag: 'Beta',
 				},
 				{
 					title: 'Play Store',
 					href: 'https://play.google.com/store/apps/details?id=com.seba3567.anticall_chile',
 					description: 'Instalar o actualizar',
 					icon: Storefront,
+					tag: 'Externo',
 				},
-			],
-		},
-		{
-			trigger: 'Work',
-			href: '/proyectos',
-			match: (p) => p.startsWith('/proyectos'),
-			items: [
-				{
-					title: 'Todos los repos',
-					href: '/proyectos',
-					description: 'Catálogo vivo desde la API de GitHub',
-					icon: Folder,
-				},
-				{
-					title: 'GitHub · @seba3567',
-					href: 'https://github.com/seba3567',
-					description: 'Perfil completo + repos',
-					icon: GithubLogo,
-				},
-			{
-				title: 'Sección Stack',
-				href: '/#stack',
-				description: 'Tecnologías que uso (home)',
-				icon: Stack,
-			},
 			],
 		},
 	];
@@ -282,15 +262,57 @@
 					</NavigationMenu.Link>
 				</NavigationMenu.Item>
 
+				<NavigationMenu.Item>
+					<NavigationMenu.Link
+						href="/proyectos"
+						class="rounded-md px-3 py-1.5 text-xs font-medium transition-all {isProjects
+							? 'bg-white/10 text-neutral-50'
+							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
+					>
+						Proyectos
+					</NavigationMenu.Link>
+				</NavigationMenu.Item>
+
 				{#each navGroups as group (group.trigger)}
 					<NavigationMenu.Item>
 						<NavigationMenu.Trigger
-							class="rounded-md bg-transparent px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-white/5 hover:text-neutral-100 data-[popup-open]:bg-white/5 data-[popup-open]:text-neutral-100"
+							class="group/trigger inline-flex items-center gap-1 rounded-md bg-transparent px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-white/5 hover:text-neutral-100 data-[popup-open]:bg-white/5 data-[popup-open]:text-neutral-100"
 						>
 							{group.trigger}
+							<CaretDown
+								size={10}
+								weight="bold"
+								class="text-neutral-500 transition-transform duration-300 group-data-[popup-open]/trigger:rotate-180 group-data-[popup-open]/trigger:text-neutral-200"
+							/>
 						</NavigationMenu.Trigger>
-						<NavigationMenu.Content class="glass-liquid-static !mt-3 w-[420px] rounded-2xl !p-2">
-							<ul class="grid gap-0.5">
+						<NavigationMenu.Content
+							class="glass-liquid-static !mt-3 w-[460px] rounded-2xl !p-2 data-[motion=from-start]:animate-none data-[motion=from-end]:animate-none data-[motion=to-start]:animate-none data-[motion=to-end]:animate-none"
+						>
+							<!-- Header: visual label + secondary action -->
+							<div
+								class="flex items-center justify-between border-b border-white/5 px-3 pb-2 pt-1.5"
+							>
+								<p
+									class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
+								>
+									{group.trigger} · {group.items.length}
+								</p>
+								<a
+									href={group.href}
+									onclick={() => (searchOpen = false)}
+									class="group/seeall inline-flex items-center gap-1 font-mono text-[10px] text-neutral-400 transition-colors hover:text-neutral-100"
+								>
+									Ver todo
+									<ArrowUpRight
+										size={10}
+										weight="bold"
+										class="transition-transform group-hover/seeall:-translate-y-0.5 group-hover/seeall:translate-x-0.5"
+									/>
+								</a>
+							</div>
+
+							<!-- Items: 2-col grid, generous padding, circular icon container -->
+							<ul class="grid grid-cols-1 gap-1 p-1.5">
 								{#each group.items as item (item.href)}
 									{@const Icon = item.icon}
 									<li>
@@ -298,21 +320,48 @@
 											href={item.href}
 											target={isExternal(item.href) ? '_blank' : undefined}
 											rel={isExternal(item.href) ? 'noreferrer noopener' : undefined}
-											class="flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-white/5"
+											class="group/item flex items-center gap-3.5 rounded-xl p-3 transition-all hover:bg-white/[0.04] hover:ring-1 hover:ring-white/10"
 										>
 											<div
-												class="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5"
+												class="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] transition-all group-hover/item:scale-105 group-hover/item:border-emerald-400/30 group-hover/item:from-emerald-500/10 group-hover/item:to-emerald-500/[0.02]"
 											>
-												<Icon size={14} weight="duotone" class="text-neutral-300" />
+												<Icon
+													size={16}
+													weight="duotone"
+													class="text-neutral-300 transition-colors group-hover/item:text-emerald-300"
+												/>
 											</div>
-											<div class="min-w-0">
-												<div class="text-sm font-semibold text-neutral-100">
-													{item.title}
+											<div class="min-w-0 flex-1">
+												<div class="flex items-center gap-2">
+													<span
+														class="truncate text-sm font-semibold text-neutral-100"
+														>{item.title}</span
+													>
+													{#if item.tag}
+														<span
+															class="shrink-0 rounded-md border border-white/10 bg-white/5 px-1.5 py-0 font-mono text-[9px] uppercase tracking-wider text-neutral-400"
+														>
+															{item.tag}
+														</span>
+													{/if}
 												</div>
 												<p class="mt-0.5 truncate text-xs text-neutral-500">
 													{item.description}
 												</p>
 											</div>
+											{#if isExternal(item.href)}
+												<ArrowUpRight
+													size={12}
+													weight="bold"
+													class="shrink-0 text-neutral-500 transition-all group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5 group-hover/item:text-neutral-200"
+												/>
+											{:else}
+												<ArrowUpRight
+													size={12}
+													weight="bold"
+													class="shrink-0 text-neutral-600 transition-all group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5 group-hover/item:text-neutral-200"
+												/>
+											{/if}
 										</NavigationMenu.Link>
 									</li>
 								{/each}
@@ -397,6 +446,15 @@
 								: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 						>
 							Inicio
+						</a>
+						<a
+							href="/proyectos"
+							onclick={() => (mobileOpen = false)}
+							class="mt-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isProjects
+								? 'bg-white/10 text-neutral-50'
+								: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
+						>
+							Proyectos
 						</a>
 						{#each navGroups as group (group.trigger)}
 							<div class="mt-3">
