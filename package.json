@@ -10,8 +10,8 @@
 	"packageManager": "bun@1.3.14",
 	"scripts": {
 		"dev": "vite dev",
-		"predev": "bun run optimize:images && bun run generate:og",
-		"prebuild": "bun run optimize:images && bun run generate:og",
+		"predev": "bun run optimize:images && bun run generate:og && bun run sync:aosp",
+		"prebuild": "bun run optimize:images && bun run generate:og && bun run sync:aosp",
 		"preinstall": "node -e \"if(!process.env.npm_config_user_agent?.startsWith('bun')){console.error('ERROR: This project uses Bun. Run: bun install');process.exit(1)}\"",
 		"build": "vite build",
 		"preview": "vite preview",
@@ -31,7 +31,8 @@
 		"skills": "autoskills",
 		"skills:check": "autoskills --dry-run",
 		"optimize:images": "bun run scripts/optimize-images.mjs",
-		"generate:og": "bun run scripts/generate-og-image.ts"
+		"generate:og": "bun run scripts/generate-og-image.ts",
+		"sync:aosp": "bun run scripts/sync-aosp-devices.mjs"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.5.0",

@@ -17,6 +17,7 @@
 		"home": "Inicio",
 		"projects": "Proyectos",
 		"apps": "Apps",
+		"aosp": "AOSP",
 		"contact": "Contacto"
 	},
 	"search": {
@@ -233,6 +234,92 @@
 				"feedback": "Ayuda a moldear el roadmap con tu feedback",
 				"updates": "Prefijos actualizados con cada build"
 			}
+		}
+	},
+	"aosp": {
+		"metaTitle": "AOSP · seba3567.cl",
+		"metaDescription": "Custom AOSP builds y kernels para devices selectos. Changelogs visuales, descargas y notas de instalación.",
+		"hero": {
+			"status": "AOSP",
+			"badge": "Custom builds",
+			"title": "Builds propias, sin humo.",
+			"subtitle": "Compilo AOSP limpio para los devices que uso y algunos más. Visual changelog, mirror checksums, sin telemetría ni ads.",
+			"dataSource": "Snapshot de devices-json · regenerado en cada build"
+		},
+		"devices": {
+			"title": "Devices soportados",
+			"subtitle": "Cada card es un build target. Click para ver specs, changelog y descargas.",
+			"select": "Ver builds",
+			"selectedLabel": "Seleccionado",
+			"empty": "Sin devices sincronizados. Corré `bun run sync:aosp` para regenerar la lista.",
+			"codename": "Codename",
+			"noImage": "Sin imagen",
+			"specs": {
+				"display": "Pantalla",
+				"processor": "Procesador",
+				"ram": "RAM",
+				"storage": "Almacenamiento",
+				"rearCamera": "Cámara trasera",
+				"frontCamera": "Cámara frontal",
+				"battery": "Batería",
+				"os": "SO de fábrica",
+				"dimensions": "Dimensiones",
+				"weight": "Peso",
+				"connectivity": "Conectividad",
+				"waterResistance": "Resistencia al agua",
+				"screenProtection": "Protección de pantalla",
+				"extras": "Extras"
+			}
+		},
+		"status": {
+			"active": "Activo",
+			"beta": "Beta",
+			"paused": "Pausado",
+			"abandoned": "Abandonado",
+			"eol": "Fin de soporte"
+		},
+		"build": {
+			"title": "Build",
+			"latest": "Último build",
+			"noneYet": "Sin builds publicados todavía.",
+			"noneYetHint": "Próximamente se publicarán vía GitHub Releases. Mientras tanto, mirá los sources en cada device.",
+			"version": "Versión",
+			"date": "Fecha",
+			"android": "Android",
+			"securityPatch": "Patch de seguridad",
+			"kernel": "Kernel",
+			"downloads": "Descargas",
+			"download": "Descargar",
+			"mirror": "Mirror",
+			"size": "Tamaño",
+			"sha256": "SHA-256",
+			"changelog": "Changelog",
+			"notes": "Notas",
+			"added": "Agregado",
+			"removed": "Removido",
+			"fixed": "Arreglado",
+			"improved": "Mejorado",
+			"sections": {
+				"boot": "Boot",
+				"kernel": "Kernel",
+				"security": "Seguridad",
+				"system": "Sistema",
+				"ui": "UI",
+				"build": "Build",
+				"networking": "Redes",
+				"misc": "Misc"
+			},
+			"noChangelog": "Sin changelog publicado."
+		},
+		"kernels": {
+			"title": "Kernels",
+			"subtitle": "Standalone kernels que compilo fuera de la ROM principal.",
+			"noneYet": "Sin kernels publicados todavía.",
+			"noneYetHint": "Próximamente.",
+			"target": "Target",
+			"version": "Versión",
+			"download": "Descargar",
+			"source": "Source"
 		}
 	},
 	"contact": {

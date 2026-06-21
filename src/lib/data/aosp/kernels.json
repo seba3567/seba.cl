@@ -1,0 +1,6 @@
+{
+	"_about": {
+		"note": "Hand-maintained list of standalone kernels the user builds outside the main ROM. Empty array = no kernels yet. Add entries with: name, target (device codename), version, tagline, source (repo URL), download (zip URL)."
+	},
+	"kernels": []
+}

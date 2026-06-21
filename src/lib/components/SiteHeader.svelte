@@ -30,6 +30,9 @@ const currentPath = $derived(page.url?.pathname ?? '/');
 const isHome = $derived(currentPath === '/');
 const isProjects = $derived(currentPath.startsWith('/proyectos'));
 const isApps = $derived(currentPath.startsWith('/apps'));
+const isAosp = $derived(
+	currentPath === '/aosp' || currentPath.startsWith('/aosp/'),
+);
 
 /**
  * Dynamic breadcrumb from the current URL.
@@ -319,6 +322,18 @@ function scrollToSection(e: MouseEvent, id: string) {
 					</NavigationMenu.Link>
 				</NavigationMenu.Item>
 
+				<NavigationMenu.Item>
+					<NavigationMenu.Link
+						href="/aosp"
+						aria-current={isAosp ? 'page' : undefined}
+						class="rounded-md px-3 py-1.5 text-xs font-medium transition-all {isAosp
+							? 'bg-white/10 text-neutral-50'
+							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
+					>
+						{$t('nav.aosp')}
+					</NavigationMenu.Link>
+				</NavigationMenu.Item>
+
 				{#each navGroups as group (group.trigger)}
 					<NavigationMenu.Item>
 						<NavigationMenu.Trigger
@@ -473,6 +488,16 @@ function scrollToSection(e: MouseEvent, id: string) {
 								: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 						>
 							{$t('nav.projects')}
+						</a>
+						<a
+							href="/aosp"
+							aria-current={isAosp ? 'page' : undefined}
+							onclick={() => (mobileOpen = false)}
+							class="mt-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors {isAosp
+								? 'bg-white/10 text-neutral-50'
+								: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
+						>
+							{$t('nav.aosp')}
 						</a>
 						{#each navGroups as group (group.trigger)}
 							<div class="mt-3">

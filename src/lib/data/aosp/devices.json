@@ -1,0 +1,55 @@
+{
+  "_about": {
+    "source": "https://raw.githubusercontent.com/seba3567/devices-json/refs/heads/main/devices.yaml",
+    "generatedAt": "2026-06-21T17:53:38.440Z",
+    "note": "Snapshot of seba3567/devices-json — regenerate via `bun run sync:aosp`"
+  },
+  "devices": [
+    {
+      "slug": "motorola-moto-g100",
+      "name": "Motorola Moto G100",
+      "codename": null,
+      "status": "abandoned",
+      "image": "https://www.latercera.com/resizer/7Ftoy0rtCuTD3sNBzbrxvjk7zg8=/arc-anglerfish-arc2-prod-copesa/public/H53FL3KHLJBJPA7HRO4VTU5VFE.png",
+      "specs": {
+        "display": "6.7 pulgadas, 1080 x 2520 píxeles",
+        "processor": "Snapdragon 870 5G 3.2GHz",
+        "ram": "8GB",
+        "storage": "128GB, expandible mediante microSD",
+        "rearCamera": "Cuádruple, 64MP + 16MP + 2MP + TOF 3D",
+        "frontCamera": "Dual, 16MP + 8MP",
+        "battery": "5000 mAh con carga rápida de 20W",
+        "os": "Android 11",
+        "dimensions": "168.4 x 74 x 9.7 mm",
+        "weight": "207 g",
+        "connectivity": "5G, Wi-Fi 802.11 a/b/g/n/ac/ax, Bluetooth 5.1",
+        "waterResistance": "IP52 (resistencia limitada al agua)",
+        "screenProtection": null,
+        "extras": null
+      }
+    },
+    {
+      "slug": "xiaomi-redmi-note-13-pro-5g",
+      "name": "Xiaomi Redmi Note 13 Pro+ 5G",
+      "codename": null,
+      "status": "paused",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_748621-MLA76569863127_052024-O.webp",
+      "specs": {
+        "display": "AMOLED de 6.67 pulgadas, 2712 x 1220 píxeles, 120 Hz, 1920 Hz PWM, 1800 nits brillo",
+        "processor": "MediaTek Dimensity 7200 Ultra",
+        "ram": "12GB LPDDR5X",
+        "storage": "512GB UFS 3.1",
+        "rearCamera": "Triple: 200MP f/1.7 (OIS) + 8MP f/2.2 (gran angular) + 2MP f/2.4 (macro)",
+        "frontCamera": "16MP f/2.4",
+        "battery": "5000 mAh con carga rápida de 120W (cargador en la caja)",
+        "os": "Android 13 + MIUI 14",
+        "dimensions": "161.4 x 74.2 x 8.9 mm",
+        "weight": "199 g",
+        "connectivity": "5G, Wi-Fi 6, Bluetooth 5.3, GPS",
+        "waterResistance": "IP68",
+        "screenProtection": "Gorilla Glass Victus",
+        "extras": "Sensor óptico en pantalla"
+      }
+    }
+  ]
+}

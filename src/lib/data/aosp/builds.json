@@ -1,0 +1,6 @@
+{
+	"_about": {
+		"note": "Builds land here once the user starts publishing to GitHub Releases. Empty array = no published builds yet. See scripts/sync-aosp-devices.mjs for the device sync; a future sync-aosp-releases.mjs will populate this file from the GitHub Releases API."
+	},
+	"builds": []
+}
