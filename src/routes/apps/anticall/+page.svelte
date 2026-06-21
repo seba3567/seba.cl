@@ -331,8 +331,12 @@
 							<DeviceMobile size={12} weight="duotone" class="text-neutral-300" />
 						</div>
 						<div class="min-w-0">
-							<div class="truncate font-mono text-sm font-bold text-neutral-50">Flutter</div>
-							<div class="text-[9px] uppercase tracking-wider text-neutral-500">UI</div>
+							<div class="truncate font-sans text-sm font-semibold text-neutral-50">
+								Flutter
+							</div>
+							<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">
+								UI
+							</div>
 						</div>
 					</div>
 					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
@@ -342,8 +346,12 @@
 							<Code size={12} weight="duotone" class="text-neutral-300" />
 						</div>
 						<div class="min-w-0">
-							<div class="truncate font-mono text-sm font-bold text-neutral-50">Kotlin</div>
-							<div class="text-[9px] uppercase tracking-wider text-neutral-500">Nativo</div>
+							<div class="truncate font-sans text-sm font-semibold text-neutral-50">
+								Kotlin
+							</div>
+							<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">
+								Nativo
+							</div>
 						</div>
 					</div>
 					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
@@ -353,8 +361,10 @@
 							<ShieldCheck size={12} weight="duotone" class="text-mint-300" />
 						</div>
 						<div class="min-w-0">
-							<div class="truncate font-mono text-sm font-bold text-mint-300">100%</div>
-							<div class="text-[9px] uppercase tracking-wider text-neutral-500">Local</div>
+							<div class="truncate font-sans text-sm font-semibold text-mint-300">100%</div>
+							<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">
+								Local
+							</div>
 						</div>
 					</div>
 					<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
@@ -364,8 +374,13 @@
 							<Database size={12} weight="duotone" class="text-neutral-300" />
 						</div>
 						<div class="min-w-0">
-							<div class="truncate font-mono text-sm font-bold text-neutral-50">0</div>
-							<div class="text-[9px] uppercase tracking-wider text-neutral-500">Servidores</div>
+							<div class="truncate font-sans text-sm font-semibold text-neutral-50">0</div>
+							<div
+								class="truncate font-mono text-[9px] uppercase tracking-wider text-neutral-500"
+								title="Servidores"
+							>
+								Servers
+							</div>
 						</div>
 					</div>
 				</div>
