@@ -116,10 +116,25 @@ export async function fetchPublicRepos(
 	const filtered = repos.filter(
 		(r) => !r.private && !r.disabled && (options.includeForks || !r.fork) && !r.archived,
 	);
+	// Enrich with languages. The cooldown is per-module (1 call / 5min),
+	// but the cache is per-URL. The repo list URL is already cached
+	// after the first call, but each repo's languages_url is a NEW URL
+	// that we haven't seen. If we're in cooldown, the languages fetch
+	// would throw — which breaks the whole page. Catch the COOLDOWN
+	// error per-repo and return empty languages so the page still
+	// renders (just without per-repo language stats for that call).
 	const enriched = await Promise.all(
 		filtered.map(async (r) => {
-			const langs = await githubFetch<Record<string, number>>(r.languages_url);
-			return { ...r, languages: langs };
+			try {
+				const langs = await githubFetch<Record<string, number>>(r.languages_url);
+				return { ...r, languages: langs };
+			} catch (err) {
+				if ((err as Error & { code?: string }).code === 'COOLDOWN') {
+					// Stale-while-cooldown: repo shows but no language data yet.
+					return { ...r, languages: {} as Record<string, number> };
+				}
+				throw err;
+			}
 		}),
 	);
 	return enriched.sort((a, b) => {
