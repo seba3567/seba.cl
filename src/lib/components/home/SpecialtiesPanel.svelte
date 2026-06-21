@@ -46,7 +46,7 @@ import { specialties } from '$lib/data/profile';
 						{#each spec.items as itemKey (itemKey)}
 							<li class="flex items-start gap-2 text-sm text-neutral-300">
 								<span class="mt-1.5 size-1 shrink-0 rounded-full bg-mint-400/60"></span>
-								<span>{$t(`home.specialties.groups.${spec.titleKey}.items.${itemKey}`)}</span>
+								<span>{$t(`home.specialties.itemLabels.${itemKey}`)}</span>
 							</li>
 						{/each}
 					</ul>

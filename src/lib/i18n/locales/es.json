@@ -39,6 +39,13 @@
 	"home": {
 		"metaTitle": "seba3567.cl · Sebastián Muñoz",
 		"metaDescription": "Sebastián Muñoz (@seba3567) — Ingeniero en Informática. Backend, datos, mobile, QA. Proyectos, apps y contacto.",
+		"sections": {
+			"hero": "Inicio",
+			"seleccion": "Selección",
+			"stack": "Stack",
+			"especialidades": "Especialidades",
+			"contacto": "Contacto"
+		},
 		"hero": {
 			"status": "Disponible para colaborar",
 			"location": "Chile",
@@ -73,33 +80,29 @@
 		"specialties": {
 			"badge": "Especialidades",
 			"title": "En qué me especializo.",
+			"itemLabels": {
+				"BI": "Inteligencia de Negocios",
+				"data-modeling": "Modelado y análisis de datos",
+				"visualization": "Visualización y storytelling con datos",
+				"statistics": "Análisis estadístico aplicado",
+				"backend": "Diseño de arquitectura backend",
+				"apis": "APIs robustas y mantenibles",
+				"qa": "Aseguramiento de calidad y testing",
+				"versioning": "Versionado y colaboración técnica",
+				"agile": "Trabajo ágil (Scrum/Kanban)",
+				"requirements": "Levantamiento y refinamiento de requerimientos",
+				"docs": "Documentación técnica clara",
+				"kaizen": "Enfoque en mejora continua"
+			},
 			"groups": {
 				"data": {
-					"title": "Ciencia de Datos",
-					"items": [
-						"Inteligencia de Negocios",
-						"Modelado y análisis de datos",
-						"Visualización y storytelling con datos",
-						"Análisis estadístico aplicado"
-					]
+					"title": "Ciencia de Datos"
 				},
 				"software": {
-					"title": "Desarrollo de Software",
-					"items": [
-						"Diseño de arquitectura backend",
-						"APIs robustas y mantenibles",
-						"Aseguramiento de calidad y testing",
-						"Versionado y colaboración técnica"
-					]
+					"title": "Desarrollo de Software"
 				},
 				"management": {
-					"title": "Gestión Técnica",
-					"items": [
-						"Trabajo ágil (Scrum/Kanban)",
-						"Levantamiento y refinamiento de requerimientos",
-						"Documentación técnica clara",
-						"Enfoque en mejora continua"
-					]
+					"title": "Gestión Técnica"
 				}
 			}
 		},
@@ -116,19 +119,35 @@
 	"proyectos": {
 		"metaTitle": "Proyectos · seba3567.cl",
 		"metaDescription": "Todos los repos públicos de @seba3567, con búsqueda, filtro por lenguaje y estado (live / beta / archivado).",
-		"title": "Proyectos.",
+		"dataSource": "en vivo desde la API de GitHub",
+		"heroTitlePrimary": "Todos",
+		"heroTitleSecondary": "los proyectos.",
+		"filterTitle": "Filtrar y buscar.",
 		"subtitle": "Open source, datos y mobile.",
 		"search": "Buscar repos…",
+		"searchPlaceholder": "Buscar repo por nombre o descripción…",
 		"filters": {
 			"all": "Todos",
-			"live": "Live",
+			"live": "Activos",
 			"wip": "En desarrollo",
-			"archived": "Archivados"
+			"archived": "Archivados",
+			"active": "Filtros activos",
+			"clear": "Limpiar"
 		},
 		"languageFilter": "Lenguaje",
 		"languageAll": "Todos los lenguajes",
 		"empty": "No hay proyectos que coincidan con tu búsqueda.",
-		"featured": "Destacado"
+		"emptyFiltered": "Sin repos que coincidan con los filtros.",
+		"featured": "Destacado",
+		"resultsCount": "{count} / {total} resultados",
+		"shownCount": "{count} / {total} mostrados · @{username}",
+		"featuredBadge": "Top recientes",
+		"openOnGithub": "Abrir en GitHub",
+		"stats": {
+			"repos": "repos",
+			"stars": "estrellas",
+			"languages": "lenguajes"
+		}
 	},
 	"apps": {
 		"metaTitle": "Apps · seba3567.cl",
@@ -142,6 +161,15 @@
 	"anticall": {
 		"metaTitle": "AntiCallCL · seba3567.cl",
 		"metaDescription": "AntiCallCL — gestor local de llamadas no deseadas para Android (Flutter + Kotlin). Filtra por prefijo, sin nube, sin cuentas. Beta abierta.",
+		"sections": {
+			"hero": "Inicio",
+			"screenshot": "Pantalla",
+			"about": "Acerca",
+			"gallery": "Galería",
+			"stack": "Stack",
+			"privacy": "Privacidad",
+			"beta": "Beta"
+		},
 		"hero": {
 			"beta": "Beta abierta",
 			"android": "Android 8+",
@@ -162,7 +190,9 @@
 			"badge": "01",
 			"title": "Pantalla principal.",
 			"hint": "Click para ampliar",
-			"ariaOpen": "Abrir pantalla {n} en el visor"
+			"ariaOpen": "Abrir pantalla {n} en el visor",
+			"thumbAlt": "AntiCallCL · pantalla {n}",
+			"mainAlt": "AntiCallCL — pantalla principal"
 		},
 		"about": {
 			"badge": "02",

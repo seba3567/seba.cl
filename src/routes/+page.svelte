@@ -21,13 +21,18 @@ const pageTitle = $derived($t('home.metaTitle'));
 const pageDescription = $derived($t('home.metaDescription'));
 
 // ----- Horizontal scroll state -----
-const SECTIONS = [
-	{ id: 'hero', label: 'Inicio' },
-	{ id: 'seleccion', label: 'Selección' },
-	{ id: 'stack', label: 'Stack' },
-	{ id: 'especialidades', label: 'Especialidades' },
-	{ id: 'contacto', label: 'Contacto' },
-] as const;
+	const SECTION_KEYS = [
+		{ id: 'hero', i18nKey: 'home.sections.hero' },
+		{ id: 'seleccion', i18nKey: 'home.sections.seleccion' },
+		{ id: 'stack', i18nKey: 'home.sections.stack' },
+		{ id: 'especialidades', i18nKey: 'home.sections.especialidades' },
+		{ id: 'contacto', i18nKey: 'home.sections.contacto' },
+	] as const;
+
+	// Resolve the i18n labels — PanelDots takes plain strings.
+	const SECTIONS = $derived(
+		SECTION_KEYS.map((s) => ({ id: s.id, label: $t(s.i18nKey) })),
+	);
 
 let trackEl: HTMLElement | undefined = $state();
 let activeSection: string = $state('hero');

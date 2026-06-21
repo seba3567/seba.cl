@@ -49,7 +49,7 @@ let { onOpenLightbox }: Props = $props();
 			>
 				<OptimizedPicture
 					src="/apps/anticall/{FEATURED_SCREENSHOT}"
-					alt="AntiCallCL — pantalla principal"
+					alt={$t('anticall.screenshot.mainAlt')}
 					class="size-full object-cover"
 					width={540}
 					height={1200}

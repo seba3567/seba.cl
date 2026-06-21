@@ -18,15 +18,22 @@ const pageTitle = $derived($t('anticall.metaTitle'));
 const pageDescription = $derived($t('anticall.metaDescription'));
 
 // ----- Horizontal scroll state -----
-const SECTIONS = [
-	{ id: 'hero', label: 'Inicio' },
-	{ id: 'screenshot', label: 'Pantalla' },
-	{ id: 'about', label: 'About' },
-	{ id: 'gallery', label: 'Gallery' },
-	{ id: 'stack', label: 'Stack' },
-	{ id: 'privacy', label: 'Privacidad' },
-	{ id: 'beta', label: 'Beta' },
-] as const;
+	const SECTION_KEYS = [
+		{ id: 'hero', i18nKey: 'anticall.sections.hero' },
+		{ id: 'screenshot', i18nKey: 'anticall.sections.screenshot' },
+		{ id: 'about', i18nKey: 'anticall.sections.about' },
+		{ id: 'gallery', i18nKey: 'anticall.sections.gallery' },
+		{ id: 'stack', i18nKey: 'anticall.sections.stack' },
+		{ id: 'privacy', i18nKey: 'anticall.sections.privacy' },
+		{ id: 'beta', i18nKey: 'anticall.sections.beta' },
+	] as const;
+
+	// Resolve the i18n labels once on the client. PanelDots takes
+	// plain strings (so it doesn't need to depend on svelte-i18n),
+	// so we translate here and pass the resolved text.
+	const SECTIONS = $derived(
+		SECTION_KEYS.map((s) => ({ id: s.id, label: $t(s.i18nKey) })),
+	);
 
 let trackEl: HTMLElement | undefined = $state();
 let activeSection: string = $state('hero');

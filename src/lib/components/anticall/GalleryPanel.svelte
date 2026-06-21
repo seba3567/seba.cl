@@ -34,12 +34,17 @@ let { onOpenLightbox }: Props = $props();
 			</p>
 		</div>
 
-		<!-- max-h-[60vh] on the grid so the 6 phone screenshots
-		     stay inside the 100vh panel. 9:16 aspect at small
-		     widths would otherwise produce ~600px tall tiles. -->
+		<!--
+		  3 columns × 2 rows. The previous layout used 6 columns
+		  which crushed each phone to ~80px wide on common
+		  viewports. 3 columns gives each phone a comfortable
+		  ~250-300px and keeps the 9:16 aspect readable. The
+		  max-h-[58vh] makes sure the row never spills past the
+		  panel's 100vh.
+		-->
 		<div
-			class="mx-auto grid w-full max-w-full grid-cols-2 content-center gap-3 overflow-hidden sm:grid-cols-3 lg:grid-cols-6"
-			style="max-height: 60vh;"
+			class="mx-auto grid w-full max-w-full grid-cols-3 content-center gap-4 overflow-hidden px-2"
+			style="max-height: 58vh;"
 		>
 			{#each SCREENSHOTS as n, i (n)}
 				<button
@@ -47,22 +52,22 @@ let { onOpenLightbox }: Props = $props();
 					onclick={() => onOpenLightbox(i)}
 					data-panel-anim
 					aria-label={$t('anticall.screenshot.ariaOpen', { values: { n } })}
-					class="group/shot relative m-0 block aspect-[9/16] h-full max-h-full w-auto cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-0.5 hover:border-mint-400/30 hover:bg-white/[0.04]"
+					class="group/shot relative m-0 block aspect-[9/16] h-full max-h-full w-auto cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-1 hover:border-mint-400/30 hover:bg-white/[0.04]"
 				>
 					<OptimizedPicture
 						src="/apps/anticall/{n}"
-						alt="AntiCallCL · pantalla {n}"
+						alt={$t('anticall.screenshot.thumbAlt', { values: { n } })}
 						class="size-full object-cover transition-transform duration-500 group-hover/shot:scale-[1.04]"
 						width={540}
 						height={1200}
 					/>
 					<div
-						class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/60 to-transparent opacity-0 transition-opacity duration-500 group-hover/shot:opacity-100"
+						class="pointer-events-none absolute inset-0 bg-gradient-to-t from-neutral-950/70 to-transparent opacity-0 transition-opacity duration-500 group-hover/shot:opacity-100"
 					></div>
 					<span
-						class="absolute right-2 bottom-2 rounded-md border border-white/10 bg-neutral-950/80 px-1.5 py-0.5 font-mono text-[9px] text-neutral-300 backdrop-blur"
+						class="absolute right-2 bottom-2 rounded-md border border-white/10 bg-neutral-950/80 px-2 py-0.5 font-mono text-[10px] text-neutral-200 backdrop-blur"
 					>
-						{n}
+						{n}/{SCREENSHOTS.length}
 					</span>
 				</button>
 			{/each}

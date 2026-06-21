@@ -39,6 +39,13 @@
 	"home": {
 		"metaTitle": "seba3567.cl · Sebastián Muñoz",
 		"metaDescription": "Sebastián Muñoz (@seba3567) — Software & Data Engineer. Backend, data, mobile, QA. Projects, apps, and contact.",
+		"sections": {
+			"hero": "Home",
+			"seleccion": "Featured",
+			"stack": "Stack",
+			"especialidades": "Specialties",
+			"contacto": "Contact"
+		},
 		"hero": {
 			"status": "Available to collaborate",
 			"location": "Chile",
@@ -73,33 +80,29 @@
 		"specialties": {
 			"badge": "Specialties",
 			"title": "What I specialize in.",
+			"itemLabels": {
+				"BI": "Business Intelligence",
+				"data-modeling": "Data modeling and analysis",
+				"visualization": "Visualization and storytelling with data",
+				"statistics": "Applied statistical analysis",
+				"backend": "Backend architecture design",
+				"apis": "Robust and maintainable APIs",
+				"qa": "Quality assurance and testing",
+				"versioning": "Versioning and technical collaboration",
+				"agile": "Agile work (Scrum/Kanban)",
+				"requirements": "Requirements gathering and refinement",
+				"docs": "Clear technical documentation",
+				"kaizen": "Continuous improvement focus"
+			},
 			"groups": {
 				"data": {
-					"title": "Data Science",
-					"items": [
-						"Business Intelligence",
-						"Data modeling and analysis",
-						"Visualization and storytelling with data",
-						"Applied statistical analysis"
-					]
+					"title": "Data Science"
 				},
 				"software": {
-					"title": "Software Development",
-					"items": [
-						"Backend architecture design",
-						"Robust and maintainable APIs",
-						"Quality assurance and testing",
-						"Versioning and technical collaboration"
-					]
+					"title": "Software Development"
 				},
 				"management": {
-					"title": "Technical Management",
-					"items": [
-						"Agile work (Scrum/Kanban)",
-						"Requirements gathering and refinement",
-						"Clear technical documentation",
-						"Continuous improvement focus"
-					]
+					"title": "Technical Management"
 				}
 			}
 		},
@@ -116,19 +119,35 @@
 	"proyectos": {
 		"metaTitle": "Projects · seba3567.cl",
 		"metaDescription": "All public repos by @seba3567, with search, language filter, and status (live / beta / archived).",
-		"title": "Projects.",
+		"dataSource": "live from GitHub API",
+		"heroTitlePrimary": "All",
+		"heroTitleSecondary": "projects.",
+		"filterTitle": "Filter & search.",
 		"subtitle": "Open source, data, and mobile.",
 		"search": "Search repos…",
+		"searchPlaceholder": "Search repo by name or description…",
 		"filters": {
 			"all": "All",
 			"live": "Live",
-			"wip": "In development",
-			"archived": "Archived"
+			"wip": "WIP",
+			"archived": "Archived",
+			"active": "Active filters",
+			"clear": "Clear"
 		},
 		"languageFilter": "Language",
 		"languageAll": "All languages",
 		"empty": "No projects match your search.",
-		"featured": "Featured"
+		"emptyFiltered": "No repos match the current filters.",
+		"featured": "Featured",
+		"resultsCount": "{count} / {total} results",
+		"shownCount": "{count} / {total} shown · @{username}",
+		"featuredBadge": "Recent top",
+		"openOnGithub": "Open on GitHub",
+		"stats": {
+			"repos": "repos",
+			"stars": "stars",
+			"languages": "languages"
+		}
 	},
 	"apps": {
 		"metaTitle": "Apps · seba3567.cl",
@@ -142,6 +161,15 @@
 	"anticall": {
 		"metaTitle": "AntiCallCL · seba3567.cl",
 		"metaDescription": "AntiCallCL — a local call screener for Android (Flutter + Kotlin). Filter by prefix, no cloud, no accounts. Open beta.",
+		"sections": {
+			"hero": "Home",
+			"screenshot": "Screenshot",
+			"about": "About",
+			"gallery": "Gallery",
+			"stack": "Stack",
+			"privacy": "Privacy",
+			"beta": "Beta"
+		},
 		"hero": {
 			"beta": "Open beta",
 			"android": "Android 8+",
@@ -162,7 +190,9 @@
 			"badge": "01",
 			"title": "Main screen.",
 			"hint": "Click to enlarge",
-			"ariaOpen": "Open screen {n} in the viewer"
+			"ariaOpen": "Open screen {n} in the viewer",
+			"thumbAlt": "AntiCallCL · screen {n}",
+			"mainAlt": "AntiCallCL — main screen"
 		},
 		"about": {
 			"badge": "02",

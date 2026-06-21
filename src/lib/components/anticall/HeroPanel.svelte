@@ -127,7 +127,7 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 					</div>
 					<div class="min-w-0">
 						<div class="truncate font-sans text-sm font-semibold text-neutral-50">Flutter</div>
-						<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">UI</div>
+						<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">{$t('anticall.hero.stats.ui')}</div>
 					</div>
 				</div>
 				<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
@@ -138,7 +138,7 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 					</div>
 					<div class="min-w-0">
 						<div class="truncate font-sans text-sm font-semibold text-neutral-50">Kotlin</div>
-						<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">Nativo</div>
+						<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">{$t('anticall.hero.stats.native')}</div>
 					</div>
 				</div>
 				<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
@@ -149,7 +149,7 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 					</div>
 					<div class="min-w-0">
 						<div class="truncate font-sans text-sm font-semibold text-mint-300">100%</div>
-						<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">Local</div>
+						<div class="font-mono text-[9px] uppercase tracking-wider text-neutral-500">{$t('anticall.hero.stats.local')}</div>
 					</div>
 				</div>
 				<div class="glass flex items-center gap-2.5 rounded-xl p-2.5">
@@ -162,9 +162,9 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 						<div class="truncate font-sans text-sm font-semibold text-neutral-50">0</div>
 						<div
 							class="truncate font-mono text-[9px] uppercase tracking-wider text-neutral-500"
-							title="Servidores"
+							title={$t('anticall.hero.stats.servers')}
 						>
-							Servers
+							{$t('anticall.hero.stats.servers')}
 						</div>
 					</div>
 				</div>

@@ -55,9 +55,9 @@ const filteredRepos = $derived(
 );
 
 const stats = $derived([
-	{ value: data.stats.total, label: 'repos' },
-	{ value: data.stats.stars, label: 'stars' },
-	{ value: data.stats.languages.length, label: 'languages' },
+	{ value: data.stats.total, label: $t('proyectos.stats.repos') },
+	{ value: data.stats.stars, label: $t('proyectos.stats.stars') },
+	{ value: data.stats.languages.length, label: $t('proyectos.stats.languages') },
 ]);
 
 const featured3 = $derived(data.repos.slice(0, 3));
@@ -136,13 +136,13 @@ function langColor(name: string | null): string {
 				<!-- Path breadcrumb (seba3567/proyectos) lives in the
 				     SiteHeader. This header keeps the data-source note
 				     (live from GitHub API) + the big title. -->
-				<p class="font-mono text-xs text-neutral-500">live from GitHub API</p>
+				<p class="font-mono text-xs text-neutral-500">{$t('proyectos.dataSource')}</p>
 				<h1
 					bind:this={titleEl}
 					class="mt-10 text-[clamp(3rem,10vw,7.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
 				>
-					All<br />
-					<span class="text-neutral-600">projects.</span>
+					{$t('proyectos.heroTitlePrimary')}<br />
+					<span class="text-neutral-600">{$t('proyectos.heroTitleSecondary')}</span>
 				</h1>
 			</div>
 			<div
@@ -172,7 +172,7 @@ function langColor(name: string | null): string {
 						variant="outline"
 						class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 					>
-						Top recientes
+						{$t('proyectos.featuredBadge')}
 					</Badge>
 				</div>
 				<a
@@ -182,7 +182,7 @@ function langColor(name: string | null): string {
 					class="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-400 transition-colors hover:text-neutral-100"
 				>
 					<GithubLogo size={12} weight="bold" />
-					Open on GitHub
+					{$t('proyectos.openOnGithub')}
 					<ArrowUpRight
 						size={10}
 						weight="bold"
@@ -227,11 +227,11 @@ function langColor(name: string | null): string {
 	<section class="border-t border-white/5 py-10">
 		<div class="mb-6 flex flex-wrap items-end justify-between gap-4" data-reveal-tab>
 			<div>
-				<p class="font-mono text-xs text-neutral-500">{$t('proyectos.title')}</p>
+				<p class="font-mono text-xs text-neutral-500">{$t('proyectos.subtitle')}</p>
 				<h2
 					class="mt-3 text-3xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-4xl"
 				>
-					Filter & search.
+					{$t('proyectos.filterTitle')}
 				</h2>
 			</div>
 		</div>
@@ -250,7 +250,7 @@ function langColor(name: string | null): string {
 					value="live"
 					class="rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-400 transition-all data-[state=active]:bg-mint-500/10 data-[state=active]:text-mint-200 hover:text-neutral-200"
 				>
-					Live <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.live}</span>
+					{$t('proyectos.filters.live')} <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.live}</span>
 				</Tabs.Trigger>
 				<Tabs.Trigger
 					value="wip"
@@ -285,7 +285,7 @@ function langColor(name: string | null): string {
 				<input
 					type="search"
 					bind:value={query}
-					placeholder="Buscar repo por nombre o descripción…"
+					placeholder={$t('proyectos.searchPlaceholder')}
 					class="w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none"
 				/>
 			</div>
@@ -342,7 +342,7 @@ function langColor(name: string | null): string {
 				<div class="flex flex-wrap items-center gap-1.5">
 					<span
 						class="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-						>{$t('proyectos.filters.wip')}</span
+						>{$t('proyectos.filters.active')}</span
 					>
 					{#if statusTab !== 'all'}
 						<button
@@ -390,7 +390,7 @@ function langColor(name: string | null): string {
 						}}
 						class="ml-1 font-mono text-[10px] text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-200 hover:underline"
 					>
-						Limpiar
+						{$t('proyectos.filters.clear')}
 					</button>
 				</div>
 			{/if}
@@ -403,7 +403,7 @@ function langColor(name: string | null): string {
 				class="h-1 flex-1 bg-white/5"
 			/>
 			<span class="font-mono text-[10px] uppercase tracking-wider text-neutral-500">
-				{filteredRepos.length} / {data.repos.length} resultados
+				{$t('proyectos.resultsCount', { values: { count: filteredRepos.length, total: data.repos.length } })}
 			</span>
 		</div>
 
@@ -470,7 +470,7 @@ function langColor(name: string | null): string {
 				class="mt-6 rounded-2xl border border-dashed border-white/10 bg-white/[0.015] p-12 text-center"
 			>
 				<p class="text-sm text-neutral-500">
-					Sin repos que coincidan con los filtros.
+					{$t('proyectos.emptyFiltered')}
 				</p>
 			</div>
 		{/if}
@@ -478,7 +478,7 @@ function langColor(name: string | null): string {
 
 	<footer class="border-t border-white/5 py-10">
 		<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
-			{filteredRepos.length} / {data.repos.length} mostrados · @{data.username}
+			{$t('proyectos.shownCount', { values: { count: filteredRepos.length, total: data.repos.length, username: data.username } })}
 		</p>
 	</footer>
 

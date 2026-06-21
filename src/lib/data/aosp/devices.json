@@ -6,7 +6,7 @@
       "active",
       "beta"
     ],
-    "generatedAt": "2026-06-21T18:54:23.408Z",
+    "generatedAt": "2026-06-21T18:57:21.954Z",
     "note": "Snapshot of the AOSP device catalog. Regenerate via `bun run sync:aosp`."
   },
   "devices": [],
