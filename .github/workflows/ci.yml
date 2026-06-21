@@ -43,6 +43,13 @@ jobs:
 			- name: Format check
 				run: bunx @biomejs/biome format src/ scripts/
 
+			# Unit tests. The github cache module has the most subtle
+			# code in the project (race conditions, SWR, cooldown
+			# dedup) and the tests document the expected behavior so
+			# future refactors don't break it silently.
+			- name: Test
+				run: bun run test:run
+
 			# Catch vulnerable dependencies before they're deployed.
 			- name: Security audit
 				run: bun audit
