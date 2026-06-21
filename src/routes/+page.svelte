@@ -2,27 +2,17 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import {
-		ArrowDown,
 		GithubLogo,
 		EnvelopeSimple,
 		ArrowUpRight,
 		PhoneX,
-		Lightning,
+		Rocket,
 		Stack,
 		Cpu,
 		DeviceMobile,
-		Star,
 		Code,
 		Database,
 		Kanban,
-		Books,
-		Target,
-		GraduationCap,
-		Handshake,
-		Users,
-		ShieldCheck,
-		Eye,
-		Lock,
 	} from 'phosphor-svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -229,9 +219,145 @@
 			ease: 'out(3)',
 		});
 
+		// Char-by-char reveal on the hero name (first text node only)
+		const heroH1 = document.querySelector<HTMLElement>('#hero .panel-h1');
+		if (heroH1) {
+			// Walk only the first text node "Sebastián" — keep <br> and <span> intact
+			const walker = document.createTreeWalker(heroH1, NodeFilter.SHOW_TEXT);
+			const textNode = walker.nextNode() as Text | null;
+			if (textNode && textNode.textContent) {
+				const raw = textNode.textContent;
+				const frag = document.createDocumentFragment();
+				for (const ch of raw) {
+					if (ch === ' ') {
+						frag.appendChild(document.createTextNode(' '));
+					} else {
+						const span = document.createElement('span');
+						span.textContent = ch;
+						span.style.display = 'inline-block';
+						span.style.opacity = '0';
+						span.style.transform = 'translateY(40px)';
+						span.style.willChange = 'transform, opacity';
+						frag.appendChild(span);
+					}
+				}
+				textNode.replaceWith(frag);
+				const chars = heroH1.querySelectorAll<HTMLElement>('span');
+				if (chars.length) {
+					animate(chars, {
+						opacity: [0, 1],
+						translateY: [40, 0],
+						delay: stagger(28, { start: 350 }),
+						duration: 700,
+						ease: 'out(4)',
+					});
+				}
+			}
+		}
+
+		// Count-up on stat cards (intersection-triggered)
+		const statCards = document.querySelectorAll<HTMLElement>('[data-stat-card]');
+		const statObserver = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (!entry.isIntersecting) continue;
+					const card = entry.target as HTMLElement;
+					const counter = card.querySelector<HTMLElement>('[data-counter]');
+					if (!counter) continue;
+					const finalRaw = counter.dataset.final ?? '0';
+					const isNumeric = /^\d+$/.test(finalRaw);
+					if (!isNumeric) {
+						// Non-numeric like "90+" — just snap to final with a tiny scale
+						counter.textContent = finalRaw;
+						animate(counter, {
+							scale: [0.6, 1],
+							opacity: [0, 1],
+							duration: 600,
+							ease: 'out(3)',
+						});
+					} else {
+						const to = Number.parseInt(finalRaw, 10);
+						const obj = { v: 0 };
+						animate(obj, {
+							v: to,
+							duration: 1100,
+							delay: 200,
+							ease: 'out(4)',
+							onUpdate: () => {
+								counter.textContent = Math.round(obj.v).toString();
+							},
+							onComplete: () => {
+								counter.textContent = String(to);
+							},
+						});
+					}
+					// Subtle scale-up on the whole card
+					animate(card, {
+						scale: [0.96, 1],
+						opacity: [0.4, 1],
+						duration: 800,
+						ease: 'out(3)',
+					});
+					statObserver.unobserve(card);
+				}
+			},
+			{ threshold: 0.4 },
+		);
+		statCards.forEach((c) => statObserver.observe(c));
+
+		// Magnetic hover for primary CTAs
+		const magneticEls = document.querySelectorAll<HTMLElement>('[data-magnetic]');
+		const magneticCleanups: Array<() => void> = [];
+		for (const el of magneticEls) {
+			const strength = 8;
+			const onMove = (e: MouseEvent) => {
+				const rect = el.getBoundingClientRect();
+				const x = e.clientX - rect.left - rect.width / 2;
+				const y = e.clientY - rect.top - rect.height / 2;
+				animate(el, {
+					translateX: (x / rect.width) * strength,
+					translateY: (y / rect.height) * strength,
+					duration: 400,
+					ease: 'out(3)',
+				});
+			};
+			const onLeave = () => {
+				animate(el, {
+					translateX: 0,
+					translateY: 0,
+					duration: 600,
+					ease: 'out(4)',
+				});
+			};
+			el.addEventListener('mousemove', onMove);
+			el.addEventListener('mouseleave', onLeave);
+			magneticCleanups.push(() => {
+				el.removeEventListener('mousemove', onMove);
+				el.removeEventListener('mouseleave', onLeave);
+			});
+		}
+
+		// Pulse on the active slide dot
+		const dotObserver = new MutationObserver(() => {
+			const activeDot = document.querySelector<HTMLElement>('.bg-violet-300.rounded-full');
+			if (activeDot) {
+				animate(activeDot, {
+					scale: [1, 1.4, 1],
+					opacity: [1, 0.6, 1],
+					duration: 1200,
+					ease: 'inOut(2)',
+				});
+			}
+		});
+		const dotContainer = document.querySelector('.fixed.inset-x-0.bottom-6');
+		if (dotContainer) dotObserver.observe(dotContainer, { childList: true, subtree: true, attributes: true });
+
 		return () => {
 			track.removeEventListener('wheel', onWheel);
 			obs.disconnect();
+			statObserver.disconnect();
+			dotObserver.disconnect();
+			magneticCleanups.forEach((fn) => fn());
 		};
 	});
 </script>
@@ -290,9 +416,14 @@
 			>
 				<a
 					href="/apps"
+					data-magnetic
 					class="group inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-violet-500/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-violet-500/40"
 				>
-					<Lightning size={16} weight="fill" />
+					<Rocket
+						size={16}
+						weight="fill"
+						class="transition-transform duration-500 group-hover:-rotate-12 group-hover:translate-y-[-1px]"
+					/>
 					Ver apps
 					<ArrowUpRight
 						size={12}
@@ -304,36 +435,55 @@
 					href="https://github.com/seba3567"
 					target="_blank"
 					rel="noreferrer noopener"
+					data-magnetic
 					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
 				>
-					<GithubLogo size={14} weight="bold" />
+					<GithubLogo
+						size={16}
+						weight="fill"
+						class="transition-transform duration-300 group-hover:rotate-[-8deg]"
+					/>
 					GitHub
 				</a>
 				<a
 					href="mailto:seba3567.dev@gmail.com"
+					data-magnetic
 					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
 				>
-					<EnvelopeSimple size={14} weight="bold" />
+					<EnvelopeSimple
+						size={16}
+						weight="fill"
+						class="transition-transform duration-300 group-hover:-translate-y-0.5"
+					/>
 					Email
 				</a>
 			</div>
 
 			<!-- Stats strip -->
 			<div class="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-				{#each [{ label: 'Lenguajes', value: '4', icon: Cpu }, { label: 'Repos', value: '90+', icon: Stack }, { label: 'Apps', value: '1', icon: DeviceMobile }, { label: 'Stack', value: '4', icon: Lightning }] as stat (stat.label)}
+				{#each [{ label: 'Lenguajes', value: '4', icon: Cpu }, { label: 'Repos', value: '90+', icon: Stack }, { label: 'Apps', value: '1', icon: DeviceMobile }, { label: 'Stack', value: '4', icon: Stack }] as stat (stat.label)}
 					{@const Icon = stat.icon}
 					<div
 						data-panel-anim
-						class="glass flex items-center gap-3 rounded-2xl p-4"
+						data-stat-card
+						class="glass group/stat flex items-center gap-3 rounded-2xl p-4 transition-all duration-500 hover:-translate-y-0.5 hover:border-white/15 hover:bg-white/[0.06]"
 					>
 						<div
-							class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5"
+							class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-all duration-500 group-hover/stat:border-violet-400/40 group-hover/stat:bg-violet-500/10"
 						>
-							<Icon size={16} weight="duotone" class="text-neutral-300" />
+							<Icon
+								size={16}
+								weight="duotone"
+								class="text-neutral-300 transition-colors group-hover/stat:text-violet-300"
+							/>
 						</div>
 						<div class="min-w-0">
-							<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">
-								{stat.value}
+							<div
+								data-counter
+								data-final={stat.value}
+								class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl"
+							>
+								0
 							</div>
 							<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">
 								{stat.label}

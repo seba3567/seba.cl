@@ -5,7 +5,8 @@
 		GithubLogo,
 		List,
 		MagnifyingGlass,
-		Lightning,
+		BracketsCurly,
+		Stack,
 		DeviceMobile,
 		Folder,
 		Flask,
@@ -92,12 +93,12 @@
 					description: 'Perfil completo + repos',
 					icon: GithubLogo,
 				},
-				{
-					title: 'Sección Stack',
-					href: '/#stack',
-					description: 'Tecnologías que uso (home)',
-					icon: Lightning,
-				},
+			{
+				title: 'Sección Stack',
+				href: '/#stack',
+				description: 'Tecnologías que uso (home)',
+				icon: Stack,
+			},
 			],
 		},
 	];
@@ -176,16 +177,13 @@
 		<!-- Brand -->
 		<a
 			href="/"
-			class="group flex items-center gap-2.5 rounded-full px-1 py-1 transition-opacity hover:opacity-90"
+			class="group flex items-center gap-2.5 rounded-md px-1 py-1 transition-opacity hover:opacity-90"
 			aria-label="Inicio"
 		>
 			<div
-				class="relative flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 shadow-lg"
+				class="relative flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-violet-500/90 via-fuchsia-500/80 to-amber-500/70 shadow-md ring-1 ring-white/10"
 			>
-				<Lightning size={16} weight="fill" class="text-neutral-950" />
-				<span
-					class="absolute -inset-0.5 -z-10 rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 opacity-50 blur-md transition-opacity group-hover:opacity-80"
-				></span>
+				<BracketsCurly size={14} weight="bold" class="text-neutral-950" />
 			</div>
 			<div class="hidden flex-col leading-tight sm:flex">
 				<span class="text-sm font-semibold tracking-tight text-neutral-50">seba3567</span>
@@ -271,9 +269,9 @@
 				target="_blank"
 				rel="noreferrer noopener"
 				aria-label="GitHub @{username}"
-				class="hidden size-8 items-center justify-center rounded-md border border-white/10 bg-white/5 text-neutral-300 transition-all hover:scale-110 hover:border-white/20 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
+				class="group/gh hidden size-9 items-center justify-center rounded-md border border-white/10 bg-white/5 text-neutral-300 transition-all hover:scale-110 hover:border-white/25 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
 			>
-				<GithubLogo size={14} weight="bold" />
+				<GithubLogo size={16} weight="fill" class="transition-transform group-hover/gh:rotate-[-6deg]" />
 			</a>
 			<a
 				href="https://intranet.seba3567.cl/"
@@ -281,9 +279,9 @@
 				rel="noreferrer noopener"
 				aria-label="Intranet"
 				title="Abrir intranet.seba3567.cl en nueva pestaña"
-				class="hidden size-8 items-center justify-center rounded-md border border-violet-400/20 bg-violet-500/5 text-violet-300 transition-all hover:scale-110 hover:border-violet-400/40 hover:bg-violet-500/15 sm:inline-flex"
+				class="hidden size-9 items-center justify-center rounded-md border border-violet-400/20 bg-violet-500/5 text-violet-300 transition-all hover:scale-110 hover:border-violet-400/40 hover:bg-violet-500/15 sm:inline-flex"
 			>
-				<Tabs size={14} weight="bold" />
+				<Tabs size={16} weight="bold" />
 			</a>
 
 			<Sheet.Root bind:open={mobileOpen}>
