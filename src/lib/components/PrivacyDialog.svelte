@@ -146,7 +146,7 @@
 			</div>
 
 			<!-- Body -->
-			<div class="max-h-[90vh] overflow-y-auto px-6 pt-20 pb-6 sm:px-10 sm:pt-24 sm:pb-8">
+			<div class="privacy-scroll max-h-[90vh] overflow-y-auto px-6 pt-20 pb-6 sm:px-10 sm:pt-24 sm:pb-8">
 				<Dialog.Header class="mb-8">
 					<Dialog.Title class="sr-only">Política de Privacidad de Anticall Chile</Dialog.Title>
 					<div class="text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] text-neutral-50 sm:text-4xl md:text-5xl">
@@ -252,3 +252,26 @@
 		</Dialog.Content>
 	</Dialog.Portal>
 </Dialog.Root>
+
+<style>
+	/* Dark, thin scrollbar so it doesn't look like a white bar
+	   glued onto a dark dialog. Firefox uses scrollbar-width,
+	   Chromium uses ::-webkit-scrollbar pseudo-elements. */
+	:global(.privacy-scroll) {
+		scrollbar-width: thin;
+		scrollbar-color: rgb(64 64 70) transparent;
+	}
+	:global(.privacy-scroll::-webkit-scrollbar) {
+		width: 6px;
+	}
+	:global(.privacy-scroll::-webkit-scrollbar-track) {
+		background: transparent;
+	}
+	:global(.privacy-scroll::-webkit-scrollbar-thumb) {
+		background: rgb(64 64 70 / 0.6);
+		border-radius: 999px;
+	}
+	:global(.privacy-scroll::-webkit-scrollbar-thumb:hover) {
+		background: rgb(82 82 91 / 0.9);
+	}
+</style>
