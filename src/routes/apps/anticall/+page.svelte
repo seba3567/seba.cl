@@ -206,16 +206,24 @@
 	/>
 </svelte:head>
 
-<!-- Breadcrumb floating top-left (below the navbar so they don't overlap) -->
+<!-- Location chip: centered below the navbar, prominent.
+     Stays centered on every screen size (not pushed to a side
+     where it gets lost). z-30 so it sits above the panel content
+     but below the navbar (z-40). -->
 <div
-	class="pointer-events-none fixed inset-x-0 top-20 z-30 flex justify-center px-4 sm:justify-start sm:pl-8"
+	class="pointer-events-none fixed inset-x-0 top-20 z-30 flex justify-center px-4"
 >
 	<div
-		class="pointer-events-auto flex items-center gap-1.5 rounded-md border border-white/5 bg-neutral-950/70 px-2.5 py-1 font-mono text-[10px] text-neutral-500 backdrop-blur"
+		class="pointer-events-auto flex items-center gap-2 rounded-md border border-white/10 bg-neutral-950/80 px-3.5 py-1.5 font-mono text-[11px] backdrop-blur shadow-lg shadow-black/20"
 	>
-		<a href="/apps" class="transition-colors hover:text-neutral-300">/ apps</a>
+		<a
+			href="/apps"
+			class="text-neutral-500 transition-colors hover:text-neutral-200"
+		>
+			/apps
+		</a>
 		<span class="text-neutral-700">/</span>
-		<span class="text-neutral-300">anticall</span>
+		<span class="text-neutral-200">anticall</span>
 	</div>
 </div>
 

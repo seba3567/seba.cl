@@ -24,12 +24,26 @@
 
 {#if fallback}
 	<div
-		class="flex shrink-0 items-center justify-center rounded-2xl bg-mint-500 ring-1 ring-mint-400/30 {className}"
-		style="width: {size}px; height: {size}px;"
+		class="group/fb relative flex shrink-0 items-center justify-center overflow-hidden rounded-2xl ring-1 ring-mint-400/30 {className}"
+		style="width: {size}px; height: {size}px; background: linear-gradient(135deg, rgb(110 231 183) 0%, rgb(16 185 129) 50%, rgb(5 150 105) 100%); box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.2), 0 0 0 1px rgb(16 185 129 / 0.1);"
 		role="img"
 		aria-label="AntiCallCL"
 	>
-		<PhoneX size={Math.round(size * 0.5)} weight="duotone" class="text-neutral-950" />
+		<!-- Inner highlight (top) -->
+		<span
+			aria-hidden="true"
+			class="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/15 to-transparent"
+		></span>
+		<!-- Subtle inner ring -->
+		<span
+			aria-hidden="true"
+			class="pointer-events-none absolute inset-1 rounded-xl ring-1 ring-inset ring-white/10"
+		></span>
+		<PhoneX
+			size={Math.round(size * 0.55)}
+			weight="duotone"
+			class="relative z-10 text-neutral-950 drop-shadow-[0_1px_1px_rgba(0,0,0,0.15)]"
+		/>
 	</div>
 {:else}
 	<img
