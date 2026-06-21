@@ -30,6 +30,20 @@ export type RepoWithLanguages = GitHubRepo & {
 const USER_AGENT = 'seba3567-cl/0.1 (+https://seba3567.cl)';
 const CACHE_TTL_MS = 1000 * 60 * 60;
 
+/**
+ * Cooldown between GitHub API calls.
+ *
+ * GitHub's unauthenticated rate limit is 60 req/hour/IP. Each call to
+ * this module (even from cache) registers a hit. With dev-server
+ * restarts wiping the in-memory cache, we'd burn through 60 in minutes.
+ *
+ * Rule: at most 1 actual API call per API_COOLDOWN_MS, regardless of
+ * cache state. If a call is requested inside the cooldown window, we
+ * return the stale cache (or throw if cache is empty — caller should
+ * catch and serve a fallback).
+ */
+const API_COOLDOWN_MS = 5 * 60 * 1000; // 5 min
+
 type CacheEntry<T> = {
 	value: T;
 	expiresAt: number;
@@ -37,11 +51,41 @@ type CacheEntry<T> = {
 
 const cache = new Map<string, CacheEntry<unknown>>();
 
+/** Timestamp (ms) of the last real API call. 0 = never. */
+let lastApiCallAt = 0;
+
+function withinCooldown(): boolean {
+	return lastApiCallAt > 0 && Date.now() - lastApiCallAt < API_COOLDOWN_MS;
+}
+
 async function githubFetch<T>(url: string): Promise<T> {
 	const cached = cache.get(url);
 	if (cached && cached.expiresAt > Date.now()) {
+		// Fresh cache — no API call needed.
 		return cached.value as T;
 	}
+
+	// Cache miss or stale. If we're inside the cooldown window, return
+	// whatever we have (even if stale) instead of hammering GitHub.
+	if (withinCooldown()) {
+		if (cached) {
+			// Stale-while-cooldown: serve the old value, log it.
+			console.warn(
+				`[github] cooldown active, serving stale cache for ${url} ` +
+					`(age: ${Math.round((Date.now() - (cached.expiresAt - CACHE_TTL_MS)) / 1000)}s)`,
+			);
+			return cached.value as T;
+		}
+		// Cold cache + cooldown = we have nothing to serve. Throw a
+		// distinctive error so the caller can fall back gracefully.
+		const err = new Error(
+			`GitHub API in cooldown (${API_COOLDOWN_MS / 1000}s) and no cached value for ${url}`,
+		);
+		(err as Error & { code?: string }).code = 'COOLDOWN';
+		throw err;
+	}
+
+	// Cooldown elapsed (or never called) — make the real request.
 	const res = await fetch(url, {
 		headers: {
 			'User-Agent': USER_AGENT,
@@ -54,6 +98,7 @@ async function githubFetch<T>(url: string): Promise<T> {
 	}
 	const data = (await res.json()) as T;
 	cache.set(url, { value: data, expiresAt: Date.now() + CACHE_TTL_MS });
+	lastApiCallAt = Date.now();
 	return data;
 }
 
@@ -83,6 +128,31 @@ export async function fetchPublicRepos(
 		}
 		return new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime();
 	});
+}
+
+/**
+ * fetchTopRepos: lightweight variant for the home page.
+ *
+ * Makes a SINGLE GitHub API call (the repo list). The list already
+ * includes the primary `language` field per repo, which is all the
+ * home page renders — so we skip the N parallel `languages_url`
+ * requests that fetchPublicRepos does (those are what burned the
+ * rate limit).
+ *
+ * Returns the top `limit` non-archived, non-fork repos sorted by
+ * `pushed_at` DESC.
+ */
+export async function fetchTopRepos(
+	user: string,
+	limit: number,
+): Promise<GitHubRepo[]> {
+	const repos = await githubFetch<GitHubRepo[]>(
+		`https://api.github.com/users/${user}/repos?per_page=100&sort=updated&type=owner`,
+	);
+	return repos
+		.filter((r) => !r.archived && !r.fork && !r.private && !r.disabled)
+		.sort((a, b) => new Date(b.pushed_at).getTime() - new Date(a.pushed_at).getTime())
+		.slice(0, limit);
 }
 
 export type RepoStats = {
