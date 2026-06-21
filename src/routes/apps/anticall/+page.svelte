@@ -300,13 +300,15 @@
 
 			<!-- Right: logo + quick stats -->
 			<div class="flex flex-col items-stretch gap-3" data-panel-anim>
-				<!-- Big logo card: el escudo manda visualmente -->
+				<!-- Big logo card: NO background, NO border, just the
+				     glass + a generous p-12 for breathing room. The
+				     3D-tilting logo is the visual anchor. -->
 				<div
-					class="glass flex flex-1 items-center justify-center rounded-2xl p-8"
+					class="glass flex flex-1 items-center justify-center rounded-2xl p-12"
 				>
 					<AntiCallLogo
-						size={200}
-						class="drop-shadow-[0_12px_40px_rgba(16,185,129,0.18)]"
+						size={220}
+						class="drop-shadow-[0_16px_48px_rgba(16,185,129,0.22)]"
 					/>
 				</div>
 

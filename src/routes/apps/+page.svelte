@@ -100,23 +100,14 @@
 				></div>
 
 				<div class="relative grid grid-cols-12 items-center gap-6 p-6 sm:p-8">
-					<!-- Logo -->
-					<div class="col-span-12 sm:col-span-3 lg:col-span-2">
-						<div class="flex items-center gap-4">
-							<div
-								class="flex size-16 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] p-2"
-							>
-								<AntiCallLogo size={48} class="drop-shadow-[0_4px_16px_rgba(16,185,129,0.2)]" />
-							</div>
-							<div class="block sm:hidden">
-								<Badge
-									variant="outline"
-									class="border-amber-400/20 bg-amber-500/5 px-2 py-0.5 font-mono text-[10px] font-normal uppercase tracking-wider text-amber-300"
-								>
-									Beta abierta
-								</Badge>
-							</div>
-						</div>
+					<!-- Logo: no background, no border, centered, larger
+					     (64px instead of 48) so it has presence in the
+					     card. Dropshadow gives it depth without a frame. -->
+					<div class="col-span-12 flex items-center justify-center sm:col-span-3 sm:justify-start lg:col-span-2">
+						<AntiCallLogo
+							size={64}
+							class="drop-shadow-[0_8px_24px_rgba(16,185,129,0.25)]"
+						/>
 					</div>
 
 					<!-- Identity -->
