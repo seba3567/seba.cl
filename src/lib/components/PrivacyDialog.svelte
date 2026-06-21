@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import {
 		Database,
 		Eye,
@@ -10,14 +9,15 @@
 		Envelope,
 		X,
 		ArrowUpRight,
+		CaretDown,
 	} from 'phosphor-svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
+	import * as Accordion from '$lib/components/ui/accordion';
 	import { Badge } from '$lib/components/ui/badge';
-	import { revealChars } from '$lib/animations';
+	import { Button } from '$lib/components/ui/button';
 
 	type Section = {
-		n: string;
+		value: string;
 		icon: typeof Database;
 		title: string;
 		body: string;
@@ -33,7 +33,7 @@
 
 	const sections: Section[] = [
 		{
-			n: '01',
+			value: 'datos',
 			icon: Database,
 			title: 'Datos que recopilamos',
 			body: 'Anticall Chile no recopila, almacena ni transmite datos personales a servidores externos. Toda la lógica de bloqueo y análisis ocurre localmente en tu dispositivo.',
@@ -45,7 +45,7 @@
 			],
 		},
 		{
-			n: '02',
+			value: 'uso',
 			icon: Eye,
 			title: 'Cómo usamos la información',
 			body: 'Al no existir transferencia a la nube, el uso de información se limita estrictamente al funcionamiento local de la aplicación.',
@@ -57,18 +57,18 @@
 			],
 		},
 		{
-			n: '03',
+			value: 'compartir',
 			icon: ShareNetwork,
 			title: 'Cuándo compartimos datos',
 			body: 'No hay transferencia ni compartición automática de datos, porque la información nunca abandona tu dispositivo.',
 			bullets: [
 				'No trabajamos con terceros que procesen tus datos personales.',
-				'Solo puedes compartir información si decides exportarla o enviarla voluntariamente (por ejemplo, para soporte).',
+				'Solo puedes compartir información si decides exportarla o enviarla voluntariamente.',
 				'En caso de obligación legal, primero te solicitaríamos la información pertinente, ya que no la almacenamos por defecto.',
 			],
 		},
 		{
-			n: '04',
+			value: 'derechos',
 			icon: ShieldCheck,
 			title: 'Derechos de las personas usuarias',
 			body: 'Aunque la aplicación no conserva datos en servidores, respetamos los derechos otorgados por la legislación chilena e internacional.',
@@ -80,7 +80,7 @@
 			],
 		},
 		{
-			n: '05',
+			value: 'seguridad',
 			icon: Lock,
 			title: 'Medidas de seguridad',
 			body: 'Diseñamos la solución para minimizar superficie de ataque y dependencia externa.',
@@ -92,7 +92,7 @@
 			],
 		},
 		{
-			n: '06',
+			value: 'conservacion',
 			icon: Trash,
 			title: 'Período de conservación',
 			body: 'Como la información se mantiene solo en tu teléfono, tú decides cuánto tiempo conservarla.',
@@ -101,15 +101,16 @@
 				'Al desinstalar la aplicación se eliminan automáticamente todos los datos asociados.',
 			],
 		},
+		{
+			value: 'contacto',
+			icon: Envelope,
+			title: 'Contacto de privacidad',
+			body: '¿Tienes preguntas o solicitudes? Nuestro equipo está disponible para ayudarte.',
+			bullets: [
+				'Correo: seba3567.dev@gmail.com',
+			],
+		},
 	];
-
-	let titleEl: HTMLElement | undefined = $state();
-
-	$effect(() => {
-		if (open && titleEl) {
-			revealChars(titleEl, { staggerMs: 28, offsetY: 36, duration: 600, delay: 100 });
-		}
-	});
 </script>
 
 <Dialog.Root bind:open={() => open, (v) => { open = v; onOpenChange?.(v); }}>
@@ -120,7 +121,7 @@
 		<Dialog.Content
 			class="glass-liquid-static fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[min(96vw,860px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl shadow-2xl shadow-black/70 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
 		>
-			<!-- Top bar: close button + badge -->
+			<!-- Top bar -->
 			<div
 				class="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 p-5 sm:p-6"
 			>
@@ -144,12 +145,12 @@
 				</Dialog.Close>
 			</div>
 
-			<!-- Scrollable body -->
+			<!-- Body -->
 			<div class="max-h-[90vh] overflow-y-auto px-6 pt-20 pb-6 sm:px-10 sm:pt-24 sm:pb-8">
-				<Dialog.Header class="mb-10">
-					<Dialog.Title bind:ref={titleEl} class="sr-only">Política de Privacidad de Anticall Chile</Dialog.Title>
+				<Dialog.Header class="mb-8">
+					<Dialog.Title class="sr-only">Política de Privacidad de Anticall Chile</Dialog.Title>
 					<div class="text-balance text-3xl font-semibold leading-[1.05] tracking-[-0.03em] text-neutral-50 sm:text-4xl md:text-5xl">
-						<span bind:this={titleEl}>Política de Privacidad.</span>
+						Política de Privacidad.
 					</div>
 					<Dialog.Description class="mt-3 text-sm text-neutral-400 sm:text-base">
 						Tu confianza es fundamental. Esta política describe cómo recopilamos, utilizamos y
@@ -160,86 +161,71 @@
 					</p>
 				</Dialog.Header>
 
-				<div class="space-y-10">
-					{#each sections as s (s.n)}
+				<Accordion.Root type="multiple" class="space-y-2" value={['datos']}>
+					{#each sections as s, i (s.value)}
 						{@const Icon = s.icon}
-						<section class="border-t border-white/5 pt-8 first:border-t-0 first:pt-0">
-							<div class="flex items-start gap-4">
+						<Accordion.Item
+							value={s.value}
+							class="group rounded-2xl border border-white/5 bg-white/[0.015] transition-colors hover:border-white/10 data-[state=open]:border-violet-400/20 data-[state=open]:bg-white/[0.03]"
+						>
+							<Accordion.Trigger
+								class="flex w-full items-center gap-4 rounded-2xl px-4 py-3.5 text-left transition-colors hover:bg-white/[0.02]"
+							>
 								<div
-									class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5"
+									class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors group-data-[state=open]:border-violet-400/40 group-data-[state=open]:bg-violet-500/10"
 								>
-									<Icon size={18} weight="duotone" class="text-emerald-300" />
+									<Icon
+										size={16}
+										weight="duotone"
+										class="text-neutral-300 transition-colors group-data-[state=open]:text-violet-300"
+									/>
 								</div>
 								<div class="min-w-0 flex-1">
 									<div class="flex items-baseline gap-2.5">
 										<span
-											class="font-mono text-[10px] text-neutral-600 transition-colors group-hover:text-neutral-400"
-											>{s.n}</span
+											class="font-mono text-[10px] text-neutral-600 transition-colors group-data-[state=open]:text-violet-400"
+											>0{i + 1}</span
 										>
 										<h3
-											class="text-balance text-lg font-semibold tracking-tight text-neutral-100 sm:text-xl"
+											class="text-balance text-base font-semibold tracking-tight text-neutral-100 sm:text-lg"
 										>
 											{s.title}
 										</h3>
 									</div>
-									<p class="mt-2 text-pretty text-sm leading-relaxed text-neutral-300 sm:text-[15px]">
+								</div>
+								<CaretDown
+									size={14}
+									weight="bold"
+									class="shrink-0 text-neutral-500 transition-transform duration-300 group-data-[state=open]:rotate-180 group-data-[state=open]:text-violet-300"
+								/>
+							</Accordion.Trigger>
+							<Accordion.Content
+								class="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+							>
+								<div class="px-4 pb-4 pl-[60px]">
+									<p class="text-pretty text-sm leading-relaxed text-neutral-300 sm:text-[15px]">
 										{s.body}
 									</p>
-									<ul class="mt-3 space-y-1.5">
-										{#each s.bullets as b (b)}
-											<li class="flex items-start gap-2.5 text-sm leading-relaxed text-neutral-400">
-												<span
-													class="mt-1.5 size-1 shrink-0 rounded-full bg-neutral-600"
-												></span>
-												<span>{b}</span>
-											</li>
-										{/each}
-									</ul>
+									{#if s.bullets.length}
+										<ul class="mt-3 space-y-1.5">
+											{#each s.bullets as b (b)}
+												<li
+													class="flex items-start gap-2.5 text-sm leading-relaxed text-neutral-400"
+												>
+													<span class="mt-1.5 size-1 shrink-0 rounded-full bg-neutral-600"></span>
+													<span>{b}</span>
+												</li>
+											{/each}
+										</ul>
+									{/if}
 								</div>
-							</div>
-						</section>
+							</Accordion.Content>
+						</Accordion.Item>
 					{/each}
+				</Accordion.Root>
 
-					<!-- Contact block (07 from the original policy) -->
-					<section
-						class="rounded-2xl border border-white/5 bg-white/[0.02] p-5 sm:p-6"
-					>
-						<div class="flex items-start gap-4">
-							<div
-								class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5"
-							>
-								<Envelope size={18} weight="duotone" class="text-amber-300" />
-							</div>
-							<div class="min-w-0 flex-1">
-								<p class="font-mono text-[10px] text-neutral-600">07</p>
-								<h3
-									class="text-balance text-lg font-semibold tracking-tight text-neutral-100 sm:text-xl"
-								>
-									Contacto de privacidad
-								</h3>
-								<p class="mt-2 text-pretty text-sm leading-relaxed text-neutral-300 sm:text-[15px]">
-									¿Tienes preguntas o solicitudes? Nuestro equipo está disponible para
-									ayudarte.
-								</p>
-								<a
-									href="mailto:{CONTACT_EMAIL}"
-									class="mt-3 inline-flex items-center gap-1.5 break-all font-mono text-sm text-neutral-200 transition-colors hover:text-emerald-300"
-								>
-									{CONTACT_EMAIL}
-									<ArrowUpRight
-										size={11}
-										weight="bold"
-										class="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-									/>
-								</a>
-							</div>
-						</div>
-					</section>
-				</div>
-
-				<!-- Footer / actions -->
 				<Dialog.Footer
-					class="mt-10 flex flex-col items-stretch gap-2 border-t border-white/5 pt-6 sm:flex-row sm:items-center sm:justify-between"
+					class="mt-8 flex flex-col items-stretch gap-2 border-t border-white/5 pt-6 sm:flex-row sm:items-center sm:justify-between"
 				>
 					<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
 						© 2025 Anticall Chile · Todos los derechos reservados

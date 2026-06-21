@@ -128,30 +128,37 @@
 	onMount(() => {
 		const cleanups: Array<() => void> = [];
 
-		// Hero name: char-by-char reveal
+		// Hero name: dramatic char-by-char reveal with scale + bigger offset
 		if (heroNameEl) {
-			revealChars(heroNameEl, { staggerMs: 35, offsetY: 60, duration: 700, delay: 200 });
-		}
-
-		// Hero subtitle + tags: simple fade up
-		if (heroSubEl) {
-			revealOnScroll(heroSubEl, {
-				selector: '[data-reveal]',
-				staggerMs: 100,
-				offsetY: 16,
-				duration: 700,
-				once: true,
+			revealChars(heroNameEl, {
+				staggerMs: 38,
+				offsetY: 80,
+				duration: 1100,
+				delay: 200,
 			});
 		}
 
-		// Work grid: stagger from top-left, on scroll
+		// Hero subtitle + tags: fade up, longer duration
+		if (heroSubEl) {
+			cleanups.push(
+				revealOnScroll(heroSubEl, {
+					selector: '[data-reveal]',
+					staggerMs: 120,
+					offsetY: 24,
+					duration: 900,
+					once: true,
+				}),
+			);
+		}
+
+		// Work grid: more dramatic stagger with scale
 		if (workSectionEl) {
 			cleanups.push(
 				revealOnScroll(workSectionEl, {
 					selector: '[data-reveal-tile]',
-					staggerMs: 50,
-					offsetY: 30,
-					duration: 700,
+					staggerMs: 70,
+					offsetY: 40,
+					duration: 900,
 					once: true,
 				}),
 			);
@@ -162,17 +169,16 @@
 			cleanups.push(
 				revealOnScroll(stackSectionEl, {
 					selector: '[data-reveal-block]',
-					staggerMs: 120,
-					offsetY: 24,
-					duration: 700,
+					staggerMs: 140,
+					offsetY: 32,
+					duration: 900,
 					once: true,
 				}),
 			);
-			// Animate the number labels (1, 2, 3 → 01, 02, 03 are static; the count is on data-count)
 			for (const el of stackCountRefs) {
 				if (!el) continue;
 				const final = Number(el.dataset.count ?? '0');
-				countUpOnVisible(el, final, { duration: 1400, delay: 300 });
+				countUpOnVisible(el, final, { duration: 1600, delay: 400 });
 			}
 		}
 
@@ -181,9 +187,9 @@
 			cleanups.push(
 				revealOnScroll(contactSectionEl, {
 					selector: '[data-reveal-cell]',
-					staggerMs: 80,
-					offsetY: 20,
-					duration: 600,
+					staggerMs: 100,
+					offsetY: 28,
+					duration: 800,
 					once: true,
 				}),
 			);

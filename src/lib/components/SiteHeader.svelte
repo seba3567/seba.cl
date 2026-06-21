@@ -6,7 +6,6 @@
 		List,
 		MagnifyingGlass,
 		Lightning,
-		Command,
 		DeviceMobile,
 		Folder,
 		Flask,
@@ -17,7 +16,9 @@
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Button } from '$lib/components/ui/button';
-	import CommandPalette from './CommandPalette.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import { animate } from 'animejs';
+	import SearchPanel from './SearchPanel.svelte';
 
 	type Props = {
 		username?: string;
@@ -30,9 +31,10 @@
 	const isProjects = $derived(currentPath.startsWith('/proyectos'));
 	const isApps = $derived(currentPath.startsWith('/apps'));
 
-	let commandOpen = $state(false);
-	let scrollProgress = $state(0);
+	let searchOpen = $state(false);
 	let mobileOpen = $state(false);
+	let scrollProgress = $state(0);
+	let searchTriggerEl: HTMLButtonElement | undefined = $state();
 
 	type NavGroup = {
 		trigger: string;
@@ -94,7 +96,7 @@
 					title: 'Sección Stack',
 					href: '/#stack',
 					description: 'Tecnologías que uso (home)',
-					icon: Command,
+					icon: Lightning,
 				},
 			],
 		},
@@ -117,9 +119,46 @@
 		onScroll();
 		window.addEventListener('scroll', onScroll, { passive: true });
 		window.addEventListener('resize', onScroll);
+
+		// Listen for global "open search" events from anywhere
+		const onOpenSearch = () => (searchOpen = true);
+		window.addEventListener('seba:open-search', onOpenSearch as EventListener);
+
+		// '/' opens search globally
+		const onKey = (e: KeyboardEvent) => {
+			const t = e.target;
+			const isTyping =
+				t instanceof HTMLElement &&
+				(t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
+			if (e.key === '/' && !searchOpen && !isTyping) {
+				e.preventDefault();
+				searchOpen = true;
+			}
+		};
+		window.addEventListener('keydown', onKey);
+
+		// Tiny pulse on the search button to draw attention
+		let pulseTimer: ReturnType<typeof setTimeout> | null = null;
+		const triggerPulse = () => {
+			if (!searchTriggerEl) return;
+			pulseTimer = setTimeout(() => {
+				if (searchTriggerEl && !searchOpen) {
+					animate(searchTriggerEl, {
+						scale: [1, 1.04, 1],
+						duration: 600,
+						ease: 'inOut(2)',
+					});
+				}
+			}, 1500);
+		};
+		triggerPulse();
+
 		return () => {
 			window.removeEventListener('scroll', onScroll);
 			window.removeEventListener('resize', onScroll);
+			window.removeEventListener('seba:open-search', onOpenSearch as EventListener);
+			window.removeEventListener('keydown', onKey);
+			if (pulseTimer) clearTimeout(pulseTimer);
 		};
 	});
 </script>
@@ -132,12 +171,9 @@
 	></div>
 </div>
 
-<!-- Command Palette (Cmd+K) -->
-<CommandPalette bind:open={commandOpen} onOpenChange={(v) => (commandOpen = v)} />
-
 <header class="sticky top-4 z-40 mx-auto w-full max-w-6xl px-4">
 	<div
-		class="glass-liquid flex items-center justify-between gap-3 rounded-full px-3 py-2 sm:px-4"
+		class="glass-liquid flex items-center justify-between gap-2 rounded-full px-3 py-2 sm:gap-3 sm:px-4"
 	>
 		<!-- Brand -->
 		<a
@@ -161,7 +197,7 @@
 			</div>
 		</a>
 
-		<!-- Desktop nav (NavigationMenu) -->
+		<!-- Desktop nav -->
 		<NavigationMenu.Root class="hidden md:flex">
 			<NavigationMenu.List class="gap-0.5">
 				<NavigationMenu.Item>
@@ -182,9 +218,7 @@
 						>
 							{group.trigger}
 						</NavigationMenu.Trigger>
-						<NavigationMenu.Content
-							class="glass-liquid-static !mt-3 w-[420px] rounded-2xl !p-2"
-						>
+						<NavigationMenu.Content class="glass-liquid-static !mt-3 w-[420px] rounded-2xl !p-2">
 							<ul class="grid gap-0.5">
 								{#each group.items as item (item.href)}
 									{@const Icon = item.icon}
@@ -218,19 +252,20 @@
 			</NavigationMenu.List>
 		</NavigationMenu.Root>
 
-		<!-- Right cluster: command + GitHub + mobile menu -->
+		<!-- Right cluster: search + GitHub + mobile menu -->
 		<div class="flex items-center gap-2">
 			<button
+				bind:this={searchTriggerEl}
 				type="button"
-				onclick={() => (commandOpen = true)}
-				aria-label="Buscar (Cmd+K)"
-				class="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:border-white/20 hover:bg-white/10 sm:inline-flex"
+				onclick={() => (searchOpen = true)}
+				aria-label="Buscar"
+				class="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-white/10 sm:inline-flex"
 			>
 				<MagnifyingGlass size={12} weight="bold" />
 				<span class="font-mono">Buscar…</span>
 				<kbd
 					class="rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono text-[9px] text-neutral-500"
-				>⌘K</kbd>
+				>/</kbd>
 			</button>
 
 			<a
@@ -238,12 +273,11 @@
 				target="_blank"
 				rel="noreferrer noopener"
 				aria-label="GitHub @{username}"
-				class="hidden size-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-300 transition-colors hover:border-white/20 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
+				class="hidden size-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-300 transition-all hover:scale-110 hover:border-white/20 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
 			>
 				<GithubLogo size={14} weight="bold" />
 			</a>
 
-			<!-- Mobile menu -->
 			<Sheet.Root bind:open={mobileOpen}>
 				<Sheet.Trigger
 					class="inline-flex size-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-300 transition-colors hover:bg-white/10 md:hidden"
@@ -261,7 +295,7 @@
 							type="button"
 							onclick={() => {
 								mobileOpen = false;
-								commandOpen = true;
+								searchOpen = true;
 							}}
 							class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-white/5 hover:text-neutral-100"
 						>
@@ -269,7 +303,7 @@
 							Buscar…
 							<kbd
 								class="ml-auto rounded border border-white/10 bg-white/5 px-1 py-0.5 font-mono text-[9px] text-neutral-500"
-							>⌘K</kbd>
+								>/</kbd>
 						</button>
 						<div class="my-2">
 							<Separator class="bg-white/5" />
@@ -328,3 +362,5 @@
 		</div>
 	</div>
 </header>
+
+<SearchPanel />
