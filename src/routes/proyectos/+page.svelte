@@ -1,11 +1,6 @@
 <script lang="ts">
-	import { ArrowDown, Lightning, Stack, GithubLogo, ArrowUpRight, Cpu } from 'phosphor-svelte';
+	import { ArrowUpRight, GithubLogo } from 'phosphor-svelte';
 	import type { PageData } from './$types';
-	import GlassCard from '$lib/components/GlassCard.svelte';
-	import SectionHeading from '$lib/components/SectionHeading.svelte';
-	import AntiCallCLFeatured from '$lib/components/AntiCallCLFeatured.svelte';
-	import FeaturedProjects from '$lib/components/FeaturedProjects.svelte';
-	import StatsBar from '$lib/components/StatsBar.svelte';
 	import ProjectFilter from '$lib/components/ProjectFilter.svelte';
 	import ProjectGrid from '$lib/components/ProjectGrid.svelte';
 
@@ -32,197 +27,101 @@
 		}),
 	);
 
-	const stack = [
-		{ name: 'Svelte 5', detail: 'Runes, snippets, fine-grained reactivity' },
-		{ name: 'Tailwind v4', detail: '@theme, @utility, zero-config' },
-		{ name: 'shadcn-svelte', detail: 'Copy-paste UI sobre zinc' },
-		{ name: 'TypeScript', detail: 'SvelteKit $types + tsgo' },
-		{ name: 'Bun', detail: 'Runtime + lockfile' },
-		{ name: 'Vite 8', detail: 'Build con adapter-auto' },
-		{ name: 'BiomeJS', detail: 'Lint+format ultra-rápido' },
-		{ name: 'Phosphor', detail: 'Iconos weight-aware' },
-	];
+	const stats = $derived([
+		{ value: data.stats.total, label: 'repos' },
+		{ value: data.stats.stars, label: 'stars' },
+		{ value: data.stats.languages.length, label: 'languages' },
+	]);
 </script>
 
 <svelte:head>
 	<title>Proyectos · seba3567.cl</title>
 	<meta
 		name="description"
-		content="Repositorios de Sebastián Muñoz · AntiCallCL (Android anti-spam), autoskills, frontend.skeleton, Svelte, Kotlin, Python, TypeScript."
+		content="Repositorios de Sebastián Muñoz · fuente directa desde la API de GitHub."
 	/>
 </svelte:head>
 
-<main class="relative mx-auto w-full max-w-6xl flex-1 px-4 pt-12 sm:pt-16">
-	<!-- ============= HERO ============= -->
-	<section class="relative pb-12 sm:pb-20">
-		<div class="mx-auto max-w-3xl text-center">
-			<div
-				class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium text-neutral-300 backdrop-blur"
-			>
-				<span class="relative flex size-2">
-					<span
-						class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
-					></span>
-					<span class="relative inline-flex size-2 rounded-full bg-emerald-400"></span>
-				</span>
-				<span>{data.stats.total} repos · {data.stats.stars} ★ en GitHub</span>
+<main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10">
+	<header class="pt-24 pb-20 sm:pt-36 sm:pb-28">
+		<div class="grid grid-cols-12 items-end gap-6">
+			<div class="col-span-12 lg:col-span-8">
+				<p class="font-mono text-xs text-neutral-500">
+					/{data.username} · live from GitHub API
+				</p>
+				<h1
+					class="mt-10 text-[clamp(3rem,10vw,7.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
+				>
+					All<br />
+					<span class="text-neutral-600">projects.</span>
+				</h1>
 			</div>
-
-			<h1
-				class="mt-6 text-balance text-4xl font-bold leading-[1.05] tracking-tight text-neutral-50 sm:text-5xl md:text-6xl"
-			>
-				Catálogo de
-				<span
-					class="bg-gradient-to-br from-violet-300 via-fuchsia-300 to-amber-200 bg-clip-text text-transparent"
-				>
-					proyectos
-				</span>
-			</h1>
-
-			<p class="mx-auto mt-5 max-w-2xl text-pretty text-sm leading-relaxed text-neutral-400 sm:text-base">
-				Lo que construyo y mantengo. Fuente directa desde la API de GitHub · ordenado con
-				featured, filtros y búsqueda.
-			</p>
-
-			<div class="mt-6 flex flex-wrap items-center justify-center gap-2">
-				<a
-					href="#destacado"
-					class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 px-4 py-2.5 text-sm font-semibold text-neutral-950 shadow-lg shadow-violet-500/20 transition-all hover:scale-[1.02] hover:shadow-violet-500/40"
-				>
-					<Lightning size={16} weight="fill" />
-					Ir al destacado
-				</a>
-				<a
-					href="https://github.com/{data.username}"
-					target="_blank"
-					rel="noreferrer noopener"
-					class="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-neutral-100 backdrop-blur transition-all hover:border-white/20 hover:bg-white/10"
-				>
-					<GithubLogo size={16} weight="bold" />
-					@{data.username}
-					<ArrowUpRight size={12} weight="bold" />
-				</a>
-			</div>
-		</div>
-
-		<div class="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-			{#each [{ label: 'Lenguajes', value: data.stats.languages.length, icon: Cpu }, { label: 'Repos publicos', value: data.stats.total, icon: Stack }, { label: 'Stars', value: data.stats.stars, icon: Lightning }, { label: 'Forks', value: data.stats.forks, icon: GithubLogo }] as stat (stat.label)}
-				{@const Icon = stat.icon}
-				<GlassCard class="flex items-center gap-3 p-4" hover>
-					<div
-						class="flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors group-hover:border-violet-400/40"
-					>
-						<Icon size={16} weight="duotone" class="text-neutral-300" />
+			<div class="col-span-12 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 lg:col-span-4">
+				{#each stats as s, i (s.label)}
+					<div class="bg-neutral-950 p-5">
+						<p class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">
+							{s.label}
+						</p>
+						<p class="mt-3 font-mono text-2xl font-semibold text-neutral-50 sm:text-3xl">
+							{s.value}
+						</p>
 					</div>
-					<div class="min-w-0">
-						<div class="font-mono text-xl font-bold text-neutral-50 sm:text-2xl">{stat.value}</div>
-						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">
-							{stat.label}
-						</div>
-					</div>
-				</GlassCard>
-			{/each}
-		</div>
-
-		<div class="mt-8 flex justify-center">
-			<a
-				href="#destacado"
-				class="inline-flex items-center gap-1.5 text-xs text-neutral-500 transition-colors hover:text-neutral-300"
-				aria-label="Bajar a destacado"
-			>
-				<ArrowDown size={12} weight="bold" class="animate-bounce" />
-			</a>
-		</div>
-	</section>
-
-	<!-- ============= ANTI-CALL-CL HERO ============= -->
-	{#if data.heroProject}
-		<section id="destacado" class="scroll-mt-24 pb-12">
-			<SectionHeading
-				eyebrow="Destacado · WIP"
-				title="AntiCallCL"
-				description="El proyecto principal: una app Android nativa que bloquea llamadas spam/telemarketing en tiempo real, con backend Python y base curada de prefijos chilenos."
-			/>
-			<div class="mt-8">
-				<AntiCallCLFeatured project={data.heroProject} />
+				{/each}
 			</div>
-		</section>
-	{/if}
+		</div>
+	</header>
 
-	<!-- ============= STATS BAR ============= -->
-	<section class="py-8">
-		<StatsBar stats={data.stats} />
-		{#if data.loadError}
-			<p
-				class="mt-3 rounded-lg border border-amber-400/20 bg-amber-500/5 p-3 text-xs text-amber-200/80"
-			>
-				⚠ No se pudo conectar a la API de GitHub ({data.loadError}). Mostrando datos cacheados si
-				los hay. La página sigue funcionando.
-			</p>
-		{/if}
-	</section>
-
-	<!-- ============= FEATURED PROJECTS ============= -->
-	{#if data.featuredProjects.length}
-		<section class="py-8">
-			<SectionHeading
-				eyebrow="Más proyectos"
-				title="Curados y activos"
-				description="Otros proyectos que mantengo o desarrollo activamente."
-			/>
-			<div class="mt-8">
-				<FeaturedProjects projects={data.featuredProjects} />
+	<section class="border-t border-white/5 py-12">
+		<div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+			<div>
+				<p class="font-mono text-xs text-neutral-500">Catalog</p>
+				<h2
+					class="mt-3 text-3xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-4xl"
+				>
+					Filter & search.
+				</h2>
 			</div>
-		</section>
-	{/if}
-
-	<!-- ============= ALL REPOS ============= -->
-	<section id="todos" class="scroll-mt-24 py-8">
-		<SectionHeading
-			eyebrow="Catálogo vivo"
-			title="Todos los repos"
-			description="Fuente directa desde la API de GitHub. Buscá por nombre, filtrá por lenguaje o limitá a los destacados."
-		>
 			<a
 				href="https://github.com/{data.username}?tab=repositories"
 				target="_blank"
 				rel="noreferrer noopener"
-				class="mt-3 inline-flex items-center gap-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-100"
+				class="group inline-flex items-center gap-1.5 font-mono text-xs text-neutral-400 transition-colors hover:text-neutral-100"
 			>
-				Ver todos en github.com
-				<ArrowUpRight size={10} weight="bold" />
+				<GithubLogo size={12} weight="bold" />
+				Open on GitHub
+				<ArrowUpRight
+					size={10}
+					weight="bold"
+					class="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+				/>
 			</a>
-		</SectionHeading>
-
-		<div class="mt-6 space-y-4">
-			<ProjectFilter
-				bind:query
-				bind:language
-				bind:onlyFeatured
-				languages={data.languages}
-				totalCount={data.repos.length}
-				filteredCount={filteredRepos.length}
-			/>
-
-			<ProjectGrid repos={filteredRepos} />
 		</div>
-	</section>
 
-	<!-- ============= STACK ============= -->
-	<section id="stack" class="scroll-mt-24 py-12">
-		<SectionHeading
-			eyebrow="Tech"
-			title="Stack de este sitio"
-			description="Lo que corre debajo del glassmorphism."
+		<ProjectFilter
+			bind:query
+			bind:language
+			bind:onlyFeatured
+			languages={data.languages}
+			totalCount={data.repos.length}
+			filteredCount={filteredRepos.length}
 		/>
 
-		<div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-			{#each stack as item (item.name)}
-				<GlassCard class="p-4" hover>
-					<div class="font-mono text-sm font-semibold text-neutral-100">{item.name}</div>
-					<div class="mt-1 text-xs leading-relaxed text-neutral-400">{item.detail}</div>
-				</GlassCard>
-			{/each}
+		<div class="mt-8">
+			<ProjectGrid repos={filteredRepos} />
 		</div>
+
+		{#if data.loadError}
+			<p
+				class="mt-6 rounded-2xl border border-amber-400/20 bg-amber-500/5 p-4 text-xs text-amber-200/80"
+			>
+				⚠ GitHub API unavailable ({data.loadError}). Mostrando datos cacheados si los hay.
+			</p>
+		{/if}
 	</section>
+
+	<footer class="border-t border-white/5 py-12">
+		<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-600">
+			{filteredRepos.length} / {data.repos.length} shown · @{data.username}
+		</p>
+	</footer>
 </main>
