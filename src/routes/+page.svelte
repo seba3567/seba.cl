@@ -206,34 +206,16 @@ onMount(() => {
 		});
 	}
 
-	// Pulse on the active slide dot
-	const dotObserver = new MutationObserver(() => {
-		const activeDot = document.querySelector<HTMLElement>(
-			'.bg-mint-300.rounded-full',
-		);
-		if (activeDot) {
-			animate(activeDot, {
-				scale: [1, 1.4, 1],
-				opacity: [1, 0.6, 1],
-				duration: 1200,
-				ease: 'inOut(2)',
-			});
-		}
-	});
-	const dotContainer = document.querySelector('.fixed.inset-x-0.bottom-6');
-	if (dotContainer)
-		dotContainer instanceof HTMLElement &&
-			dotObserver.observe(dotContainer, {
-				childList: true,
-				subtree: true,
-				attributes: true,
-			});
+	// Pulse on the active slide dot is handled by HomeDots.svelte
+	// via a $effect on the activeId prop — the previous
+	// MutationObserver approach watched the whole dot container
+	// and re-queried on every attribute change (hover, focus,
+	// etc.) which is both wasteful and slightly wrong.
 
 	return () => {
 		track.removeEventListener('wheel', onWheel);
 		obs.disconnect();
 		statObserver.disconnect();
-		dotObserver.disconnect();
 		magneticCleanups.forEach((fn) => {
 			fn();
 		});
