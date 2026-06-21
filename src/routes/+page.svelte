@@ -19,10 +19,15 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import GlassCard from '$lib/components/GlassCard.svelte';
 	import ChileFlag from '$lib/components/ChileFlag.svelte';
+	import ContactDialog from '$lib/components/ContactDialog.svelte';
 	import { animate, stagger } from 'animejs';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	// Contact dialog state. Email entry uses this instead of a
+	// `mailto:` link, so the real address never ships to the client.
+	let contactOpen = $state(false);
 
 	const AVATAR_URL = 'https://avatars.githubusercontent.com/u/44386561?v=4';
 
@@ -80,7 +85,10 @@
 
 	const contact = [
 		{ label: 'GitHub', handle: '@seba3567', href: 'https://github.com/seba3567' },
-		{ label: 'Email', handle: 'seba3567.dev@gmail.com', href: 'mailto:seba3567.dev@gmail.com' },
+		// Email: la dirección real vive solo en el backend (CONTACT_TO).
+		// El handle visible es genérico a propósito para no exponer
+		// la casilla al bundle del cliente.
+		{ label: 'Email', handle: 'Formulario seguro', href: '' },
 	];
 
 	// ----- Horizontal scroll state -----
@@ -676,32 +684,61 @@
 			<div class="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/5 bg-white/5 md:grid-cols-2">
 				{#each contact as c (c.label)}
 					<li class="flex list-none bg-neutral-950">
-						<a
-							href={c.href}
-							target={c.href.startsWith('/') || c.href.startsWith('mailto:') ? undefined : '_blank'}
-							rel={c.href.startsWith('/') || c.href.startsWith('mailto:') ? undefined : 'noreferrer noopener'}
-							class="group flex w-full items-center justify-between gap-4 p-6 transition-colors hover:bg-white/[0.03]"
-						>
-							<div>
-								<p class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500">
-									{c.label}
-								</p>
-								<p class="mt-2 text-base text-neutral-100 sm:text-lg">{c.handle}</p>
-							</div>
-							{#if c.label === 'GitHub'}
+						{#if c.label === 'Email'}
+							<!--
+								Email: abre el form protegido (no expone mailto).
+								La dirección real vive en el backend, no en el bundle.
+							-->
+							<button
+								type="button"
+								onclick={() => (contactOpen = true)}
+								class="group flex w-full items-center justify-between gap-4 p-6 text-left transition-colors hover:bg-white/[0.03]"
+							>
+								<div>
+									<p
+										class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
+									>
+										{c.label}
+									</p>
+									<p class="mt-2 text-base text-neutral-100 sm:text-lg">
+										{c.handle}
+									</p>
+									<p
+										class="mt-1.5 font-mono text-[10px] tracking-wider text-mint-300/80"
+									>
+										Form protegido · no se publica la dirección
+									</p>
+								</div>
+								<EnvelopeSimple
+									size={18}
+									weight="bold"
+									class="shrink-0 text-neutral-500 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-mint-300"
+								/>
+							</button>
+						{:else}
+							<a
+								href={c.href}
+								target="_blank"
+								rel="noreferrer noopener"
+								class="group flex w-full items-center justify-between gap-4 p-6 transition-colors hover:bg-white/[0.03]"
+							>
+								<div>
+									<p
+										class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500"
+									>
+										{c.label}
+									</p>
+									<p class="mt-2 text-base text-neutral-100 sm:text-lg">
+										{c.handle}
+									</p>
+								</div>
 								<GithubLogo
 									size={18}
 									weight="bold"
 									class="text-neutral-500 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
 								/>
-							{:else}
-								<EnvelopeSimple
-									size={18}
-									weight="bold"
-									class="text-neutral-500 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
-								/>
-							{/if}
-						</a>
+							</a>
+						{/if}
 					</li>
 				{/each}
 			</div>
@@ -712,6 +749,9 @@
 		</div>
 	</section>
 </div>
+
+<!-- Protected contact form (email never ships to the client) -->
+<ContactDialog bind:open={contactOpen} />
 
 <!-- Slide indicator: dots at the bottom-center of the viewport (vertical layout,
    not inside the horizontal track). Shows active panel + label. -->
