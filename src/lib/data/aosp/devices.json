@@ -1,10 +1,16 @@
 {
   "_about": {
     "source": "https://raw.githubusercontent.com/seba3567/devices-json/refs/heads/main/devices.yaml",
-    "generatedAt": "2026-06-21T17:53:38.440Z",
-    "note": "Snapshot of seba3567/devices-json — regenerate via `bun run sync:aosp`"
+    "override": null,
+    "includeStatuses": [
+      "active",
+      "beta"
+    ],
+    "generatedAt": "2026-06-21T18:34:35.486Z",
+    "note": "Snapshot of the AOSP device catalog. Regenerate via `bun run sync:aosp`."
   },
-  "devices": [
+  "devices": [],
+  "discontinued": [
     {
       "slug": "motorola-moto-g100",
       "name": "Motorola Moto G100",

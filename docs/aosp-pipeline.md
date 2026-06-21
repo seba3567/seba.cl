@@ -1,10 +1,9 @@
 # AOSP data pipeline — `src/lib/data/aosp/*`
 
 The site has no backend, but it renders a live AOSP device
-catalog pulled from a hand-maintained YAML in
-`seba3567/devices-json`. This doc explains how that
-pipeline works so a future maintainer (or an agent) can
-extend it when the user starts publishing builds.
+catalog pulled from a hand-maintained YAML. This doc explains
+how that pipeline works so a future maintainer (or an agent)
+can extend it when the user starts publishing builds.
 
 ## Files at a glance
 
@@ -15,18 +14,57 @@ extend it when the user starts publishing builds.
 | `src/lib/data/aosp/builds.json` | Per-device published builds + changelogs. Empty until the user publishes to GitHub Releases |
 | `src/lib/data/aosp/kernels.json` | Standalone kernels the user builds outside the main ROM |
 | `src/lib/types/aosp.ts` | `Device`, `Build`, `ChangeLogEntry`, `DownloadMirror`, `Kernel` types |
+| `.env.example` | Documents the `AOSP_*` env vars |
 
 ## The sync
 
 ```
+.env (optional)
+  ├─ AOSP_DEVICES_YAML_URL      # where the YAML lives
+  └─ AOSP_DEVICES_INCLUDE_STATUSES  # which statuses to render
+
 predev / prebuild
   └─> bun run sync:aosp
-        └─> fetch YAML from seba3567/devices-json
+        └─> fetch YAML
               └─> normalize status strings (es → enum)
                     slugify names
                     drop null fields
+              └─> filter by INCLUDE_STATUSES
               └─> write src/lib/data/aosp/devices.json
+                    ├─ devices (rendered)
+                    └─ discontinued (filtered out, kept for reference)
 ```
+
+## Configuring the source
+
+The YAML source is controlled by an env var, **not** a
+hardcoded URL. The script ships with a default
+(`seba3567/devices-json` main) so existing setups keep
+working, but you can swap repos / branches / hosts without
+touching the site code.
+
+| Env var | Default | Effect |
+|---------|---------|--------|
+| `AOSP_DEVICES_YAML_URL` | `https://raw.githubusercontent.com/seba3567/devices-json/refs/heads/main/devices.yaml` | Where to fetch the YAML from. Any URL that returns valid YAML works (GitHub raw, GitLab raw, your own mirror, etc.) |
+| `AOSP_DEVICES_INCLUDE_STATUSES` | `active,beta` | Comma-separated list of statuses to render. Devices with statuses NOT in this list are written to `devices.json#discontinued` for reference but never rendered. The default is conservative (only show devices under active development); set to `active,beta,paused,abandoned,eol` to render everything. |
+
+Set them in `.env` (gitignored, local dev) or in your CI's
+secret store (production). The site itself ships the
+**snapshot** (`devices.json`), not the live URL — the env
+var only affects what gets snapshotted on the next build.
+
+### Swapping to a new repo
+
+When the user creates a new devices repo (or moves to a
+different branch), the only change is one line in `.env`:
+
+```diff
+- # (uses default: seba3567/devices-json main)
++ AOSP_DEVICES_YAML_URL=https://raw.githubusercontent.com/seba3567/devices-json-v2/main/devices.yaml
+```
+
+Next `bun run sync:aosp` (or any `bun run dev` / `bun run build`)
+pulls from the new URL. The site code doesn't change.
 
 `bun run sync:aosp` is idempotent and offline-safe. If
 the YAML fetch fails (network down, 4xx, etc.), the
