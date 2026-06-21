@@ -22,6 +22,9 @@ const DESCRIPTION =
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="manifest" href="/manifest.webmanifest" />
+	<meta name="theme-color" content="#0a0a0a" />
+	<meta name="color-scheme" content="dark" />
 
 	<!-- Open Graph (Facebook, LinkedIn, Slack, Discord, WhatsApp). -->
 	<meta property="og:type" content="website" />
@@ -44,8 +47,6 @@ const DESCRIPTION =
 
 	<!-- Common meta. -->
 	<meta name="description" content={DESCRIPTION} />
-	<meta name="theme-color" content="#0a0a0a" />
-	<meta name="color-scheme" content="dark" />
 </svelte:head>
 
 <!--

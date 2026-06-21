@@ -1,0 +1,22 @@
+{
+	"$schema": "https://json.schemastore.org/web-manifest-combined.json",
+	"name": "seba3567.cl",
+	"short_name": "seba3567",
+	"description": "Sebastián Muñoz — ingeniería, datos y mobile. Proyectos, apps y contacto.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"orientation": "any",
+	"background_color": "#0a0a0a",
+	"theme_color": "#0a0a0a",
+	"lang": "es-CL",
+	"categories": ["portfolio", "developer", "personal"],
+	"icons": [
+		{
+			"src": "/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		}
+	]
+}
