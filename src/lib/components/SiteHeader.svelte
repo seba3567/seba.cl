@@ -22,7 +22,7 @@
 				></span>
 			</div>
 			<div class="flex flex-col leading-tight">
-				<span class="text-sm font-semibold tracking-tight text-neutral-50">seba.cl</span>
+				<span class="text-sm font-semibold tracking-tight text-neutral-50">seba3567.cl</span>
 				<span class="font-mono text-[10px] text-neutral-500">/ proyectos</span>
 			</div>
 		</a>

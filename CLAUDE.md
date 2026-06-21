@@ -1,6 +1,6 @@
-# seba.cl
+# seba3567.cl
 
-Portafolio de proyectos de **Sebastián Muñoz** — construido sobre el skeleton `frontend.skeleton` (Svelte 5 + Tailwind v4 + shadcn-svelte + Phosphor + Bun).
+Página principal de **Sebastián Muñoz** (`@seba3567`) — portafolio de proyectos con **AntiCallCL** como destacado, construida sobre el skeleton `frontend.skeleton` (Svelte 5 + Tailwind v4 + shadcn-svelte + Phosphor + Bun).
 
 > El skeleton base vive en [`seba3567/frontend.skeleton`](https://github.com/seba3567/frontend.skeleton) y **no se toca** desde este repo. Aquí se reusa como punto de partida y se extiende.
 
@@ -86,7 +86,7 @@ bun x autoskills -a claude-code   # también genera CLAUDE.md
 
 ## Deploy
 
-`adapter-auto` detecta el target en build time. Funciona con Vercel, Netlify, Cloudflare Pages, etc. Para el target específico de `seba.cl` (intranet) basta con sobreescribir el adapter en `svelte.config.js` (no incluido por defecto para mantener el repo portable).
+`adapter-auto` detecta el target en build time. Funciona con Vercel, Netlify, Cloudflare Pages, etc. Para el target específico de `seba3567.cl` basta con sobreescribir el adapter en `svelte.config.js` (no incluido por defecto para mantener el repo portable).
 
 ## Variables
 

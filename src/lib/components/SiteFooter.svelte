@@ -81,7 +81,7 @@
 			<p>
 				© {new Date().getFullYear()} Sebastián Muñoz · Construido con Svelte 5 + Tailwind v4
 			</p>
-			<p class="font-mono">seba.cl · intranet.seba.cl</p>
+			<p class="font-mono">seba3567.cl · intranet.seba.cl</p>
 		</div>
 	</GlassCard>
 </footer>

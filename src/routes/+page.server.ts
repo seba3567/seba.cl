@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 		stats = computeStats(repos);
 	} catch (err) {
 		loadError = err instanceof Error ? err.message : 'Unknown GitHub API error';
-		console.error('[seba.cl] GitHub load failed:', loadError);
+		console.error('[seba3567.cl] GitHub load failed:', loadError);
 	}
 
 	setHeaders({

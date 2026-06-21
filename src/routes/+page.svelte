@@ -45,7 +45,7 @@
 </script>
 
 <svelte:head>
-	<title>seba.cl · Proyectos</title>
+	<title>seba3567.cl · Sebastián Muñoz</title>
 	<meta
 		name="description"
 		content="Portafolio de Sebastián Muñoz · AntiCallCL (Android anti-spam), autoskills, frontend.skeleton, Svelte, Kotlin, Python, TypeScript."

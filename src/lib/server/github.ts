@@ -27,7 +27,7 @@ export type RepoWithLanguages = GitHubRepo & {
 	languages: Record<string, number>;
 };
 
-const USER_AGENT = 'seba-cl-projects/0.1 (+https://seba.cl)';
+const USER_AGENT = 'seba3567-cl/0.1 (+https://seba3567.cl)';
 const CACHE_TTL_MS = 1000 * 60 * 60;
 
 type CacheEntry<T> = {
