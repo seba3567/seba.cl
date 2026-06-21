@@ -1,29 +1,29 @@
 <script lang="ts">
-	import { MagnifyingGlass, X, Funnel } from 'phosphor-svelte';
-	import GlassCard from './GlassCard.svelte';
+import { Funnel, MagnifyingGlass, X } from 'phosphor-svelte';
+import GlassCard from './GlassCard.svelte';
 
-	type Props = {
-		query: string;
-		language: string | null;
-		languages: string[];
-		onlyFeatured: boolean;
-		totalCount: number;
-		filteredCount: number;
-	};
-	let {
-		query = $bindable(''),
-		language = $bindable(null),
-		languages,
-		onlyFeatured = $bindable(false),
-		totalCount,
-		filteredCount,
-	}: Props = $props();
+type Props = {
+	query: string;
+	language: string | null;
+	languages: string[];
+	onlyFeatured: boolean;
+	totalCount: number;
+	filteredCount: number;
+};
+let {
+	query = $bindable(''),
+	language = $bindable(null),
+	languages,
+	onlyFeatured = $bindable(false),
+	totalCount,
+	filteredCount,
+}: Props = $props();
 
-	function clear() {
-		query = '';
-		language = null;
-		onlyFeatured = false;
-	}
+function clear() {
+	query = '';
+	language = null;
+	onlyFeatured = false;
+}
 </script>
 
 <GlassCard variant="strong" class="space-y-4 p-4 sm:p-5">

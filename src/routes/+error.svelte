@@ -1,15 +1,24 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { ArrowLeft, ArrowUpRight, Warning, MagnifyingGlass } from 'phosphor-svelte';
-	import { Button } from '$lib/components/ui/button';
+import {
+	ArrowLeft,
+	ArrowUpRight,
+	MagnifyingGlass,
+	Warning,
+} from 'phosphor-svelte';
+import { page } from '$app/state';
+import { Button } from '$lib/components/ui/button';
 
-	const status = $derived(page.status);
-	const message = $derived(page.error?.message ?? 'Algo se rompió del lado del servidor.');
-	const stack = $derived((page.error as Error & { stack?: string } | null)?.stack);
+const status = $derived(page.status);
+const message = $derived(
+	page.error?.message ?? 'Algo se rompió del lado del servidor.',
+);
+const stack = $derived(
+	(page.error as (Error & { stack?: string }) | null)?.stack,
+);
 
-	function isNotFound(): boolean {
-		return status === 404;
-	}
+function isNotFound(): boolean {
+	return status === 404;
+}
 </script>
 
 <svelte:head>

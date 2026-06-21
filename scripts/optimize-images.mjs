@@ -15,7 +15,7 @@
  */
 
 import { readdir, stat } from 'node:fs/promises';
-import { join, relative, extname, basename, dirname } from 'node:path';
+import { basename, dirname, extname, join, relative } from 'node:path';
 import sharp from 'sharp';
 
 const ROOT = process.cwd();
@@ -69,7 +69,10 @@ async function optimizeOne(input) {
 		if (await isFresh(input, out)) continue;
 		tasks.push(
 			sharp(input, { failOn: 'none' })
-				.resize({ withoutEnlargement: true, ...(density === 2 ? { multiplier: 2 } : {}) })
+				.resize({
+					withoutEnlargement: true,
+					...(density === 2 ? { multiplier: 2 } : {}),
+				})
 				.avif({ quality: 55, effort: 4, chromaSubsampling: '4:4:4' })
 				.toFile(out)
 				.then(() => log('✓', rel, '→', relative(STATIC_DIR, out)))
@@ -83,7 +86,10 @@ async function optimizeOne(input) {
 		if (await isFresh(input, out)) continue;
 		tasks.push(
 			sharp(input, { failOn: 'none' })
-				.resize({ withoutEnlargement: true, ...(density === 2 ? { multiplier: 2 } : {}) })
+				.resize({
+					withoutEnlargement: true,
+					...(density === 2 ? { multiplier: 2 } : {}),
+				})
 				.webp({ quality: 78, effort: 4 })
 				.toFile(out)
 				.then(() => log('✓', rel, '→', relative(STATIC_DIR, out)))

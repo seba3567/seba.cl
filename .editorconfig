@@ -1,0 +1,30 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# YAML, JSON, and Markdown often use spaces for alignment and are
+# shared with non-Node tooling.
+[*.{yml,yaml,json,md}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
+
+# Makefiles require tab indentation.
+[Makefile]
+indent_style = tab
+
+# PowerShell can use either, but tabs are more common in scripts.
+[*.ps1]
+indent_style = tab
+
+# Windows shell scripts (run on Windows) — keep CRLF via
+# .gitattributes, but use 4-space indent.
+[*.{bat,cmd}]
+indent_style = space
+indent_size = 4

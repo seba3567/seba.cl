@@ -1,19 +1,19 @@
 <script lang="ts">
-	/**
-	 * Chile flag — stylised for the dark theme.
-	 *
-	 * - Top half: white
-	 * - Bottom half: red
-	 * - Top-left canton: blue with a 5-pointed white star
-	 *
-	 * The canton and star are kept slightly desaturated so the flag
-	 * blends with the dark UI instead of looking like a bright sticker.
-	 */
-	type Props = {
-		size?: number;
-		class?: string;
-	};
-	let { size = 18, class: className = '' }: Props = $props();
+/**
+ * Chile flag — stylised for the dark theme.
+ *
+ * - Top half: white
+ * - Bottom half: red
+ * - Top-left canton: blue with a 5-pointed white star
+ *
+ * The canton and star are kept slightly desaturated so the flag
+ * blends with the dark UI instead of looking like a bright sticker.
+ */
+type Props = {
+	size?: number;
+	class?: string;
+};
+let { size = 18, class: className = '' }: Props = $props();
 </script>
 
 <svg

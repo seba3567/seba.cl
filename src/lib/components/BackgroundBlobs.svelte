@@ -1,15 +1,15 @@
 <script lang="ts">
-	/**
-	 * Modern minimal background:
-	 * - Pure dark base (neutral-950)
-	 * - Subtle aurora gradient (low opacity, no heavy blur)
-	 * - Subtle grid pattern with radial mask
-	 * - Subtle noise texture for film grain
-	 *
-	 * No big colorful blobs: the user asked for something more modern and less
-	 * "electric blur". The aurora is a soft radial gradient (not blur-3xl on a
-	 * solid color) so it reads as ambient light, not a glow.
-	 */
+/**
+ * Modern minimal background:
+ * - Pure dark base (neutral-950)
+ * - Subtle aurora gradient (low opacity, no heavy blur)
+ * - Subtle grid pattern with radial mask
+ * - Subtle noise texture for film grain
+ *
+ * No big colorful blobs: the user asked for something more modern and less
+ * "electric blur". The aurora is a soft radial gradient (not blur-3xl on a
+ * solid color) so it reads as ambient light, not a glow.
+ */
 </script>
 
 <div

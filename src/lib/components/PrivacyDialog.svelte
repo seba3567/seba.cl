@@ -1,116 +1,114 @@
 <script lang="ts">
-	import {
-		Database,
-		Eye,
-		ShareNetwork,
-		ShieldCheck,
-		Lock,
-		Trash,
-		Envelope,
-		X,
-		ArrowUpRight,
-		CaretDown,
-	} from 'phosphor-svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Accordion from '$lib/components/ui/accordion';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
+import {
+	ArrowUpRight,
+	CaretDown,
+	Database,
+	Envelope,
+	Eye,
+	Lock,
+	ShareNetwork,
+	ShieldCheck,
+	Trash,
+	X,
+} from 'phosphor-svelte';
+import * as Accordion from '$lib/components/ui/accordion';
+import { Badge } from '$lib/components/ui/badge';
+import { Button } from '$lib/components/ui/button';
+import * as Dialog from '$lib/components/ui/dialog';
 
-	type Section = {
-		value: string;
-		icon: typeof Database;
-		title: string;
-		body: string;
-		bullets: string[];
-	};
+type Section = {
+	value: string;
+	icon: typeof Database;
+	title: string;
+	body: string;
+	bullets: string[];
+};
 
-	type Props = { open: boolean; onOpenChange: (v: boolean) => void };
-	let { open = $bindable(false), onOpenChange }: Props = $props();
+type Props = { open: boolean; onOpenChange: (v: boolean) => void };
+let { open = $bindable(false), onOpenChange }: Props = $props();
 
-	const PRIVACY_URL = 'https://seba3567.github.io/anticall_pages/';
-	const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
-	const LAST_UPDATED = '3 de diciembre de 2025';
+const PRIVACY_URL = 'https://seba3567.github.io/anticall_pages/';
+const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
+const LAST_UPDATED = '3 de diciembre de 2025';
 
-	const sections: Section[] = [
-		{
-			value: 'datos',
-			icon: Database,
-			title: 'Datos que recopilamos',
-			body: 'Anticall Chile no recopila, almacena ni transmite datos personales a servidores externos. Toda la lógica de bloqueo y análisis ocurre localmente en tu dispositivo.',
-			bullets: [
-				'No solicitamos cuentas ni credenciales: la app opera sin registro.',
-				'Los números bloqueados o listas personalizadas residen únicamente en tu teléfono.',
-				'Las métricas de llamadas se guardan de manera local y puedes eliminarlas cuando quieras.',
-				'Solo accedemos a permisos del sistema para ejecutar funciones esenciales y nunca copiamos esa información fuera del equipo.',
-			],
-		},
-		{
-			value: 'uso',
-			icon: Eye,
-			title: 'Cómo usamos la información',
-			body: 'Al no existir transferencia a la nube, el uso de información se limita estrictamente al funcionamiento local de la aplicación.',
-			bullets: [
-				'Procesar eventos de llamadas en el dispositivo para detectar y bloquear spam.',
-				'Recordar tus configuraciones, listas y preferencias solo dentro del almacenamiento de la app.',
-				'Mostrar métricas básicas en la interfaz para que evalúes la efectividad del bloqueo.',
-				'Permitir que exportes o elimines manualmente cualquier dato almacenado localmente.',
-			],
-		},
-		{
-			value: 'compartir',
-			icon: ShareNetwork,
-			title: 'Cuándo compartimos datos',
-			body: 'No hay transferencia ni compartición automática de datos, porque la información nunca abandona tu dispositivo.',
-			bullets: [
-				'No trabajamos con terceros que procesen tus datos personales.',
-				'Solo puedes compartir información si decides exportarla o enviarla voluntariamente.',
-				'En caso de obligación legal, primero te solicitaríamos la información pertinente, ya que no la almacenamos por defecto.',
-			],
-		},
-		{
-			value: 'derechos',
-			icon: ShieldCheck,
-			title: 'Derechos de las personas usuarias',
-			body: 'Aunque la aplicación no conserva datos en servidores, respetamos los derechos otorgados por la legislación chilena e internacional.',
-			bullets: [
-				'Control total desde la app para revisar o eliminar registros locales.',
-				'Posibilidad de respaldar tus listas y métricas en tu propio dispositivo antes de desinstalar.',
-				'Soporte para consultas relacionadas con privacidad o cumplimiento normativo.',
-				'Canal abierto para reportar cualquier incidente o inquietud.',
-			],
-		},
-		{
-			value: 'seguridad',
-			icon: Lock,
-			title: 'Medidas de seguridad',
-			body: 'Diseñamos la solución para minimizar superficie de ataque y dependencia externa.',
-			bullets: [
-				'Procesamiento local: sin sincronización con servidores ni copias en la nube.',
-				'Uso de las API oficiales de la plataforma para gestionar permisos sensibles.',
-				'Actualizaciones periódicas para mantener el software libre de vulnerabilidades conocidas.',
-				'Recomendaciones dentro de la app para que protejas tu dispositivo (PIN, biometría, cifrado).',
-			],
-		},
-		{
-			value: 'conservacion',
-			icon: Trash,
-			title: 'Período de conservación',
-			body: 'Como la información se mantiene solo en tu teléfono, tú decides cuánto tiempo conservarla.',
-			bullets: [
-				'Puedes borrar historial, listas y configuraciones desde los ajustes en cualquier momento.',
-				'Al desinstalar la aplicación se eliminan automáticamente todos los datos asociados.',
-			],
-		},
-		{
-			value: 'contacto',
-			icon: Envelope,
-			title: 'Contacto de privacidad',
-			body: '¿Tienes preguntas o solicitudes? Nuestro equipo está disponible para ayudarte.',
-			bullets: [
-				'Correo: seba3567.dev@gmail.com',
-			],
-		},
-	];
+const sections: Section[] = [
+	{
+		value: 'datos',
+		icon: Database,
+		title: 'Datos que recopilamos',
+		body: 'Anticall Chile no recopila, almacena ni transmite datos personales a servidores externos. Toda la lógica de bloqueo y análisis ocurre localmente en tu dispositivo.',
+		bullets: [
+			'No solicitamos cuentas ni credenciales: la app opera sin registro.',
+			'Los números bloqueados o listas personalizadas residen únicamente en tu teléfono.',
+			'Las métricas de llamadas se guardan de manera local y puedes eliminarlas cuando quieras.',
+			'Solo accedemos a permisos del sistema para ejecutar funciones esenciales y nunca copiamos esa información fuera del equipo.',
+		],
+	},
+	{
+		value: 'uso',
+		icon: Eye,
+		title: 'Cómo usamos la información',
+		body: 'Al no existir transferencia a la nube, el uso de información se limita estrictamente al funcionamiento local de la aplicación.',
+		bullets: [
+			'Procesar eventos de llamadas en el dispositivo para detectar y bloquear spam.',
+			'Recordar tus configuraciones, listas y preferencias solo dentro del almacenamiento de la app.',
+			'Mostrar métricas básicas en la interfaz para que evalúes la efectividad del bloqueo.',
+			'Permitir que exportes o elimines manualmente cualquier dato almacenado localmente.',
+		],
+	},
+	{
+		value: 'compartir',
+		icon: ShareNetwork,
+		title: 'Cuándo compartimos datos',
+		body: 'No hay transferencia ni compartición automática de datos, porque la información nunca abandona tu dispositivo.',
+		bullets: [
+			'No trabajamos con terceros que procesen tus datos personales.',
+			'Solo puedes compartir información si decides exportarla o enviarla voluntariamente.',
+			'En caso de obligación legal, primero te solicitaríamos la información pertinente, ya que no la almacenamos por defecto.',
+		],
+	},
+	{
+		value: 'derechos',
+		icon: ShieldCheck,
+		title: 'Derechos de las personas usuarias',
+		body: 'Aunque la aplicación no conserva datos en servidores, respetamos los derechos otorgados por la legislación chilena e internacional.',
+		bullets: [
+			'Control total desde la app para revisar o eliminar registros locales.',
+			'Posibilidad de respaldar tus listas y métricas en tu propio dispositivo antes de desinstalar.',
+			'Soporte para consultas relacionadas con privacidad o cumplimiento normativo.',
+			'Canal abierto para reportar cualquier incidente o inquietud.',
+		],
+	},
+	{
+		value: 'seguridad',
+		icon: Lock,
+		title: 'Medidas de seguridad',
+		body: 'Diseñamos la solución para minimizar superficie de ataque y dependencia externa.',
+		bullets: [
+			'Procesamiento local: sin sincronización con servidores ni copias en la nube.',
+			'Uso de las API oficiales de la plataforma para gestionar permisos sensibles.',
+			'Actualizaciones periódicas para mantener el software libre de vulnerabilidades conocidas.',
+			'Recomendaciones dentro de la app para que protejas tu dispositivo (PIN, biometría, cifrado).',
+		],
+	},
+	{
+		value: 'conservacion',
+		icon: Trash,
+		title: 'Período de conservación',
+		body: 'Como la información se mantiene solo en tu teléfono, tú decides cuánto tiempo conservarla.',
+		bullets: [
+			'Puedes borrar historial, listas y configuraciones desde los ajustes en cualquier momento.',
+			'Al desinstalar la aplicación se eliminan automáticamente todos los datos asociados.',
+		],
+	},
+	{
+		value: 'contacto',
+		icon: Envelope,
+		title: 'Contacto de privacidad',
+		body: '¿Tienes preguntas o solicitudes? Nuestro equipo está disponible para ayudarte.',
+		bullets: ['Correo: seba3567.dev@gmail.com'],
+	},
+];
 </script>
 
 <Dialog.Root bind:open={() => open, (v) => { open = v; onOpenChange?.(v); }}>

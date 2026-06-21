@@ -1,173 +1,148 @@
 <script lang="ts">
-	/**
-	 * ContactDialog — formulario de contacto público.
-	 *
-	 * Reemplaza el `mailto:` directo del contact panel por un POST al
-	 * backend de la intranet (api.seba3567.cl / localhost:3000 en dev).
-	 *
-	 * La dirección de email del dueño (CONTACT_TO en el backend) NO
-	 * aparece en el bundle del cliente: solo el server sabe a dónde
-	 * mandar el mensaje. Esto protege la casilla de scraping.
-	 *
-	 * Honeypot: un input `name="website"` hidden con `tabindex="-1"`
-	 * y `autocomplete="off"`. Los bots lo llenan; el handler lo detecta
-	 * y rechaza el request. Los humanos ni lo ven.
-	 *
-	 * UX:
-	 *   - Estado idle → escribiendo → enviando → ok / error
-	 *   - Después de ok, el form se resetea y queda listo para otro msg
-	 *   - ESC y click-outside cierran el dialog
-	 *   - Mientras envía, los inputs quedan disabled
-	 */
-	import { onMount } from 'svelte';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import { Button } from '$lib/components/ui/button';
-	import { animate, stagger } from 'animejs';
-	import {
-		EnvelopeSimple,
-		PaperPlaneTilt,
-		CheckCircle,
-		WarningCircle,
-		X,
-		User,
-		At,
-		ChatTeardropText,
-	} from 'phosphor-svelte';
-	import ChileFlag from './ChileFlag.svelte';
+/**
+ * ContactDialog — formulario de contacto público.
+ *
+ * Reemplaza el `mailto:` directo del contact panel por un POST al
+ * backend de la intranet (api.seba3567.cl / localhost:3000 en dev).
+ *
+ * La dirección de email del dueño (CONTACT_TO en el backend) NO
+ * aparece en el bundle del cliente: solo el server sabe a dónde
+ * mandar el mensaje. Esto protege la casilla de scraping.
+ *
+ * Honeypot: un input `name="website"` hidden con `tabindex="-1"`
+ * y `autocomplete="off"`. Los bots lo llenan; el handler lo detecta
+ * y rechaza el request. Los humanos ni lo ven.
+ *
+ * UX:
+ *   - Estado idle → escribiendo → enviando → ok / error
+ *   - Después de ok, el form se resetea y queda listo para otro msg
+ *   - ESC y click-outside cierran el dialog
+ *   - Mientras envía, los inputs quedan disabled
+ */
 
-	type Props = { open: boolean; onOpenChange?: (v: boolean) => void };
-	let { open = $bindable(false), onOpenChange }: Props = $props();
+import { animate, stagger } from 'animejs';
+import {
+	At,
+	ChatTeardropText,
+	CheckCircle,
+	EnvelopeSimple,
+	PaperPlaneTilt,
+	User,
+	WarningCircle,
+	X,
+} from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { Button } from '$lib/components/ui/button';
+import * as Dialog from '$lib/components/ui/dialog';
+import ChileFlag from './ChileFlag.svelte';
 
-	// API base. PUBLIC_API_URL se inyecta al build (Vite/SvelteKit).
-	// Default localhost:3000 para dev; en prod apunta a la API de la intranet.
-	const API_BASE =
-		(import.meta.env?.PUBLIC_API_URL as string | undefined) ?? 'http://localhost:3000';
+type Props = { open: boolean; onOpenChange?: (v: boolean) => void };
+let { open = $bindable(false), onOpenChange }: Props = $props();
 
-	type Status = 'idle' | 'sending' | 'ok' | 'error';
-	let status = $state<Status>('idle');
-	let errorMessage = $state('');
-	let errorField = $state('');
+// API base. PUBLIC_API_URL se inyecta al build (Vite/SvelteKit).
+// Default localhost:3000 para dev; en prod apunta a la API de la intranet.
+const API_BASE =
+	(import.meta.env?.PUBLIC_API_URL as string | undefined) ??
+	'http://localhost:3000';
 
-	// Form state
-	let name = $state('');
-	let email = $state('');
-	let subject = $state('');
-	let message = $state('');
-	let honeypot = $state(''); // hidden — bots lo llenan
-	let submittedId = $state('');
+type Status = 'idle' | 'sending' | 'ok' | 'error';
+let status = $state<Status>('idle');
+let errorMessage = $state('');
+let errorField = $state('');
 
-	let formEl: HTMLFormElement | undefined = $state();
-	let successEl: HTMLElement | undefined = $state();
+// Form state
+let name = $state('');
+let email = $state('');
+let subject = $state('');
+let message = $state('');
+let honeypot = $state(''); // hidden — bots lo llenan
+let submittedId = $state('');
 
-	$effect(() => {
-		// Cuando se cierra el dialog, reseteamos después de la animación
-		// (250ms) para que el usuario vea el OK antes del reset.
-		if (!open) {
-			setTimeout(() => {
-				if (!open) {
-					status = 'idle';
-					errorMessage = '';
-					errorField = '';
-					submittedId = '';
-				}
-			}, 300);
-		}
-	});
+let formEl: HTMLFormElement | undefined = $state();
+let successEl: HTMLElement | undefined = $state();
 
-	$effect(() => {
-		// Cuando llega a 'ok', animamos el check de éxito.
-		if (status === 'ok' && successEl) {
-			animate(successEl, {
-				scale: [0.6, 1],
-				opacity: [0, 1],
-				duration: 500,
-				ease: 'out(4)',
-			});
-		}
-	});
-
-	onMount(() => {
-		// Stagger reveal del contenido al abrir
-		const root = document.querySelector<HTMLElement>('[data-contact-root]');
-		if (root) {
-			animate(root.querySelectorAll<HTMLElement>('[data-contact-anim]'), {
-				opacity: [0, 1],
-				translateY: [16, 0],
-				delay: stagger(50, { start: 80 }),
-				duration: 500,
-				ease: 'out(3)',
-			});
-		}
-	});
-
-	async function handleSubmit(e: SubmitEvent) {
-		e.preventDefault();
-		if (status === 'sending') return;
-
-		// Reset error state
-		errorMessage = '';
-		errorField = '';
-		status = 'sending';
-
-		try {
-			const res = await fetch(`${API_BASE}/api/contact`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json',
-				},
-				body: JSON.stringify({
-					name: name.trim(),
-					email: email.trim(),
-					subject: subject.trim(),
-					message: message.trim(),
-					website: honeypot, // honeypot — vacío en humanos
-				}),
-			});
-
-			const data = (await res.json().catch(() => ({}))) as {
-				ok?: boolean;
-				id?: string;
-				field?: string;
-				code?: string;
-				message?: string;
-			};
-
-			if (!res.ok || !data.ok) {
-				errorField = data.field ?? '';
-				errorMessage =
-					data.message ??
-					`Error ${res.status}: no pudimos enviar tu mensaje. Probá de nuevo.`;
-				status = 'error';
-
-				// Shake animation en el form
-				if (formEl) {
-					animate(formEl, {
-						translateX: [0, -6, 6, -4, 4, -2, 2, 0],
-						duration: 500,
-						ease: 'out(2)',
-					});
-				}
-				return;
+$effect(() => {
+	// Cuando se cierra el dialog, reseteamos después de la animación
+	// (250ms) para que el usuario vea el OK antes del reset.
+	if (!open) {
+		setTimeout(() => {
+			if (!open) {
+				status = 'idle';
+				errorMessage = '';
+				errorField = '';
+				submittedId = '';
 			}
+		}, 300);
+	}
+});
 
-			// Éxito
-			submittedId = data.id ?? '';
-			status = 'ok';
+$effect(() => {
+	// Cuando llega a 'ok', animamos el check de éxito.
+	if (status === 'ok' && successEl) {
+		animate(successEl, {
+			scale: [0.6, 1],
+			opacity: [0, 1],
+			duration: 500,
+			ease: 'out(4)',
+		});
+	}
+});
 
-			// Limpiamos los campos después de un breve delay para que el
-			// usuario vea su mensaje en pantalla un instante.
-			setTimeout(() => {
-				name = '';
-				email = '';
-				subject = '';
-				message = '';
-			}, 200);
-		} catch (err) {
+onMount(() => {
+	// Stagger reveal del contenido al abrir
+	const root = document.querySelector<HTMLElement>('[data-contact-root]');
+	if (root) {
+		animate(root.querySelectorAll<HTMLElement>('[data-contact-anim]'), {
+			opacity: [0, 1],
+			translateY: [16, 0],
+			delay: stagger(50, { start: 80 }),
+			duration: 500,
+			ease: 'out(3)',
+		});
+	}
+});
+
+async function handleSubmit(e: SubmitEvent) {
+	e.preventDefault();
+	if (status === 'sending') return;
+
+	// Reset error state
+	errorMessage = '';
+	errorField = '';
+	status = 'sending';
+
+	try {
+		const res = await fetch(`${API_BASE}/api/contact`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			body: JSON.stringify({
+				name: name.trim(),
+				email: email.trim(),
+				subject: subject.trim(),
+				message: message.trim(),
+				website: honeypot, // honeypot — vacío en humanos
+			}),
+		});
+
+		const data = (await res.json().catch(() => ({}))) as {
+			ok?: boolean;
+			id?: string;
+			field?: string;
+			code?: string;
+			message?: string;
+		};
+
+		if (!res.ok || !data.ok) {
+			errorField = data.field ?? '';
 			errorMessage =
-				'Error de red. Verificá tu conexión o usá el email directo de la página.';
+				data.message ??
+				`Error ${res.status}: no pudimos enviar tu mensaje. Probá de nuevo.`;
 			status = 'error';
 
+			// Shake animation en el form
 			if (formEl) {
 				animate(formEl, {
 					translateX: [0, -6, 6, -4, 4, -2, 2, 0],
@@ -175,15 +150,42 @@
 					ease: 'out(2)',
 				});
 			}
-			// log silencioso (no PII)
-			console.error('[contact] network error', err);
+			return;
 		}
-	}
 
-	function openChange(v: boolean) {
-		open = v;
-		onOpenChange?.(v);
+		// Éxito
+		submittedId = data.id ?? '';
+		status = 'ok';
+
+		// Limpiamos los campos después de un breve delay para que el
+		// usuario vea su mensaje en pantalla un instante.
+		setTimeout(() => {
+			name = '';
+			email = '';
+			subject = '';
+			message = '';
+		}, 200);
+	} catch (err) {
+		errorMessage =
+			'Error de red. Verificá tu conexión o usá el email directo de la página.';
+		status = 'error';
+
+		if (formEl) {
+			animate(formEl, {
+				translateX: [0, -6, 6, -4, 4, -2, 2, 0],
+				duration: 500,
+				ease: 'out(2)',
+			});
+		}
+		// log silencioso (no PII)
+		console.error('[contact] network error', err);
 	}
+}
+
+function openChange(v: boolean) {
+	open = v;
+	onOpenChange?.(v);
+}
 </script>
 
 <Dialog.Root bind:open={() => open, openChange}>

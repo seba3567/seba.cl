@@ -1,5 +1,5 @@
-import sharp from 'sharp';
 import { writeFile } from 'node:fs/promises';
+import sharp from 'sharp';
 
 /**
  * Generate a placeholder logo for AntiCallCL.
@@ -87,9 +87,12 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width
 </svg>`;
 
 const buf = await sharp(Buffer.from(svg))
-	.resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+	.resize(512, 512, {
+		fit: 'contain',
+		background: { r: 0, g: 0, b: 0, alpha: 0 },
+	})
 	.png()
 	.toBuffer();
 
 await writeFile('static/iconos/anticall/icono.png', buf);
-	console.log(`placeholder icono.png generated (${buf.length} bytes)`);
+console.log(`placeholder icono.png generated (${buf.length} bytes)`);

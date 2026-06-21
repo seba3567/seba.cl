@@ -1,4 +1,9 @@
-export type ProjectStatus = 'live' | 'active' | 'wip' | 'archived' | 'experimental';
+export type ProjectStatus =
+	| 'live'
+	| 'active'
+	| 'wip'
+	| 'archived'
+	| 'experimental';
 
 export type ProjectAccent = 'mint' | 'amber' | 'rose';
 
@@ -13,7 +18,14 @@ export type FeaturedProject = {
 	highlights?: string[];
 	relatedRepos?: string[];
 	accent: ProjectAccent;
-	icon: 'phone-shield' | 'sparkle' | 'code' | 'gear' | 'flame' | 'database' | 'cube';
+	icon:
+		| 'phone-shield'
+		| 'sparkle'
+		| 'code'
+		| 'gear'
+		| 'flame'
+		| 'database'
+		| 'cube';
 	hero?: boolean;
 };
 
@@ -113,7 +125,10 @@ export const featuredProjects: FeaturedProject[] = [
 		links: {
 			github: 'https://github.com/seba3567/seba_flutter_skeleton',
 		},
-		highlights: ['CI para build Android + iOS', 'Theming y routing preconfigurados'],
+		highlights: [
+			'CI para build Android + iOS',
+			'Theming y routing preconfigurados',
+		],
 		accent: 'mint',
 		icon: 'cube',
 	},
@@ -151,10 +166,22 @@ export const ACCENT_CLASSES: Record<
 	},
 };
 
-export const STATUS_LABELS: Record<ProjectStatus, { label: string; color: string }> = {
-	live: { label: 'Live', color: 'text-mint-200 bg-mint-500/10 border-mint-400/20' },
-	active: { label: 'Active', color: 'text-mint-200 bg-mint-500/10 border-mint-400/20' },
-	wip: { label: 'WIP', color: 'text-amber-200 bg-amber-500/10 border-amber-400/20' },
+export const STATUS_LABELS: Record<
+	ProjectStatus,
+	{ label: string; color: string }
+> = {
+	live: {
+		label: 'Live',
+		color: 'text-mint-200 bg-mint-500/10 border-mint-400/20',
+	},
+	active: {
+		label: 'Active',
+		color: 'text-mint-200 bg-mint-500/10 border-mint-400/20',
+	},
+	wip: {
+		label: 'WIP',
+		color: 'text-amber-200 bg-amber-500/10 border-amber-400/20',
+	},
 	experimental: {
 		label: 'Experimental',
 		color: 'text-mint-200 bg-mint-500/10 border-mint-400/20',

@@ -1,31 +1,31 @@
 <script lang="ts">
-	import {
-		Sparkle,
-		Code,
-		Gear,
-		Database,
-		Flame,
-		Cube,
-		PhoneX,
-		GithubLogo,
-		ArrowUpRight,
-	} from 'phosphor-svelte';
-	import type { FeaturedProject } from '$lib/data/featured';
-	import { ACCENT_CLASSES, STATUS_LABELS } from '$lib/data/featured';
-	import GlassCard from './GlassCard.svelte';
+import {
+	ArrowUpRight,
+	Code,
+	Cube,
+	Database,
+	Flame,
+	Gear,
+	GithubLogo,
+	PhoneX,
+	Sparkle,
+} from 'phosphor-svelte';
+import type { FeaturedProject } from '$lib/data/featured';
+import { ACCENT_CLASSES, STATUS_LABELS } from '$lib/data/featured';
+import GlassCard from './GlassCard.svelte';
 
-	type Props = { projects: FeaturedProject[] };
-	let { projects }: Props = $props();
+type Props = { projects: FeaturedProject[] };
+let { projects }: Props = $props();
 
-	const ICON_MAP = {
-		'phone-shield': PhoneX,
-		sparkle: Sparkle,
-		code: Code,
-		gear: Gear,
-		database: Database,
-		flame: Flame,
-		cube: Cube,
-	} as const;
+const ICON_MAP = {
+	'phone-shield': PhoneX,
+	sparkle: Sparkle,
+	code: Code,
+	gear: Gear,
+	database: Database,
+	flame: Flame,
+	cube: Cube,
+} as const;
 </script>
 
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

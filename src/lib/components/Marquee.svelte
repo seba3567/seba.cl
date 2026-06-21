@@ -1,53 +1,54 @@
 <script lang="ts">
-	import { onMount, type Snippet } from 'svelte';
-	import { startMarquee } from '$lib/animations';
+import { onMount, type Snippet } from 'svelte';
+import { startMarquee } from '$lib/animations';
 
-	type Props = {
-		children: Snippet;
-		/** Speed in px/sec, or omit to use duration. */
-		speed?: number;
-		/** Time for a full loop in ms. Used if `speed` is not set. */
-		duration?: number;
-		/** Reverse direction. */
-		reverse?: boolean;
-		/** Pause on hover. */
-		pauseOnHover?: boolean;
-		/** Vertical gap between rows (px). */
-		gap?: number;
-		class?: string;
-	};
+type Props = {
+	children: Snippet;
+	/** Speed in px/sec, or omit to use duration. */
+	speed?: number;
+	/** Time for a full loop in ms. Used if `speed` is not set. */
+	duration?: number;
+	/** Reverse direction. */
+	reverse?: boolean;
+	/** Pause on hover. */
+	pauseOnHover?: boolean;
+	/** Vertical gap between rows (px). */
+	gap?: number;
+	class?: string;
+};
 
-	let {
-		children,
-		speed,
-		duration = 35000,
-		reverse = false,
-		pauseOnHover = true,
-		gap = 0,
-		class: className = '',
-	}: Props = $props();
+let {
+	children,
+	speed,
+	duration = 35000,
+	reverse = false,
+	pauseOnHover = true,
+	gap = 0,
+	class: className = '',
+}: Props = $props();
 
-	let trackEl: HTMLElement | undefined = $state();
+let trackEl: HTMLElement | undefined = $state();
 
-	// Compute duration from speed (px/sec) over half a track
-	// so the loop appears seamless
-	let effectiveDuration = $derived(duration);
-	$effect(() => {
-		if (speed && trackEl) {
-			const halfWidth = trackEl.scrollWidth / 2;
-			if (halfWidth > 0) effectiveDuration = Math.round((halfWidth / speed) * 1000);
-		}
+// Compute duration from speed (px/sec) over half a track
+// so the loop appears seamless
+let effectiveDuration = $derived(duration);
+$effect(() => {
+	if (speed && trackEl) {
+		const halfWidth = trackEl.scrollWidth / 2;
+		if (halfWidth > 0)
+			effectiveDuration = Math.round((halfWidth / speed) * 1000);
+	}
+});
+
+onMount(() => {
+	if (!trackEl) return;
+	const cleanup = startMarquee(trackEl, {
+		duration: effectiveDuration,
+		reverse,
+		pauseOnHover,
 	});
-
-	onMount(() => {
-		if (!trackEl) return;
-		const cleanup = startMarquee(trackEl, {
-			duration: effectiveDuration,
-			reverse,
-			pauseOnHover,
-		});
-		return cleanup;
-	});
+	return cleanup;
+});
 </script>
 
 <div

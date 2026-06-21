@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
+import type { Snippet } from 'svelte';
 
-	type Props = {
-		eyebrow?: string;
-		title: string;
-		description?: string;
-		align?: 'left' | 'center';
-		children?: Snippet;
-	};
+type Props = {
+	eyebrow?: string;
+	title: string;
+	description?: string;
+	align?: 'left' | 'center';
+	children?: Snippet;
+};
 
-	let { eyebrow, title, description, align = 'left', children }: Props = $props();
+let { eyebrow, title, description, align = 'left', children }: Props = $props();
 </script>
 
 <div class="space-y-3 {align === 'center' ? 'text-center' : ''}">

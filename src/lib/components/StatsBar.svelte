@@ -1,30 +1,30 @@
 <script lang="ts" module>
-	const LANG_COLORS: Record<string, string> = {
-		TypeScript: '#3178c6',
-		JavaScript: '#f1e05a',
-		Python: '#3572A5',
-		Svelte: '#ff3e00',
-		'C#': '#178600',
-		Java: '#b07219',
-		Kotlin: '#A97BFF',
-		Dart: '#00B4AB',
-		Go: '#00ADD8',
-		Rust: '#dea584',
-		HTML: '#e34c26',
-		CSS: '#563d7c',
-		Shell: '#89e051',
-		Lua: '#000080',
-		Batchfile: '#C1F12E',
-		'C++': '#f34b7d',
-		C: '#555555',
-		Ruby: '#701516',
-		Makefile: '#427819',
-		Default: '#888888',
-	};
+const LANG_COLORS: Record<string, string> = {
+	TypeScript: '#3178c6',
+	JavaScript: '#f1e05a',
+	Python: '#3572A5',
+	Svelte: '#ff3e00',
+	'C#': '#178600',
+	Java: '#b07219',
+	Kotlin: '#A97BFF',
+	Dart: '#00B4AB',
+	Go: '#00ADD8',
+	Rust: '#dea584',
+	HTML: '#e34c26',
+	CSS: '#563d7c',
+	Shell: '#89e051',
+	Lua: '#000080',
+	Batchfile: '#C1F12E',
+	'C++': '#f34b7d',
+	C: '#555555',
+	Ruby: '#701516',
+	Makefile: '#427819',
+	Default: '#888888',
+};
 
-	export function langColor(name: string): string {
-		return LANG_COLORS[name] ?? LANG_COLORS.Default;
-	}
+export function langColor(name: string): string {
+	return LANG_COLORS[name] ?? LANG_COLORS.Default;
+}
 </script>
 
 <script lang="ts">

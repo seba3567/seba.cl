@@ -1,160 +1,160 @@
 <script lang="ts">
-	import { onMount, type Snippet } from 'svelte';
-	import { CaretLeft, CaretRight } from 'phosphor-svelte';
-	import { animate, stagger, utils } from 'animejs';
+import { animate, stagger, utils } from 'animejs';
+import { CaretLeft, CaretRight } from 'phosphor-svelte';
+import { onMount, type Snippet } from 'svelte';
 
-	type Props = {
-		children: Snippet;
-		/** Width of each child for the scroll-snap layout. */
-		itemWidth?: string; // e.g. '320px', 'min(85vw, 320px)'
-		/** Gap between items. */
-		gap?: string;
-		/** Show progress dots. */
-		showDots?: boolean;
-		/** Show side arrow buttons. */
-		showArrows?: boolean;
-		/** Show fade-mask edges (left+right). */
-		showFade?: boolean;
-		/** Stagger animation offset (px) and stagger ms. */
-		revealOffset?: number;
-		revealStagger?: number;
-		revealDuration?: number;
-		/** Optional accessible label. */
-		ariaLabel?: string;
-		class?: string;
-	};
+type Props = {
+	children: Snippet;
+	/** Width of each child for the scroll-snap layout. */
+	itemWidth?: string; // e.g. '320px', 'min(85vw, 320px)'
+	/** Gap between items. */
+	gap?: string;
+	/** Show progress dots. */
+	showDots?: boolean;
+	/** Show side arrow buttons. */
+	showArrows?: boolean;
+	/** Show fade-mask edges (left+right). */
+	showFade?: boolean;
+	/** Stagger animation offset (px) and stagger ms. */
+	revealOffset?: number;
+	revealStagger?: number;
+	revealDuration?: number;
+	/** Optional accessible label. */
+	ariaLabel?: string;
+	class?: string;
+};
 
-	let {
-		children,
-		itemWidth = 'min(85vw, 320px)',
-		gap = '1rem',
-		showDots = true,
-		showArrows = true,
-		showFade = true,
-		revealOffset = 60,
-		revealStagger = 70,
-		revealDuration = 700,
-		ariaLabel = 'Horizontal scroller',
-		class: className = '',
-	}: Props = $props();
+let {
+	children,
+	itemWidth = 'min(85vw, 320px)',
+	gap = '1rem',
+	showDots = true,
+	showArrows = true,
+	showFade = true,
+	revealOffset = 60,
+	revealStagger = 70,
+	revealDuration = 700,
+	ariaLabel = 'Horizontal scroller',
+	class: className = '',
+}: Props = $props();
 
-	let scrollerEl: HTMLElement | undefined = $state();
-	let items: HTMLElement[] = $state([]);
-	let progress = $state(0);
-	let canScrollLeft = $state(false);
-	let canScrollRight = $state(true);
+let scrollerEl: HTMLElement | undefined = $state();
+let items: HTMLElement[] = $state([]);
+let progress = $state(0);
+let canScrollLeft = $state(false);
+let canScrollRight = $state(true);
 
-	function prefersReducedMotion(): boolean {
-		if (typeof window === 'undefined' || !window.matchMedia) return false;
-		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-	}
+function prefersReducedMotion(): boolean {
+	if (typeof window === 'undefined' || !window.matchMedia) return false;
+	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
 
-	// Track scroll position for dots and arrow states
-	function updateScrollState() {
-		if (!scrollerEl) return;
-		const { scrollLeft, scrollWidth, clientWidth } = scrollerEl;
-		const max = scrollWidth - clientWidth;
-		progress = max > 0 ? scrollLeft / max : 0;
-		canScrollLeft = scrollLeft > 4;
-		canScrollRight = scrollLeft < max - 4;
-	}
+// Track scroll position for dots and arrow states
+function updateScrollState() {
+	if (!scrollerEl) return;
+	const { scrollLeft, scrollWidth, clientWidth } = scrollerEl;
+	const max = scrollWidth - clientWidth;
+	progress = max > 0 ? scrollLeft / max : 0;
+	canScrollLeft = scrollLeft > 4;
+	canScrollRight = scrollLeft < max - 4;
+}
 
-	function scrollBy(direction: -1 | 1) {
-		if (!scrollerEl) return;
-		const amount = scrollerEl.clientWidth * 0.85;
-		scrollerEl.scrollBy({ left: direction * amount, behavior: 'smooth' });
-	}
+function scrollBy(direction: -1 | 1) {
+	if (!scrollerEl) return;
+	const amount = scrollerEl.clientWidth * 0.85;
+	scrollerEl.scrollBy({ left: direction * amount, behavior: 'smooth' });
+}
 
-	// Drag-to-scroll (mouse / touch)
-	let isDown = false;
-	let startX = 0;
-	let startScrollLeft = 0;
-	let dragged = false;
+// Drag-to-scroll (mouse / touch)
+let isDown = false;
+let startX = 0;
+let startScrollLeft = 0;
+let dragged = false;
 
-	function onPointerDown(e: PointerEvent) {
-		if (!scrollerEl) return;
-		isDown = true;
+function onPointerDown(e: PointerEvent) {
+	if (!scrollerEl) return;
+	isDown = true;
+	dragged = false;
+	startX = e.clientX;
+	startScrollLeft = scrollerEl.scrollLeft;
+	scrollerEl.setPointerCapture(e.pointerId);
+	scrollerEl.style.cursor = 'grabbing';
+	scrollerEl.style.userSelect = 'none';
+}
+function onPointerMove(e: PointerEvent) {
+	if (!isDown || !scrollerEl) return;
+	const dx = e.clientX - startX;
+	if (Math.abs(dx) > 3) dragged = true;
+	scrollerEl.scrollLeft = startScrollLeft - dx;
+}
+function onPointerUp(e: PointerEvent) {
+	if (!scrollerEl) return;
+	isDown = false;
+	scrollerEl.releasePointerCapture(e.pointerId);
+	scrollerEl.style.cursor = '';
+	scrollerEl.style.userSelect = '';
+}
+function onClickCapture(e: MouseEvent) {
+	// Prevent link clicks when user dragged
+	if (dragged) {
+		e.preventDefault();
+		e.stopPropagation();
 		dragged = false;
-		startX = e.clientX;
-		startScrollLeft = scrollerEl.scrollLeft;
-		scrollerEl.setPointerCapture(e.pointerId);
-		scrollerEl.style.cursor = 'grabbing';
-		scrollerEl.style.userSelect = 'none';
 	}
-	function onPointerMove(e: PointerEvent) {
-		if (!isDown || !scrollerEl) return;
-		const dx = e.clientX - startX;
-		if (Math.abs(dx) > 3) dragged = true;
-		scrollerEl.scrollLeft = startScrollLeft - dx;
-	}
-	function onPointerUp(e: PointerEvent) {
-		if (!scrollerEl) return;
-		isDown = false;
-		scrollerEl.releasePointerCapture(e.pointerId);
-		scrollerEl.style.cursor = '';
-		scrollerEl.style.userSelect = '';
-	}
-	function onClickCapture(e: MouseEvent) {
-		// Prevent link clicks when user dragged
-		if (dragged) {
-			e.preventDefault();
-			e.stopPropagation();
-			dragged = false;
-		}
-	}
+}
 
-	// Anime.js entrance: stagger fade-up as items enter the scroller
-	onMount(() => {
-		if (!scrollerEl) return;
-		updateScrollState();
-		scrollerEl.addEventListener('scroll', updateScrollState, { passive: true });
-		window.addEventListener('resize', updateScrollState);
+// Anime.js entrance: stagger fade-up as items enter the scroller
+onMount(() => {
+	if (!scrollerEl) return;
+	updateScrollState();
+	scrollerEl.addEventListener('scroll', updateScrollState, { passive: true });
+	window.addEventListener('resize', updateScrollState);
 
-		const reduce = prefersReducedMotion();
-		if (reduce) {
-			for (const el of items) {
-				el.style.opacity = '1';
-				el.style.transform = 'none';
-			}
-			return;
-		}
-
-		// Set initial state
+	const reduce = prefersReducedMotion();
+	if (reduce) {
 		for (const el of items) {
-			el.style.opacity = '0';
-			el.style.transform = `translateX(-${revealOffset}px)`;
+			el.style.opacity = '1';
+			el.style.transform = 'none';
 		}
-
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) {
-						animate(items, {
-							opacity: [0, 1],
-							translateX: [-revealOffset, 0],
-							delay: stagger(revealStagger),
-							duration: revealDuration,
-							ease: 'out(4)',
-						});
-						observer.disconnect();
-					}
-				}
-			},
-			{ threshold: 0.1 },
-		);
-		observer.observe(scrollerEl);
-
-		return () => {
-			observer.disconnect();
-			scrollerEl?.removeEventListener('scroll', updateScrollState);
-			window.removeEventListener('resize', updateScrollState);
-		};
-	});
-
-	// Capture child refs via a snippet ref helper
-	export function registerItem(el: HTMLElement) {
-		if (el && !items.includes(el)) items = [...items, el];
+		return;
 	}
+
+	// Set initial state
+	for (const el of items) {
+		el.style.opacity = '0';
+		el.style.transform = `translateX(-${revealOffset}px)`;
+	}
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting) {
+					animate(items, {
+						opacity: [0, 1],
+						translateX: [-revealOffset, 0],
+						delay: stagger(revealStagger),
+						duration: revealDuration,
+						ease: 'out(4)',
+					});
+					observer.disconnect();
+				}
+			}
+		},
+		{ threshold: 0.1 },
+	);
+	observer.observe(scrollerEl);
+
+	return () => {
+		observer.disconnect();
+		scrollerEl?.removeEventListener('scroll', updateScrollState);
+		window.removeEventListener('resize', updateScrollState);
+	};
+});
+
+// Capture child refs via a snippet ref helper
+export function registerItem(el: HTMLElement) {
+	if (el && !items.includes(el)) items = [...items, el];
+}
 </script>
 
 <div class="relative {className}">

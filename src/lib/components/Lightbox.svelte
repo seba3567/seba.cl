@@ -1,133 +1,139 @@
 <script lang="ts">
-	import { animate, stagger } from 'animejs';
+import { animate, stagger } from 'animejs';
 
-	function prefersReducedMotion(): boolean {
-		if (typeof window === 'undefined' || !window.matchMedia) return false;
-		return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function prefersReducedMotion(): boolean {
+	if (typeof window === 'undefined' || !window.matchMedia) return false;
+	return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+import { CaretLeft, CaretRight, DownloadSimple, X } from 'phosphor-svelte';
+import OptimizedPicture from './OptimizedPicture.svelte';
+
+type Props = {
+	open: boolean;
+	images: Array<{
+		src: string; // base path without extension
+		alt: string;
+		caption?: string;
+	}>;
+	index: number;
+	onClose: () => void;
+};
+
+let {
+	open = $bindable(),
+	images,
+	index = $bindable(0),
+	onClose,
+}: Props = $props();
+
+const current = $derived(images[index] ?? images[0]);
+const hasPrev = $derived(index > 0);
+const hasNext = $derived(index < images.length - 1);
+
+let backdropEl: HTMLElement | undefined = $state();
+let imageWrapEl: HTMLElement | undefined = $state();
+let captionEl: HTMLElement | undefined = $state();
+
+// Lock body scroll while open
+$effect(() => {
+	if (typeof document === 'undefined') return;
+	if (open) {
+		document.body.style.overflow = 'hidden';
+	} else {
+		document.body.style.overflow = '';
 	}
-	import { X, CaretLeft, CaretRight, DownloadSimple } from 'phosphor-svelte';
-	import OptimizedPicture from './OptimizedPicture.svelte';
-
-	type Props = {
-		open: boolean;
-		images: Array<{
-			src: string; // base path without extension
-			alt: string;
-			caption?: string;
-		}>;
-		index: number;
-		onClose: () => void;
+	return () => {
+		document.body.style.overflow = '';
 	};
+});
 
-	let { open = $bindable(), images, index = $bindable(0), onClose }: Props = $props();
+// Animate on open / on index change
+$effect(() => {
+	if (!open) return;
+	if (!imageWrapEl || !backdropEl || !captionEl) return;
 
-	const current = $derived(images[index] ?? images[0]);
-	const hasPrev = $derived(index > 0);
-	const hasNext = $derived(index < images.length - 1);
+	const reduce = prefersReducedMotion();
 
-	let backdropEl: HTMLElement | undefined = $state();
-	let imageWrapEl: HTMLElement | undefined = $state();
-	let captionEl: HTMLElement | undefined = $state();
-
-	// Lock body scroll while open
-	$effect(() => {
-		if (typeof document === 'undefined') return;
-		if (open) {
-			document.body.style.overflow = 'hidden';
-		} else {
-			document.body.style.overflow = '';
-		}
-		return () => {
-			document.body.style.overflow = '';
-		};
+	// Backdrop fade
+	animate(backdropEl, {
+		opacity: [0, 1],
+		duration: reduce ? 0 : 280,
+		ease: 'out(3)',
 	});
 
-	// Animate on open / on index change
-	$effect(() => {
-		if (!open) return;
-		if (!imageWrapEl || !backdropEl || !captionEl) return;
+	// Image scale + fade (re-runs on index change because key changes)
+	animate(imageWrapEl, {
+		opacity: [0, 1],
+		scale: [0.94, 1],
+		duration: reduce ? 0 : 360,
+		ease: 'out(4)',
+	});
 
-		const reduce = prefersReducedMotion();
-
-		// Backdrop fade
-		animate(backdropEl, {
+	// Caption / counter stagger
+	const meta = captionEl.querySelectorAll<HTMLElement>('[data-meta]');
+	if (meta.length) {
+		animate(meta, {
 			opacity: [0, 1],
-			duration: reduce ? 0 : 280,
+			translateY: [10, 0],
+			delay: stagger(reduce ? 0 : 60, { start: reduce ? 0 : 180 }),
+			duration: reduce ? 0 : 360,
 			ease: 'out(3)',
 		});
-
-		// Image scale + fade (re-runs on index change because key changes)
-		animate(imageWrapEl, {
-			opacity: [0, 1],
-			scale: [0.94, 1],
-			duration: reduce ? 0 : 360,
-			ease: 'out(4)',
-		});
-
-		// Caption / counter stagger
-		const meta = captionEl.querySelectorAll<HTMLElement>('[data-meta]');
-		if (meta.length) {
-			animate(meta, {
-				opacity: [0, 1],
-				translateY: [10, 0],
-				delay: stagger(reduce ? 0 : 60, { start: reduce ? 0 : 180 }),
-				duration: reduce ? 0 : 360,
-				ease: 'out(3)',
-			});
-		}
-	});
-
-	function next() {
-		if (!hasNext) return;
-		index = index + 1;
 	}
-	function prev() {
-		if (!hasPrev) return;
-		index = index - 1;
-	}
+});
 
-	function handleKey(e: KeyboardEvent) {
-		if (!open) return;
-		if (e.key === 'Escape') onClose();
-		else if (e.key === 'ArrowRight') next();
-		else if (e.key === 'ArrowLeft') prev();
-	}
+function next() {
+	if (!hasNext) return;
+	index = index + 1;
+}
+function prev() {
+	if (!hasPrev) return;
+	index = index - 1;
+}
 
-	$effect(() => {
-		if (typeof window === 'undefined') return;
-		if (open) {
-			window.addEventListener('keydown', handleKey);
-			return () => window.removeEventListener('keydown', handleKey);
-		}
-	});
+function handleKey(e: KeyboardEvent) {
+	if (!open) return;
+	if (e.key === 'Escape') onClose();
+	else if (e.key === 'ArrowRight') next();
+	else if (e.key === 'ArrowLeft') prev();
+}
 
-	function handleBackdropClick(e: MouseEvent) {
-		if (e.target === e.currentTarget) onClose();
+$effect(() => {
+	if (typeof window === 'undefined') return;
+	if (open) {
+		window.addEventListener('keydown', handleKey);
+		return () => window.removeEventListener('keydown', handleKey);
 	}
+});
 
-	function handleDownload() {
-		if (!current) return;
-		const a = document.createElement('a');
-		a.href = `${current.src}.jpg`;
-		a.download = `${current.src.split('/').pop()}.jpg`;
-		a.target = '_blank';
-		a.click();
-	}
+function handleBackdropClick(e: MouseEvent) {
+	if (e.target === e.currentTarget) onClose();
+}
 
-	// Touch swipe
-	let touchStartX = 0;
-	let touchEndX = 0;
-	function onTouchStart(e: TouchEvent) {
-		touchStartX = e.changedTouches[0].screenX;
+function handleDownload() {
+	if (!current) return;
+	const a = document.createElement('a');
+	a.href = `${current.src}.jpg`;
+	a.download = `${current.src.split('/').pop()}.jpg`;
+	a.target = '_blank';
+	a.click();
+}
+
+// Touch swipe
+let touchStartX = 0;
+let touchEndX = 0;
+function onTouchStart(e: TouchEvent) {
+	touchStartX = e.changedTouches[0].screenX;
+}
+function onTouchEnd(e: TouchEvent) {
+	touchEndX = e.changedTouches[0].screenX;
+	const diff = touchEndX - touchStartX;
+	if (Math.abs(diff) > 50) {
+		if (diff < 0) next();
+		else prev();
 	}
-	function onTouchEnd(e: TouchEvent) {
-		touchEndX = e.changedTouches[0].screenX;
-		const diff = touchEndX - touchStartX;
-		if (Math.abs(diff) > 50) {
-			if (diff < 0) next();
-			else prev();
-		}
-	}
+}
 </script>
 
 {#if open && current}
