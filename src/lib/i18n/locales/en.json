@@ -299,14 +299,15 @@
 			"badge": "Custom builds",
 			"title": "My own builds. No fluff.",
 			"subtitle": "I compile clean AOSP for the devices I use, plus a few more. Visual changelog, mirror checksums, no telemetry, no ads.",
-			"dataSource": "Snapshot from devices-json · regenerated on every build"
+			"dataSource": "Auto-synced from GitHub"
 		},
 		"devices": {
 			"title": "Supported devices",
-			"subtitle": "Each card is a build target. Click to see specs, changelog, and downloads.",
+			"subtitle": "Tap a card to see the available ROMs and kernels.",
 			"select": "View builds",
 			"selectedLabel": "Selected",
-			"empty": "No synced devices. Run `bun run sync:aosp` to regenerate the list.",
+			"empty": "No synced devices.",
+			"count": "devices",
 			"codename": "Codename",
 			"noImage": "No image",
 			"specs": {
@@ -333,48 +334,37 @@
 			"abandoned": "Abandoned",
 			"eol": "End of life"
 		},
-		"build": {
-			"title": "Build",
-			"latest": "Latest build",
-			"noneYet": "No builds published yet.",
-			"noneYetHint": "Coming soon via GitHub Releases. In the meantime, check the sources on each device.",
-			"version": "Version",
-			"date": "Date",
-			"android": "Android",
-			"securityPatch": "Security patch",
-			"kernel": "Kernel",
-			"downloads": "Downloads",
-			"download": "Download",
-			"mirror": "Mirror",
-			"size": "Size",
-			"sha256": "SHA-256",
-			"changelog": "Changelog",
-			"notes": "Notes",
-			"added": "Added",
-			"removed": "Removed",
-			"fixed": "Fixed",
-			"improved": "Improved",
-			"sections": {
-				"boot": "Boot",
-				"kernel": "Kernel",
-				"security": "Security",
-				"system": "System",
-				"ui": "UI",
-				"build": "Build",
-				"networking": "Networking",
-				"misc": "Misc"
-			},
-			"noChangelog": "No changelog published."
+		"roms": {
+			"title": "ROMs",
+			"kind": "GitHub Releases",
+			"loading": "Fetching releases from GitHub…",
+			"noneYet": "No ROMs published yet.",
+			"noneYetHint": "Publish a release on the {repo} repo and it'll show up here within 15 minutes."
 		},
 		"kernels": {
 			"title": "Kernels",
-			"subtitle": "Standalone kernels I build outside the main ROM.",
+			"kind": "GitHub Releases",
+			"loading": "Fetching kernels from GitHub…",
 			"noneYet": "No kernels published yet.",
-			"noneYetHint": "Coming soon.",
+			"noneYetHint": "Publish a release on the {repo} repo and it'll show up here within 15 minutes.",
 			"target": "Target",
 			"version": "Version",
 			"download": "Download",
 			"source": "Source"
+		},
+		"release": {
+			"prerelease": "Pre-release",
+			"today": "Today",
+			"yesterday": "Yesterday",
+			"daysAgo": "{n} days ago",
+			"monthsAgo": "{n} months ago",
+			"yearsAgo": "{n} years ago"
+		},
+		"refresh": {
+			"button": "Refresh",
+			"justNow": "Just now",
+			"oneMinAgo": "1 min ago",
+			"minutesAgo": "{n} min ago"
 		}
 	},
 	"contact": {

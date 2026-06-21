@@ -1,15 +1,22 @@
 // AOSP build data structures.
 //
-// `Build` is one published release for one device (one
-// `codename`). The changelog array is the visual changelog
-// the page renders — see the "Build detail" panel.
+// `RomRelease` is one published GitHub Release for a device's
+// ROM repo. `KernelRelease` is the same shape for a device's
+// kernel repo. The page groups them per device and renders
+// them as a simple "Latest builds" + "Kernels" list.
 //
-// For now, builds.json ships with zero entries: the user
-// hasn't published any releases yet ("por el momento no
-// salen por github releases pero proximamente van a salir
-// por ahi"). When they do, the sync-aosp-releases.mjs
-// script (future) will hit the GitHub Releases API and
-// merge into builds.json, keeping the same shape.
+// Both fields are populated by:
+//   - build time: `bun run sync:aosp` (scripts/sync-aosp-devices.mjs)
+//     which hits raw.githubusercontent.com for the device YAML
+//     and api.github.com for releases.
+//   - runtime:    `src/lib/aosp-client.ts` which re-fetches
+//     both with a 15-min SWR cache. The bundled snapshot is
+//     only used as the SSR / offline fallback.
+//
+// `Build` and `Kernel` below are the older manual-editing
+// shapes — kept around for back-compat with existing
+// `builds.json` / `kernels.json` and for hand-curated entries
+// the user might want to add without going through GitHub.
 
 export type ChangeType = 'added' | 'removed' | 'fixed' | 'improved';
 export type ChangeSection =
@@ -35,36 +42,67 @@ export type DownloadMirror = {
 	sha256?: string;
 };
 
+/** A single asset attached to a GitHub Release. */
+export type ReleaseAsset = {
+	name: string;
+	url: string;
+	size: number;
+	downloadCount: number;
+};
+
+/**
+ * One published GitHub Release — either a ROM or a kernel.
+ * `kind` tells the page which section the release belongs in.
+ * The page parses the release body for a "SHA-256: …" line;
+ * if present, the hash is surfaced next to the download button.
+ */
+export type RomRelease = {
+	kind: 'rom';
+	tag: string;
+	name: string;
+	body: string;
+	publishedAt: string;
+	prerelease: boolean;
+	assets: ReleaseAsset[];
+	sha256: string | null;
+};
+
+export type KernelRelease = {
+	kind: 'kernel';
+	tag: string;
+	name: string;
+	body: string;
+	publishedAt: string;
+	prerelease: boolean;
+	assets: ReleaseAsset[];
+	sha256: string | null;
+};
+
+export type Release = RomRelease | KernelRelease;
+
+/** Legacy shape — hand-curated builds. */
 export type Build = {
-	/** Slug of the device this build targets (matches
-	 *  Device.slug in devices.json). */
 	codename: string;
 	version: string;
-	/** ISO date string. */
 	date: string;
-	/** "15", "14", etc. */
 	android: string;
-	/** YYYY-MM-DD. */
 	securityPatch: string;
-	/** Kernel version baked into the build. */
 	kernel: string;
 	changelog: ChangeLogEntry[];
 	downloads: DownloadMirror[];
-	/** Free-form notes (warnings, install steps, known issues). */
 	notes?: string;
 };
 
 export type Device = {
 	slug: string;
 	name: string;
-	/** Optional: AOSP/CODENAME marker (e.g. "berlin"). When the
-	 *  YAML provides it, used for the device card subtitle. */
 	codename: string | null;
 	status: 'active' | 'beta' | 'paused' | 'abandoned' | 'eol';
 	image: string | null;
-	// The spec keys here are the same as the i18n keys under
-	// aosp.devices.specs.* — translating the labels in the
-	// template is a 1:1 mapping.
+	/** Convention: `seba3567/aosp-<slug>`. Override per-device. */
+	romRepo?: string;
+	/** Convention: `seba3567/aosp-<slug>-kernel`. Override per-device. */
+	kernelRepo?: string;
 	specs: {
 		display: string | null;
 		processor: string | null;
@@ -83,21 +121,14 @@ export type Device = {
 	};
 };
 
+/** Legacy hand-curated kernels. */
 export type Kernel = {
-	/** Kernel codename / project name. */
 	name: string;
-	/** Target device codename. */
 	target: string;
-	/** Kernel version (e.g. "5.10.198"). */
 	version: string;
-	/** One-line tagline (e.g. "AnyKernel3 · optimized for battery"). */
 	tagline: string;
-	/** Link to the source / repo. */
 	source: string;
-	/** Primary download mirror. */
 	download: string;
-	/** Optional: alternate mirrors. */
 	altDownloads?: DownloadMirror[];
-	/** Optional: free-form notes. */
 	notes?: string;
 };

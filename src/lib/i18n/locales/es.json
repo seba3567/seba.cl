@@ -293,20 +293,21 @@
 	},
 	"aosp": {
 		"metaTitle": "AOSP · seba3567.cl",
-		"metaDescription": "Custom AOSP builds y kernels para devices selectos. Changelogs visuales, descargas y notas de instalación.",
+		"metaDescription": "Custom AOSP builds y kernels para devices selectos. Catálogo auto-actualizado desde GitHub.",
 		"hero": {
 			"status": "AOSP",
 			"badge": "Custom builds",
 			"title": "Builds propias, sin humo.",
-			"subtitle": "Compilo AOSP limpio para los devices que uso y algunos más. Visual changelog, mirror checksums, sin telemetría ni ads.",
-			"dataSource": "Snapshot de devices-json · regenerado en cada build"
+			"subtitle": "Compilo AOSP limpio para los devices que uso y algunos más. ROMs y kernels se actualizan solos desde GitHub cada 15 minutos — sin deploy, sin `bun run sync` manual.",
+			"dataSource": "Auto-sync desde GitHub"
 		},
 		"devices": {
 			"title": "Devices soportados",
-			"subtitle": "Cada card es un build target. Click para ver specs, changelog y descargas.",
+			"subtitle": "Tocá una card para ver las ROMs y kernels disponibles.",
 			"select": "Ver builds",
 			"selectedLabel": "Seleccionado",
-			"empty": "Sin devices sincronizados. Corré `bun run sync:aosp` para regenerar la lista.",
+			"empty": "Sin devices sincronizados.",
+			"count": "dispositivos",
 			"codename": "Codename",
 			"noImage": "Sin imagen",
 			"specs": {
@@ -333,48 +334,33 @@
 			"abandoned": "Abandonado",
 			"eol": "Fin de soporte"
 		},
-		"build": {
-			"title": "Build",
-			"latest": "Último build",
-			"noneYet": "Sin builds publicados todavía.",
-			"noneYetHint": "Próximamente se publicarán vía GitHub Releases. Mientras tanto, mirá los sources en cada device.",
-			"version": "Versión",
-			"date": "Fecha",
-			"android": "Android",
-			"securityPatch": "Patch de seguridad",
-			"kernel": "Kernel",
-			"downloads": "Descargas",
-			"download": "Descargar",
-			"mirror": "Mirror",
-			"size": "Tamaño",
-			"sha256": "SHA-256",
-			"changelog": "Changelog",
-			"notes": "Notas",
-			"added": "Agregado",
-			"removed": "Removido",
-			"fixed": "Arreglado",
-			"improved": "Mejorado",
-			"sections": {
-				"boot": "Boot",
-				"kernel": "Kernel",
-				"security": "Seguridad",
-				"system": "Sistema",
-				"ui": "UI",
-				"build": "Build",
-				"networking": "Redes",
-				"misc": "Misc"
-			},
-			"noChangelog": "Sin changelog publicado."
+		"roms": {
+			"title": "ROMs",
+			"kind": "GitHub Releases",
+			"loading": "Buscando releases en GitHub…",
+			"noneYet": "Sin ROMs publicadas todavía.",
+			"noneYetHint": "Publicá una release en el repo {repo} y aparecerá acá en 15 minutos."
 		},
 		"kernels": {
 			"title": "Kernels",
-			"subtitle": "Standalone kernels que compilo fuera de la ROM principal.",
+			"kind": "GitHub Releases",
+			"loading": "Buscando kernels en GitHub…",
 			"noneYet": "Sin kernels publicados todavía.",
-			"noneYetHint": "Próximamente.",
-			"target": "Target",
-			"version": "Versión",
-			"download": "Descargar",
-			"source": "Source"
+			"noneYetHint": "Publicá una release en el repo {repo} y aparecerá acá en 15 minutos."
+		},
+		"release": {
+			"prerelease": "Pre-release",
+			"today": "Hoy",
+			"yesterday": "Ayer",
+			"daysAgo": "Hace {n} días",
+			"monthsAgo": "Hace {n} meses",
+			"yearsAgo": "Hace {n} años"
+		},
+		"refresh": {
+			"button": "Refrescar",
+			"justNow": "Recién",
+			"oneMinAgo": "Hace 1 min",
+			"minutesAgo": "Hace {n} min"
 		}
 	},
 	"contact": {
