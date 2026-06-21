@@ -1,6 +1,7 @@
 <script lang="ts">
 import { ArrowUpRight, GithubLogo, X } from 'phosphor-svelte';
 import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import { revealChars, revealOnScroll } from '$lib/animations';
 import SiteFooter from '$lib/components/SiteFooter.svelte';
 import { Badge } from '$lib/components/ui/badge';
@@ -10,6 +11,9 @@ import * as Tabs from '$lib/components/ui/tabs';
 import type { PageData } from './$types';
 
 let { data }: { data: PageData } = $props();
+
+const pageTitle = $derived($t('proyectos.metaTitle'));
+const pageDescription = $derived($t('proyectos.metaDescription'));
 
 let query = $state('');
 let language = $state<string | null>(null);
@@ -59,10 +63,10 @@ const stats = $derived([
 const featured3 = $derived(data.repos.slice(0, 3));
 
 const tabs = [
-	{ value: 'all', label: 'Todos' },
-	{ value: 'live', label: 'Live' },
-	{ value: 'wip', label: 'Activos' },
-	{ value: 'archived', label: 'Archivados' },
+	{ value: 'all', labelKey: 'all' },
+	{ value: 'live', labelKey: 'live' },
+	{ value: 'wip', labelKey: 'wip' },
+	{ value: 'archived', labelKey: 'archived' },
 ] as const;
 
 let titleEl: HTMLElement | undefined = $state();
@@ -121,11 +125,8 @@ function langColor(name: string | null): string {
 </script>
 
 <svelte:head>
-	<title>Proyectos · seba3567.cl</title>
-	<meta
-		name="description"
-		content="Repositorios de Sebastián Muñoz · fuente directa desde la API de GitHub."
-	/>
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
 </svelte:head>
 
 <main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10">
@@ -226,7 +227,7 @@ function langColor(name: string | null): string {
 	<section class="border-t border-white/5 py-10">
 		<div class="mb-6 flex flex-wrap items-end justify-between gap-4" data-reveal-tab>
 			<div>
-				<p class="font-mono text-xs text-neutral-500">Catalog</p>
+				<p class="font-mono text-xs text-neutral-500">{$t('proyectos.title')}</p>
 				<h2
 					class="mt-3 text-3xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-4xl"
 				>
@@ -243,7 +244,7 @@ function langColor(name: string | null): string {
 					value="all"
 					class="rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-400 transition-all data-[state=active]:bg-white/10 data-[state=active]:text-neutral-50 hover:text-neutral-200"
 				>
-					Todos <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.all}</span>
+					{$t('proyectos.filters.all')} <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.all}</span>
 				</Tabs.Trigger>
 				<Tabs.Trigger
 					value="live"
@@ -255,13 +256,13 @@ function langColor(name: string | null): string {
 					value="wip"
 					class="rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-400 transition-all data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-200 hover:text-neutral-200"
 				>
-					Activos <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.wip}</span>
+					{$t('proyectos.filters.wip')} <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.wip}</span>
 				</Tabs.Trigger>
 				<Tabs.Trigger
 					value="archived"
 					class="rounded-xl px-3 py-1.5 text-xs font-medium text-neutral-400 transition-all data-[state=active]:bg-neutral-500/10 data-[state=active]:text-neutral-300 hover:text-neutral-200"
 				>
-					Archivados <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.archived}</span>
+					{$t('proyectos.filters.archived')} <span class="ml-1 font-mono text-[10px] text-neutral-500">{counts.archived}</span>
 				</Tabs.Trigger>
 			</Tabs.List>
 		</Tabs.Root>
@@ -293,7 +294,7 @@ function langColor(name: string | null): string {
 			<div class="flex flex-wrap items-center gap-1.5">
 				<span
 					class="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-					>Lenguaje</span
+					>{$t('proyectos.languageFilter')}</span
 				>
 				<button
 					type="button"
@@ -303,7 +304,7 @@ function langColor(name: string | null): string {
 						? 'border-mint-400/40 bg-mint-500/10 text-mint-200'
 						: 'border-white/10 bg-white/[0.02] text-neutral-400 hover:border-white/20 hover:bg-white/[0.05] hover:text-neutral-200'}"
 				>
-					Todos
+					{$t('proyectos.languageAll')}
 					<span
 						class="font-mono text-[9px] {language === null
 							? 'text-mint-300/70'
@@ -341,7 +342,7 @@ function langColor(name: string | null): string {
 				<div class="flex flex-wrap items-center gap-1.5">
 					<span
 						class="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-						>Activo</span
+						>{$t('proyectos.filters.wip')}</span
 					>
 					{#if statusTab !== 'all'}
 						<button
@@ -349,7 +350,9 @@ function langColor(name: string | null): string {
 							onclick={() => (statusTab = 'all')}
 							class="inline-flex items-center gap-1 rounded-full border border-mint-400/30 bg-mint-500/10 px-2.5 py-1 text-[11px] font-medium text-mint-200 transition-colors hover:bg-mint-500/20"
 						>
-							{tabs.find((t) => t.value === statusTab)?.label}
+							{tabs.find((t) => t.value === statusTab)?.labelKey
+						? $t(`proyectos.filters.${tabs.find((t) => t.value === statusTab)?.labelKey}`)
+						: ''}
 							<X size={10} weight="bold" />
 						</button>
 					{/if}

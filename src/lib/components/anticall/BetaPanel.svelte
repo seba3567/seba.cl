@@ -1,7 +1,8 @@
 <script lang="ts">
 import { ArrowUpRight, Flask, Users } from 'phosphor-svelte';
+import { t } from 'svelte-i18n';
 import { Badge } from '$lib/components/ui/badge';
-import { BETA_PROGRAM, betaPerks, PLAY_STORE } from '$lib/data/anticall';
+import { BETA_PROGRAM, betaPerkKeys, PLAY_STORE } from '$lib/data/anticall';
 </script>
 
 <section
@@ -33,27 +34,26 @@ import { BETA_PROGRAM, betaPerks, PLAY_STORE } from '$lib/data/anticall';
 						></span>
 						<span class="relative inline-flex size-1.5 rounded-full bg-amber-400"></span>
 					</span>
-					Beta abierta
+					{$t('anticall.beta.badge')}
 				</Badge>
 
 				<h2
 					class="mt-6 text-balance text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl"
 				>
-					Únete al programa beta.
+					{$t('anticall.beta.title')}
 				</h2>
 				<p class="mt-4 max-w-xl text-balance text-base text-neutral-400 sm:text-lg">
-					Probá las últimas builds antes del release público. Tu feedback ayuda a definir
-					el roadmap.
+					{$t('anticall.beta.intro')}
 				</p>
 
 				<ul class="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-2">
-					{#each betaPerks as perk (perk)}
+					{#each betaPerkKeys as perkKey (perkKey)}
 						<li
 							data-panel-anim
 							class="flex items-start gap-2.5 rounded-xl border border-white/5 bg-white/[0.02] p-3 text-sm text-neutral-300"
 						>
 							<Users size={14} weight="duotone" class="mt-0.5 shrink-0 text-amber-300" />
-							<span>{perk}</span>
+							<span>{$t(`anticall.beta.perks.${perkKey}`)}</span>
 						</li>
 					{/each}
 				</ul>
@@ -66,7 +66,7 @@ import { BETA_PROGRAM, betaPerks, PLAY_STORE } from '$lib/data/anticall';
 						class="group inline-flex items-center gap-2 rounded-lg bg-mint-500 px-5 py-3 text-sm font-semibold text-neutral-950 shadow-lg shadow-mint-500/30 transition-all duration-300 hover:scale-[1.02] hover:bg-mint-400 hover:shadow-mint-500/50"
 					>
 						<Flask size={15} weight="fill" />
-						Unirme a la beta
+						{$t('anticall.beta.joinBeta')}
 						<ArrowUpRight
 							size={12}
 							weight="bold"
@@ -79,7 +79,7 @@ import { BETA_PROGRAM, betaPerks, PLAY_STORE } from '$lib/data/anticall';
 						rel="noreferrer noopener"
 						class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-medium text-neutral-200 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
 					>
-						Ver en Play Store
+						{$t('anticall.beta.viewPlay')}
 						<ArrowUpRight
 							size={11}
 							weight="bold"

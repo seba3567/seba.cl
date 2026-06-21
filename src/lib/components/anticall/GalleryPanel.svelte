@@ -1,4 +1,5 @@
 <script lang="ts">
+import { t } from 'svelte-i18n';
 import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { SCREENSHOTS } from '$lib/data/anticall';
@@ -21,15 +22,15 @@ let { onOpenLightbox }: Props = $props();
 					variant="outline"
 					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 				>
-					03
+					{$t('anticall.gallery.badge')}
 				</Badge>
 				<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-					Screenshots.
+					{$t('anticall.gallery.title')}
 				</h2>
-				<p class="mt-2 text-sm text-neutral-500">Click en cualquier imagen para abrir el visor.</p>
+				<p class="mt-2 text-sm text-neutral-500">{$t('anticall.gallery.subtitle')}</p>
 			</div>
 			<p class="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 sm:block">
-				AVIF · WebP · JPG
+				{$t('anticall.gallery.format')}
 			</p>
 		</div>
 
@@ -45,7 +46,7 @@ let { onOpenLightbox }: Props = $props();
 					type="button"
 					onclick={() => onOpenLightbox(i)}
 					data-panel-anim
-					aria-label="Abrir pantalla {n} en el visor"
+					aria-label={$t('anticall.screenshot.ariaOpen', { values: { n } })}
 					class="group/shot relative m-0 block aspect-[9/16] h-full max-h-full w-auto cursor-zoom-in overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] transition-all duration-500 hover:-translate-y-0.5 hover:border-mint-400/30 hover:bg-white/[0.04]"
 				>
 					<OptimizedPicture

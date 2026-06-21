@@ -1,7 +1,8 @@
 <script lang="ts">
+import { t } from 'svelte-i18n';
 import { Badge } from '$lib/components/ui/badge';
 import * as Card from '$lib/components/ui/card';
-import { aboutParagraphs, features } from '$lib/data/anticall';
+import { aboutParagraphKeys, features } from '$lib/data/anticall';
 </script>
 
 <section
@@ -10,26 +11,26 @@ import { aboutParagraphs, features } from '$lib/data/anticall';
 >
 	<div class="mx-auto w-full max-w-5xl">
 		<div class="mb-10" data-panel-anim>
-			<Badge
-				variant="outline"
-				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
-			>
-				02
-			</Badge>
-			<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
-				Qué es AntiCallCL.
-			</h2>
+				<Badge
+					variant="outline"
+					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
+				>
+					{$t('anticall.about.badge')}
+				</Badge>
+				<h2 class="mt-3 text-4xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-5xl">
+					{$t('anticall.about.title')}
+				</h2>
 		</div>
 
 		<div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
 			<div class="space-y-5 text-pretty text-base leading-relaxed text-neutral-300 lg:col-span-7">
-				{#each aboutParagraphs as p, i (i)}
-					<p data-panel-anim class="text-balance">{p}</p>
+				{#each aboutParagraphKeys as key, i (i)}
+					<p data-panel-anim class="text-balance">{$t(`anticall.about.paragraphs.${key}`)}</p>
 				{/each}
 			</div>
 
 			<aside class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
-				{#each features as f, i (f.title)}
+				{#each features as f, i (f.titleKey)}
 					{@const Icon = f.icon}
 					<Card.Root
 						data-slot="card"
@@ -53,10 +54,10 @@ import { aboutParagraphs, features } from '$lib/data/anticall';
 						</div>
 						<div class="min-w-0">
 							<Card.Title class="text-sm font-semibold text-neutral-100">
-								{f.title}
+								{$t(`anticall.about.features.${f.titleKey}.title`)}
 							</Card.Title>
 							<Card.Description class="mt-1 text-xs leading-relaxed text-neutral-400">
-								{f.body}
+								{$t(`anticall.about.features.${f.bodyKey}.body`)}
 							</Card.Description>
 						</div>
 					</Card.Root>

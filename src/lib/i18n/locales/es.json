@@ -71,7 +71,36 @@
 		},
 		"specialties": {
 			"badge": "Especialidades",
-			"title": "En qué me especializo."
+			"title": "En qué me especializo.",
+			"groups": {
+				"data": {
+					"title": "Ciencia de Datos",
+					"items": [
+						"Inteligencia de Negocios",
+						"Modelado y análisis de datos",
+						"Visualización y storytelling con datos",
+						"Análisis estadístico aplicado"
+					]
+				},
+				"software": {
+					"title": "Desarrollo de Software",
+					"items": [
+						"Diseño de arquitectura backend",
+						"APIs robustas y mantenibles",
+						"Aseguramiento de calidad y testing",
+						"Versionado y colaboración técnica"
+					]
+				},
+				"management": {
+					"title": "Gestión Técnica",
+					"items": [
+						"Trabajo ágil (Scrum/Kanban)",
+						"Levantamiento y refinamiento de requerimientos",
+						"Documentación técnica clara",
+						"Enfoque en mejora continua"
+					]
+				}
+			}
 		},
 		"contact": {
 			"badge": "Contacto",
@@ -136,7 +165,30 @@
 		},
 		"about": {
 			"badge": "02",
-			"title": "Qué es AntiCallCL."
+			"title": "Qué es AntiCallCL.",
+			"paragraphs": {
+				"origin": "Anticall nació como respuesta al problema creciente de las llamadas no deseadas: empresas y servicios que llaman de forma repetida — a veces varias veces en pocas horas —, sumadas a nuevas formas de estafa y spam telefónico que afectan a miles de personas en Chile cada día.",
+				"filter": "La aplicación permite filtrar y gestionar llamadas por prefijo, ayudando a identificar rangos de números usados para campañas de marketing o intentos sospechosos. Esto le da al usuario el control sobre su tiempo y su privacidad, reduciendo interrupciones y riesgos.",
+				"choice": "Anticall no bloquea llamadas automáticamente ni accede a información personal: ofrece herramientas claras y útiles para que cada persona decida cómo manejar las llamadas entrantes."
+			},
+			"features": {
+				"filter": {
+					"title": "Filtrar por prefijo",
+					"body": "Rangos de números identificables para marketing, telemarketing o intentos de estafa."
+				},
+				"choice": {
+					"title": "Tú decides",
+					"body": "No bloquea en automático. Te entrega la información y la decisión queda en tu lado."
+				},
+				"curated": {
+					"title": "Base curada CL",
+					"body": "Lista de prefijos chilenos verificables, editables y exportables desde la app."
+				},
+				"local": {
+					"title": "100% local",
+					"body": "Sin cuentas, sin servidores, sin nube. Todo se procesa y guarda en tu teléfono."
+				}
+			}
 		},
 		"gallery": {
 			"badge": "03",
@@ -147,20 +199,40 @@
 		"stack": {
 			"badge": "04",
 			"title": "Cómo está hecho.",
-			"subtitle": "La app corre 100% en el teléfono. Sin backend, sin servidores, sin cuentas."
+			"subtitle": "La app corre 100% en el teléfono. Sin backend, sin servidores, sin cuentas.",
+			"layers": {
+				"ui": "UI",
+				"native": "Nativo Android"
+			},
+			"details": {
+				"ui": "Interfaz cross-platform, theming, navegación, formularios y estados.",
+				"native": "CallScreeningService, contactos, permisos sensibles y persistencia local."
+			}
 		},
 		"privacy": {
 			"badge": "05",
 			"title": "Sin nube, sin cuentas.",
 			"readPolicy": "Leer la política completa",
-			"viewSummary": "Ver resumen interactivo"
+			"viewSummary": "Ver resumen interactivo",
+			"points": {
+				"local": "Tus listas y métricas viven solo en tu dispositivo",
+				"noAccount": "La app opera sin registro, sin cuentas, sin nube",
+				"wipe": "Puedes borrar todo desde los ajustes en cualquier momento",
+				"uninstall": "Al desinstalar se eliminan automáticamente todos los datos"
+			}
 		},
 		"beta": {
 			"badge": "Beta abierta",
 			"title": "Únete al programa beta.",
 			"intro": "Probá las últimas builds antes del release público. Tu feedback ayuda a definir el roadmap.",
 			"joinBeta": "Unirme a la beta",
-			"viewPlay": "Ver en Play Store"
+			"viewPlay": "Ver en Play Store",
+			"perks": {
+				"early": "Acceso anticipado antes del release público",
+				"channel": "Canal directo con el equipo de desarrollo",
+				"feedback": "Ayuda a moldear el roadmap con tu feedback",
+				"updates": "Prefijos actualizados con cada build"
+			}
 		}
 	},
 	"contact": {
@@ -203,65 +275,71 @@
 				"title": "Datos que recopilamos",
 				"body": "Anticall Chile no recopila, almacena ni transmite datos personales a servidores externos. Toda la lógica de bloqueo y análisis ocurre localmente en tu dispositivo.",
 				"bullets": [
-					"No solicitamos cuentas ni credenciales: la app opera sin registro.",
-					"Los números bloqueados o listas personalizadas residen únicamente en tu teléfono.",
-					"Las métricas de llamadas se guardan de manera local y puedes eliminarlas cuando quieras.",
-					"Solo accedemos a permisos del sistema para ejecutar funciones esenciales y nunca copiamos esa información fuera del equipo."
+					"no-accounts",
+					"local-lists",
+					"local-metrics",
+					"system-permissions"
 				]
 			},
 			"uso": {
 				"title": "Cómo usamos la información",
 				"body": "Al no existir transferencia a la nube, el uso de información se limita estrictamente al funcionamiento local de la aplicación.",
-				"bullets": [
-					"Procesar eventos de llamadas en el dispositivo para detectar y bloquear spam.",
-					"Recordar tus configuraciones, listas y preferencias solo dentro del almacenamiento de la app.",
-					"Mostrar métricas básicas en la interfaz para que evalúes la efectividad del bloqueo.",
-					"Permitir que exportes o elimines manualmente cualquier dato almacenado localmente."
-				]
+				"bullets": ["process", "config", "metrics", "export"]
 			},
 			"compartir": {
-				"title": "Con quién se comparte",
-				"body": "Con nadie. Anticall Chile no vende, transfiere ni comparte datos con terceros. La app no incluye SDKs publicitarios ni analítica remota.",
-				"bullets": [
-					"Sin integración con redes de anuncios.",
-					"Sin analítica remota ni beacons.",
-					"Sin servicios de terceros que reciban datos del usuario."
-				]
+				"title": "Cuándo compartimos datos",
+				"body": "No hay transferencia ni compartición automática de datos, porque la información nunca abandona tu dispositivo.",
+				"bullets": ["no-third-parties", "voluntary", "legal"]
 			},
 			"derechos": {
-				"title": "Tus derechos y control",
+				"title": "Derechos de las personas usuarias",
 				"body": "Aunque la aplicación no conserva datos en servidores, respetamos los derechos otorgados por la legislación chilena e internacional.",
-				"bullets": [
-					"Procesamiento local: sin sincronización con servidores ni copias en la nube.",
-					"Eliminar la app elimina todos los datos asociados.",
-					"Puedes revisar o borrar la base local en cualquier momento desde los ajustes."
-				]
+				"bullets": ["control", "backup", "support", "channel"]
 			},
 			"seguridad": {
-				"title": "Seguridad",
-				"body": "Toda la información se almacena cifrada por el propio sistema operativo Android. Anticall no introduce canales de transmisión hacia internet.",
+				"title": "Medidas de seguridad",
+				"body": "Diseñamos la solución para minimizar superficie de ataque y dependencia externa.",
 				"bullets": [
-					"Almacenamiento cifrado en reposo (sandbox de Android).",
-					"Permisos sensibles (llamadas, contactos) otorgados por el usuario; revocables.",
-					"Sin código de rastreo ni telemetría."
+					"local-only",
+					"official-api",
+					"updates",
+					"device-recommendations"
 				]
 			},
-			"menores": {
-				"title": "Menores de edad",
-				"body": "Anticall Chile no está dirigida a menores de 13 años. Al ser una app local sin registro, no recopilamos edad de los usuarios.",
-				"bullets": [
-					"No se solicita edad ni se verifica identidad.",
-					"Los padres pueden supervisar el uso de la app y desinstalarla cuando lo deseen."
-				]
+			"conservacion": {
+				"title": "Período de conservación",
+				"body": "Como la información se mantiene solo en tu teléfono, tú decides cuánto tiempo conservarla.",
+				"bullets": ["settings", "uninstall"]
 			},
-			"cambios": {
-				"title": "Cambios a esta política",
-				"body": "Si modificamos esta política, publicaremos la nueva versión en esta misma página. La fecha de la última actualización aparece al inicio.",
-				"bullets": [
-					"Las actualizaciones se reflejarán en la fecha de 'última actualización'.",
-					"Para dudas, contáctanos a través de la app."
-				]
+			"contacto": {
+				"title": "Contacto de privacidad",
+				"body": "¿Tienes preguntas o solicitudes? Nuestro equipo está disponible para ayudarte.",
+				"bullets": ["email"]
 			}
+		},
+		"bullets": {
+			"no-accounts": "No solicitamos cuentas ni credenciales: la app opera sin registro.",
+			"local-lists": "Los números bloqueados o listas personalizadas residen únicamente en tu teléfono.",
+			"local-metrics": "Las métricas de llamadas se guardan de manera local y puedes eliminarlas cuando quieras.",
+			"system-permissions": "Solo accedemos a permisos del sistema para ejecutar funciones esenciales y nunca copiamos esa información fuera del equipo.",
+			"process": "Procesar eventos de llamadas en el dispositivo para detectar y bloquear spam.",
+			"config": "Recordar tus configuraciones, listas y preferencias solo dentro del almacenamiento de la app.",
+			"metrics": "Mostrar métricas básicas en la interfaz para que evalúes la efectividad del bloqueo.",
+			"export": "Permitir que exportes o elimines manualmente cualquier dato almacenado localmente.",
+			"no-third-parties": "No trabajamos con terceros que procesen tus datos personales.",
+			"voluntary": "Solo puedes compartir información si decides exportarla o enviarla voluntariamente.",
+			"legal": "En caso de obligación legal, primero te solicitaríamos la información pertinente, ya que no la almacenamos por defecto.",
+			"control": "Control total desde la app para revisar o eliminar registros locales.",
+			"backup": "Posibilidad de respaldar tus listas y métricas en tu propio dispositivo antes de desinstalar.",
+			"support": "Soporte para consultas relacionadas con privacidad o cumplimiento normativo.",
+			"channel": "Canal abierto para reportar cualquier incidente o inquietud.",
+			"local-only": "Procesamiento local: sin sincronización con servidores ni copias en la nube.",
+			"official-api": "Uso de las API oficiales de la plataforma para gestionar permisos sensibles.",
+			"updates": "Actualizaciones periódicas para mantener el software libre de vulnerabilidades conocidas.",
+			"device-recommendations": "Recomendaciones dentro de la app para que protejas tu dispositivo (PIN, biometría, cifrado).",
+			"settings": "Puedes borrar historial, listas y configuraciones desde los ajustes en cualquier momento.",
+			"uninstall": "Al desinstalar la aplicación se eliminan automáticamente todos los datos asociados.",
+			"email": "Correo: seba3567.dev@gmail.com"
 		},
 		"actions": {
 			"viewOriginal": "Ver original",

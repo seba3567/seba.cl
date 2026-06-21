@@ -71,7 +71,36 @@
 		},
 		"specialties": {
 			"badge": "Specialties",
-			"title": "What I specialize in."
+			"title": "What I specialize in.",
+			"groups": {
+				"data": {
+					"title": "Data Science",
+					"items": [
+						"Business Intelligence",
+						"Data modeling and analysis",
+						"Visualization and storytelling with data",
+						"Applied statistical analysis"
+					]
+				},
+				"software": {
+					"title": "Software Development",
+					"items": [
+						"Backend architecture design",
+						"Robust and maintainable APIs",
+						"Quality assurance and testing",
+						"Versioning and technical collaboration"
+					]
+				},
+				"management": {
+					"title": "Technical Management",
+					"items": [
+						"Agile work (Scrum/Kanban)",
+						"Requirements gathering and refinement",
+						"Clear technical documentation",
+						"Continuous improvement focus"
+					]
+				}
+			}
 		},
 		"contact": {
 			"badge": "Contact",
@@ -136,7 +165,30 @@
 		},
 		"about": {
 			"badge": "02",
-			"title": "What AntiCallCL is."
+			"title": "What AntiCallCL is.",
+			"paragraphs": {
+				"origin": "AntiCallCL was born in response to the growing problem of unwanted calls: companies and services that call repeatedly — sometimes several times in just a few hours — combined with new forms of phone scams and spam that affect thousands of people in Chile every day.",
+				"filter": "The app lets you filter and manage calls by prefix, identifying number ranges used for marketing campaigns or suspicious attempts. This gives the user control over their time and their privacy, reducing interruptions and risks.",
+				"choice": "AntiCallCL doesn't block calls automatically and doesn't access personal info: it offers clear, useful tools so each person can decide how to handle incoming calls."
+			},
+			"features": {
+				"filter": {
+					"title": "Filter by prefix",
+					"body": "Identifiable number ranges for marketing, telemarketing, or scam attempts."
+				},
+				"choice": {
+					"title": "You decide",
+					"body": "It doesn't block automatically. It gives you the information and you make the call."
+				},
+				"curated": {
+					"title": "Curated CL list",
+					"body": "Verifiable, editable, and exportable Chilean prefix list inside the app."
+				},
+				"local": {
+					"title": "100% local",
+					"body": "No accounts, no servers, no cloud. Everything is processed and stored on your phone."
+				}
+			}
 		},
 		"gallery": {
 			"badge": "03",
@@ -147,20 +199,40 @@
 		"stack": {
 			"badge": "04",
 			"title": "How it's built.",
-			"subtitle": "The app runs 100% on the phone. No backend, no servers, no accounts."
+			"subtitle": "The app runs 100% on the phone. No backend, no servers, no accounts.",
+			"layers": {
+				"ui": "UI",
+				"native": "Native Android"
+			},
+			"details": {
+				"ui": "Cross-platform interface, theming, navigation, forms, and state.",
+				"native": "CallScreeningService, contacts, sensitive permissions, and local persistence."
+			}
 		},
 		"privacy": {
 			"badge": "05",
 			"title": "No cloud, no accounts.",
 			"readPolicy": "Read the full policy",
-			"viewSummary": "View interactive summary"
+			"viewSummary": "View interactive summary",
+			"points": {
+				"local": "Your lists and metrics live only on your device",
+				"noAccount": "The app runs with no registration, no accounts, no cloud",
+				"wipe": "You can wipe everything from settings at any time",
+				"uninstall": "Uninstalling the app automatically removes all data"
+			}
 		},
 		"beta": {
 			"badge": "Open beta",
 			"title": "Join the beta program.",
 			"intro": "Try the latest builds before public release. Your feedback shapes the roadmap.",
 			"joinBeta": "Join the beta",
-			"viewPlay": "View on Play Store"
+			"viewPlay": "View on Play Store",
+			"perks": {
+				"early": "Early access before the public release",
+				"channel": "Direct line to the dev team",
+				"feedback": "Help shape the roadmap with your feedback",
+				"updates": "Updated prefixes with every build"
+			}
 		}
 	},
 	"contact": {
@@ -203,65 +275,71 @@
 				"title": "Data we collect",
 				"body": "AntiCall Chile does not collect, store, or transmit personal data to external servers. All blocking and analysis logic runs locally on your device.",
 				"bullets": [
-					"We do not request accounts or credentials: the app runs without registration.",
-					"Blocked numbers and custom lists live only on your phone.",
-					"Call metrics are stored locally and you can delete them whenever you want.",
-					"We only access system permissions to run essential features and never copy that information off the device."
+					"no-accounts",
+					"local-lists",
+					"local-metrics",
+					"system-permissions"
 				]
 			},
 			"uso": {
 				"title": "How we use information",
 				"body": "Since there's no cloud transfer, information use is strictly limited to the app's local operation.",
-				"bullets": [
-					"Process call events on the device to detect and block spam.",
-					"Remember your settings, lists, and preferences only inside the app's storage.",
-					"Show basic metrics so you can gauge blocking effectiveness.",
-					"Let you manually export or delete any locally-stored data."
-				]
+				"bullets": ["process", "config", "metrics", "export"]
 			},
 			"compartir": {
-				"title": "Who we share with",
-				"body": "Nobody. AntiCall Chile does not sell, transfer, or share data with third parties. The app has no ad SDKs or remote analytics.",
-				"bullets": [
-					"No ad network integration.",
-					"No remote analytics or beacons.",
-					"No third-party services that receive user data."
-				]
+				"title": "When we share data",
+				"body": "There is no automatic data transfer or sharing, because the information never leaves your device.",
+				"bullets": ["no-third-parties", "voluntary", "legal"]
 			},
 			"derechos": {
-				"title": "Your rights and control",
-				"body": "Even though the app doesn't keep data on servers, we respect the rights granted by Chilean and international law.",
-				"bullets": [
-					"Local processing: no sync with servers, no cloud copies.",
-					"Deleting the app deletes all associated data.",
-					"You can review or wipe the local database at any time from settings."
-				]
+				"title": "User rights",
+				"body": "Even though the app doesn't store data on servers, we respect the rights granted by Chilean and international law.",
+				"bullets": ["control", "backup", "support", "channel"]
 			},
 			"seguridad": {
-				"title": "Security",
-				"body": "All information is stored encrypted by Android itself. AntiCall doesn't open any outbound channels to the internet.",
+				"title": "Security measures",
+				"body": "We designed the solution to minimize attack surface and external dependencies.",
 				"bullets": [
-					"Encrypted at rest (Android sandbox).",
-					"Sensitive permissions (calls, contacts) are user-granted and revocable.",
-					"No tracking or telemetry code."
+					"local-only",
+					"official-api",
+					"updates",
+					"device-recommendations"
 				]
 			},
-			"menores": {
-				"title": "Minors",
-				"body": "AntiCall Chile is not directed at children under 13. Since the app is local-only with no registration, we don't collect user ages.",
-				"bullets": [
-					"We don't ask for age and we don't verify identity.",
-					"Parents can supervise the app's use and uninstall it whenever they want."
-				]
+			"conservacion": {
+				"title": "Retention period",
+				"body": "Since the information stays only on your phone, you decide how long to keep it.",
+				"bullets": ["settings", "uninstall"]
 			},
-			"cambios": {
-				"title": "Changes to this policy",
-				"body": "If we change this policy, we'll publish the new version on this same page. The last-updated date is shown at the top.",
-				"bullets": [
-					"Updates will be reflected in the 'last updated' date.",
-					"For questions, contact us through the app."
-				]
+			"contacto": {
+				"title": "Privacy contact",
+				"body": "Questions or requests? Our team is available to help.",
+				"bullets": ["email"]
 			}
+		},
+		"bullets": {
+			"no-accounts": "We do not request accounts or credentials: the app runs without registration.",
+			"local-lists": "Blocked numbers and custom lists live only on your phone.",
+			"local-metrics": "Call metrics are stored locally and you can delete them whenever you want.",
+			"system-permissions": "We only access system permissions to run essential features and never copy that information off the device.",
+			"process": "Process call events on the device to detect and block spam.",
+			"config": "Remember your settings, lists, and preferences only inside the app's storage.",
+			"metrics": "Show basic metrics so you can gauge blocking effectiveness.",
+			"export": "Let you manually export or delete any locally-stored data.",
+			"no-third-parties": "We do not work with third parties that process your personal data.",
+			"voluntary": "You can only share information if you decide to export or send it voluntarily.",
+			"legal": "In case of legal obligation, we would first request the relevant information from you, since we don't store it by default.",
+			"control": "Full control from the app to review or delete local records.",
+			"backup": "Option to back up your lists and metrics on your own device before uninstalling.",
+			"support": "Support for privacy or compliance-related inquiries.",
+			"channel": "Open channel to report any incident or concern.",
+			"local-only": "Local processing: no sync with servers, no cloud copies.",
+			"official-api": "Use of official platform APIs to manage sensitive permissions.",
+			"updates": "Periodic updates to keep the software free of known vulnerabilities.",
+			"device-recommendations": "In-app recommendations to help you protect your device (PIN, biometrics, encryption).",
+			"settings": "You can wipe history, lists, and settings from the app at any time.",
+			"uninstall": "Uninstalling the app automatically removes all associated data.",
+			"email": "Email: seba3567.dev@gmail.com"
 		},
 		"actions": {
 			"viewOriginal": "View original",

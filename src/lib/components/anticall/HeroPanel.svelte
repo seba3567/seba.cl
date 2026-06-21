@@ -8,6 +8,7 @@ import {
 	Lock,
 	ShieldCheck,
 } from 'phosphor-svelte';
+import { t } from 'svelte-i18n';
 import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
 import { Badge } from '$lib/components/ui/badge';
 import { BETA_PROGRAM, PLAY_STORE } from '$lib/data/anticall';
@@ -39,14 +40,14 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 						></span>
 						<span class="relative inline-flex size-1.5 rounded-full bg-amber-300"></span>
 					</span>
-					Beta abierta
+					{$t('anticall.hero.beta')}
 				</Badge>
 				<Badge
 					variant="outline"
 					class="border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-neutral-300"
 				>
 					<DeviceMobile size={10} weight="duotone" class="mr-1" />
-					Android 8+
+					{$t('anticall.hero.android')}
 				</Badge>
 			</div>
 
@@ -54,12 +55,11 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 				bind:this={titleEl}
 				class="mt-10 text-[clamp(3rem,9vw,7.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
 			>
-				AntiCallCL<span class="text-neutral-600">.</span>
+				{$t('anticall.hero.title')}<span class="text-neutral-600">.</span>
 			</h1>
 
 			<p class="mt-8 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl">
-				Gestor de llamadas no deseadas para Android. Trabaja entera en tu teléfono, sin
-				servidores ni cuentas. Tú decides qué hacer con cada llamada.
+				{$t('anticall.hero.intro')}
 			</p>
 
 			<div class="mt-7 flex flex-wrap items-center gap-2" data-panel-anim>
@@ -74,7 +74,7 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 						weight="fill"
 						class="transition-transform duration-500 group-hover:-rotate-12"
 					/>
-					Unirme a la beta
+					{$t('anticall.hero.joinBeta')}
 					<ArrowUpRight
 						size={12}
 						weight="bold"
@@ -92,7 +92,7 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 							d="M3.609 1.814 13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893 2.302 2.302-10.937 6.333zm2.302-2.302L18.4 13.18l-3.013 1.745zm3.199-3.198-2.807-1.626L13.792 12l3.6 2.079 2.6-1.504a1 1 0 0 0 0-1.726zM5.864 2.658 16.8 9.99l-2.302 2.303z"
 						/>
 					</svg>
-					Play Store
+					{$t('anticall.hero.playStore')}
 				</a>
 				<button
 					type="button"
@@ -100,7 +100,7 @@ let { titleEl, onOpenPrivacy }: Props = $props();
 					class="group inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-semibold text-neutral-100 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.08]"
 				>
 					<Lock size={14} weight="bold" />
-					Privacidad
+					{$t('anticall.hero.privacy')}
 				</button>
 			</div>
 		</div>

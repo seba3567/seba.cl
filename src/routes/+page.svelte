@@ -1,6 +1,7 @@
 <script lang="ts">
 import { animate, stagger } from 'animejs';
 import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import ContactDialog from '$lib/components/ContactDialog.svelte';
 import ContactPanel from '$lib/components/home/ContactPanel.svelte';
 import HeroPanel from '$lib/components/home/HeroPanel.svelte';
@@ -15,6 +16,9 @@ let { data }: { data: PageData } = $props();
 // Contact dialog state. Email entry uses this instead of a
 // `mailto:` link, so the real address never ships to the client.
 let contactOpen = $state(false);
+
+const pageTitle = $derived($t('home.metaTitle'));
+const pageDescription = $derived($t('home.metaDescription'));
 
 // ----- Horizontal scroll state -----
 const SECTIONS = [
@@ -224,11 +228,8 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>seba3567.cl · Sebastián Muñoz</title>
-	<meta
-		name="description"
-		content="Sebastián Muñoz (@seba3567) — Ingeniero en Informática. Backend, datos, mobile, QA. Proyectos, apps y contacto."
-	/>
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
 </svelte:head>
 
 <!-- Horizontal scroll track -->

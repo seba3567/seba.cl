@@ -32,6 +32,7 @@ import {
 	X,
 } from 'phosphor-svelte';
 import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import { Button } from '$lib/components/ui/button';
 import * as Dialog from '$lib/components/ui/dialog';
 import ChileFlag from './ChileFlag.svelte';
@@ -137,9 +138,7 @@ async function handleSubmit(e: SubmitEvent) {
 
 		if (!res.ok || !data.ok) {
 			errorField = data.field ?? '';
-			errorMessage =
-				data.message ??
-				`Error ${res.status}: no pudimos enviar tu mensaje. Probá de nuevo.`;
+			errorMessage = data.message ?? $t('contact.dialog.errors.generic');
 			status = 'error';
 
 			// Shake animation en el form
@@ -211,7 +210,7 @@ function openChange(v: boolean) {
 				<button
 					type="button"
 					onclick={() => openChange(false)}
-					aria-label="Cerrar"
+					aria-label={$t('common.close')}
 					data-contact-anim
 					class="inline-flex size-8 items-center justify-center rounded-md border border-white/10 bg-white/[0.04] text-neutral-400 transition-colors hover:bg-white/[0.08] hover:text-neutral-100"
 				>
@@ -237,22 +236,21 @@ function openChange(v: boolean) {
 							<h3
 								class="text-balance text-2xl font-semibold tracking-tight text-neutral-50"
 							>
-								Mensaje enviado
+								{$t('contact.dialog.success.title')}
 							</h3>
 							<p class="mt-2 max-w-sm text-sm text-neutral-400">
-								Te respondo a la brevedad al email que dejaste. Si es urgente,
-								usá los links de la sección de contacto.
+								{$t('contact.dialog.success.subtitle')}
 							</p>
 						</div>
 						{#if submittedId}
 							<p
 								class="rounded-md border border-white/5 bg-white/[0.02] px-3 py-1.5 font-mono text-[10px] uppercase tracking-wider text-neutral-500"
 							>
-								Referencia · #{submittedId}
+								{$t('contact.dialog.success.ref', { values: { id: submittedId } })}
 							</p>
 						{/if}
 						<Button onclick={() => openChange(false)} size="sm" class="mt-2">
-							Cerrar
+							{$t('contact.dialog.success.close')}
 						</Button>
 					</div>
 				{:else}
@@ -261,10 +259,10 @@ function openChange(v: boolean) {
 						<h2
 							class="text-balance text-2xl font-semibold tracking-tight text-neutral-50"
 						>
-							Escríbime.
+							{$t('contact.dialog.title')}
 						</h2>
 						<p class="mt-1.5 text-sm text-neutral-400">
-							Llega directo a mi inbox. Sin tracking, sin newsletter.
+							{$t('contact.dialog.subtitle')}
 						</p>
 					</div>
 
@@ -280,7 +278,7 @@ function openChange(v: boolean) {
 							style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;"
 						>
 							<label>
-								Website
+								{$t('contact.dialog.honeypot')}
 								<input
 									type="text"
 									tabindex="-1"
@@ -296,7 +294,7 @@ function openChange(v: boolean) {
 							<label data-contact-anim class="flex flex-col gap-1.5">
 								<span
 									class="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-									>Nombre</span
+									>{$t('contact.dialog.name')}</span
 								>
 								<div
 									class="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 transition-colors focus-within:border-mint-400/40 focus-within:bg-mint-500/[0.04]"
@@ -310,7 +308,7 @@ function openChange(v: boolean) {
 										maxlength="100"
 										autocomplete="name"
 										disabled={status === 'sending'}
-										placeholder="Tu nombre"
+										placeholder={$t('contact.dialog.namePlaceholder')}
 										class="w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-600 focus:outline-none disabled:opacity-50"
 									/>
 								</div>
@@ -319,7 +317,7 @@ function openChange(v: boolean) {
 							<label data-contact-anim class="flex flex-col gap-1.5">
 								<span
 									class="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-									>Email</span
+									>{$t('contact.dialog.email')}</span
 								>
 								<div
 									class="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 transition-colors focus-within:border-mint-400/40 focus-within:bg-mint-500/[0.04]"
@@ -331,7 +329,7 @@ function openChange(v: boolean) {
 										required
 										autocomplete="email"
 										disabled={status === 'sending'}
-										placeholder="tu@email.com"
+										placeholder={$t('contact.dialog.emailPlaceholder')}
 										class="w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-600 focus:outline-none disabled:opacity-50"
 									/>
 								</div>
@@ -342,7 +340,7 @@ function openChange(v: boolean) {
 						<label data-contact-anim class="flex flex-col gap-1.5">
 							<span
 								class="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-								>Asunto</span
+								>{$t('contact.dialog.subject')}</span
 							>
 							<div
 								class="flex items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 transition-colors focus-within:border-mint-400/40 focus-within:bg-mint-500/[0.04]"
@@ -359,7 +357,7 @@ function openChange(v: boolean) {
 									minlength="3"
 									maxlength="200"
 									disabled={status === 'sending'}
-									placeholder="¿En qué te puedo ayudar?"
+									placeholder={$t('contact.dialog.subjectPlaceholder')}
 									class="w-full bg-transparent text-sm text-neutral-100 placeholder:text-neutral-600 focus:outline-none disabled:opacity-50"
 								/>
 							</div>
@@ -369,7 +367,7 @@ function openChange(v: boolean) {
 						<label data-contact-anim class="flex flex-col gap-1.5">
 							<span
 								class="font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-500"
-								>Mensaje</span
+								>{$t('contact.dialog.message')}</span
 							>
 							<textarea
 								bind:value={message}
@@ -378,7 +376,7 @@ function openChange(v: boolean) {
 								maxlength="5000"
 								disabled={status === 'sending'}
 								rows="5"
-								placeholder="Contame un poco del proyecto, idea o consulta…"
+								placeholder={$t('contact.dialog.messagePlaceholder')}
 								class="resize-none rounded-md border border-white/10 bg-white/[0.03] px-3 py-2.5 text-sm text-neutral-100 placeholder:text-neutral-600 transition-colors focus:border-mint-400/40 focus:bg-mint-500/[0.04] focus:outline-none disabled:opacity-50"
 							></textarea>
 							<span class="self-end font-mono text-[10px] text-neutral-600">
@@ -400,7 +398,7 @@ function openChange(v: boolean) {
 										<p
 											class="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-rose-300/70"
 										>
-											Campo: {errorField}
+											{errorField}
 										</p>
 									{/if}
 								</div>
@@ -411,7 +409,7 @@ function openChange(v: boolean) {
 						<div data-contact-anim class="mt-1 flex items-center justify-between gap-3">
 							<p class="text-[11px] text-neutral-500">
 								<EnvelopeSimple size={11} weight="duotone" class="inline" />
-								Llega al inbox · sin tracking
+								{$t('contact.dialog.subtitle')}
 							</p>
 							<div class="flex items-center gap-2">
 								<button
@@ -420,7 +418,7 @@ function openChange(v: boolean) {
 									disabled={status === 'sending'}
 									class="rounded-md px-3 py-1.5 text-xs font-medium text-neutral-400 transition-colors hover:bg-white/5 hover:text-neutral-100 disabled:opacity-50"
 								>
-									Cancelar
+									{$t('contact.dialog.cancel')}
 								</button>
 								<Button
 									type="submit"
@@ -433,11 +431,11 @@ function openChange(v: boolean) {
 											<span
 												class="size-1.5 animate-pulse rounded-full bg-current"
 											></span>
-											Enviando…
+											{$t('contact.dialog.sending')}
 										</span>
 									{:else}
 										<PaperPlaneTilt size={12} weight="fill" data-icon="inline-start" />
-										Enviar
+										{$t('contact.dialog.send')}
 									{/if}
 								</Button>
 							</div>

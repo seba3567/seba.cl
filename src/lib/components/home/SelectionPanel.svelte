@@ -1,5 +1,6 @@
 <script lang="ts">
 import { ArrowUpRight, PhoneX } from 'phosphor-svelte';
+import { t } from 'svelte-i18n';
 import { Badge } from '$lib/components/ui/badge';
 import type { GitHubRepo } from '$lib/server/github';
 import { langColor } from '$lib/utils/langColor';
@@ -22,12 +23,12 @@ let { repos }: Props = $props();
 					variant="outline"
 					class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 				>
-					01 — {String(repos.length).padStart(2, '0')}
+					{$t('home.selection.badge', { values: { count: String(repos.length).padStart(2, '0') } })}
 				</Badge>
 				<h2
 					class="mt-3 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl"
 				>
-					Selección.
+					{$t('home.selection.title')}
 				</h2>
 			</div>
 			<a
@@ -35,7 +36,7 @@ let { repos }: Props = $props();
 				data-panel-anim
 				class="group hidden items-center gap-1.5 font-mono text-xs text-neutral-400 transition-colors hover:text-neutral-100 sm:inline-flex"
 			>
-				Ver todos
+				{$t('home.selection.viewAll')}
 				<ArrowUpRight
 					size={11}
 					weight="bold"
@@ -99,7 +100,7 @@ let { repos }: Props = $props();
 									class="ml-auto inline-flex items-center gap-1 rounded-md border border-mint-400/20 bg-mint-500/5 px-1.5 py-0.5 text-[9px] font-normal text-mint-300"
 								>
 									<PhoneX size={8} weight="duotone" />
-									App
+									{$t('home.selection.featuredTag')}
 								</span>
 							{/if}
 						</div>

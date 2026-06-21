@@ -1,4 +1,5 @@
 <script lang="ts">
+import { t } from 'svelte-i18n';
 import { Badge } from '$lib/components/ui/badge';
 import * as Card from '$lib/components/ui/card';
 import { specialties } from '$lib/data/profile';
@@ -14,15 +15,15 @@ import { specialties } from '$lib/data/profile';
 				variant="outline"
 				class="border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-neutral-400"
 			>
-				Especialidades
+				{$t('home.specialties.badge')}
 			</Badge>
 			<h2 class="mt-3 text-5xl font-semibold tracking-[-0.03em] text-neutral-50 sm:text-6xl">
-				En qué me especializo.
+				{$t('home.specialties.title')}
 			</h2>
 		</div>
 
 		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-			{#each specialties as spec (spec.title)}
+			{#each specialties as spec (spec.titleKey)}
 				{@const Icon = spec.icon}
 				<Card.Root
 					data-panel-anim
@@ -38,12 +39,14 @@ import { specialties } from '$lib/data/profile';
 							class="text-neutral-300 transition-colors group-hover:text-mint-300"
 						/>
 					</div>
-					<h3 class="text-base font-semibold text-neutral-50">{spec.title}</h3>
+					<h3 class="text-base font-semibold text-neutral-50">
+						{$t(`home.specialties.groups.${spec.titleKey}.title`)}
+					</h3>
 					<ul class="flex flex-col gap-1.5">
-						{#each spec.items as item (item)}
+						{#each spec.items as itemKey (itemKey)}
 							<li class="flex items-start gap-2 text-sm text-neutral-300">
 								<span class="mt-1.5 size-1 shrink-0 rounded-full bg-mint-400/60"></span>
-								<span>{item}</span>
+								<span>{$t(`home.specialties.groups.${spec.titleKey}.items.${itemKey}`)}</span>
 							</li>
 						{/each}
 					</ul>

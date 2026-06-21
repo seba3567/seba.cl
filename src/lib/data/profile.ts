@@ -15,12 +15,12 @@ export const profile = {
 };
 
 export const stack = [
-	{ label: 'En uso', items: 'TypeScript · Django · SQL · Python' },
+	{ labelKey: 'inUse', items: 'TypeScript · Django · SQL · Python' },
 	{
-		label: 'En progreso',
+		labelKey: 'learning',
 		items: 'Kotlin · Dart · Go · Ruby',
 	},
-	{ label: 'Base', items: 'JavaScript · Lua · REST · Docker' },
+	{ labelKey: 'base', items: 'JavaScript · Lua · REST · Docker' },
 ] as const;
 
 type PhosphorIcon = Component<{
@@ -31,38 +31,23 @@ type PhosphorIcon = Component<{
 
 export const specialties: ReadonlyArray<{
 	icon: PhosphorIcon;
-	title: string;
+	titleKey: string;
 	items: ReadonlyArray<string>;
 }> = [
 	{
 		icon: Database,
-		title: 'Ciencia de Datos',
-		items: [
-			'Inteligencia de Negocios',
-			'Modelado y análisis de datos',
-			'Visualización y storytelling con datos',
-			'Análisis estadístico aplicado',
-		],
+		titleKey: 'data',
+		items: ['BI', 'data-modeling', 'visualization', 'statistics'],
 	},
 	{
 		icon: Code,
-		title: 'Desarrollo de Software',
-		items: [
-			'Diseño de arquitectura backend',
-			'APIs robustas y mantenibles',
-			'Aseguramiento de calidad y testing',
-			'Versionado y colaboración técnica',
-		],
+		titleKey: 'software',
+		items: ['backend', 'apis', 'qa', 'versioning'],
 	},
 	{
 		icon: Kanban,
-		title: 'Gestión Técnica',
-		items: [
-			'Trabajo ágil (Scrum/Kanban)',
-			'Levantamiento y refinamiento de requerimientos',
-			'Documentación técnica clara',
-			'Enfoque en mejora continua',
-		],
+		titleKey: 'management',
+		items: ['agile', 'requirements', 'docs', 'kaizen'],
 	},
 ] as const;
 
@@ -72,6 +57,10 @@ export const specialties: ReadonlyArray<{
 // only in the backend (CONTACT_TO) and never ships to the
 // client bundle.
 export const contact = [
-	{ label: 'GitHub', handle: '@seba3567', href: 'https://github.com/seba3567' },
-	{ label: 'Email', handle: 'Formulario seguro', href: '' },
+	{
+		kind: 'github' as const,
+		handle: '@seba3567',
+		href: 'https://github.com/seba3567',
+	},
+	{ kind: 'email' as const, handle: '', href: '' },
 ] as const;

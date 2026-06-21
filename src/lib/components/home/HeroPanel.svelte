@@ -8,8 +8,8 @@ import {
 	Rocket,
 	Stack,
 } from 'phosphor-svelte';
+import { t } from 'svelte-i18n';
 import ChileFlag from '$lib/components/ChileFlag.svelte';
-import { profile } from '$lib/data/profile';
 
 // Hero panel — left: name + intro + CTAs, right: 2x2 stat
 // grid. The data-stat-card / data-magnetic / panel-h1
@@ -23,10 +23,10 @@ type Stat = {
 };
 
 const stats: Stat[] = [
-	{ label: 'Lenguajes', value: '4', icon: Cpu },
-	{ label: 'Repos', value: '90+', icon: Stack },
-	{ label: 'Apps', value: '1', icon: DeviceMobile },
-	{ label: 'Stack', value: '4', icon: Stack },
+	{ label: 'languages', value: '4', icon: Cpu },
+	{ label: 'repos', value: '90+', icon: Stack },
+	{ label: 'apps', value: '1', icon: DeviceMobile },
+	{ label: 'stack', value: '4', icon: Stack },
 ];
 </script>
 
@@ -50,7 +50,7 @@ const stats: Stat[] = [
 						<span class="relative inline-flex size-2 rounded-full bg-mint-300"></span>
 					</span>
 					<span class="text-[11px] font-medium tracking-tight text-mint-200"
-						>Disponible para colaborar</span
+						>{$t('home.hero.status')}</span
 					>
 				</div>
 
@@ -60,7 +60,7 @@ const stats: Stat[] = [
 				>
 					<ChileFlag size={16} />
 					<span class="text-[11px] font-medium tracking-tight text-neutral-200"
-						>{profile.location}</span
+						>{$t('home.hero.location')}</span
 					>
 				</div>
 			</div>
@@ -69,15 +69,15 @@ const stats: Stat[] = [
 				class="panel-h1 mt-10 text-[clamp(3.5rem,10vw,8.5rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-neutral-50"
 				style="opacity: 0;"
 			>
-				Sebastián<br />
-				<span class="text-neutral-600">Muñoz.</span>
+				{$t('home.hero.nameFirst')}<br />
+				<span class="text-neutral-600">{$t('home.hero.nameLast')}</span>
 			</h1>
 
 			<p
 				class="panel-h1 mt-8 max-w-xl text-balance text-lg leading-relaxed text-neutral-400 sm:text-xl"
 				style="opacity: 0;"
 			>
-				{profile.intro}
+				{$t('home.hero.intro')}
 			</p>
 
 			<div class="panel-h1 mt-7 flex flex-wrap items-center gap-2" style="opacity: 0;">
@@ -91,7 +91,7 @@ const stats: Stat[] = [
 						weight="fill"
 						class="transition-transform duration-500 group-hover:-rotate-12 group-hover:translate-y-[-1px]"
 					/>
-					Ver apps
+					{$t('home.hero.viewApps')}
 					<ArrowUpRight
 						size={12}
 						weight="bold"
@@ -110,7 +110,7 @@ const stats: Stat[] = [
 						weight="fill"
 						class="transition-transform duration-300 group-hover:rotate-[-8deg]"
 					/>
-					GitHub
+					{$t('home.hero.github')}
 				</a>
 				<a
 					href="mailto:seba3567.dev@gmail.com"
@@ -122,7 +122,7 @@ const stats: Stat[] = [
 						weight="fill"
 						class="transition-transform duration-300 group-hover:-translate-y-0.5"
 					/>
-					Email
+					{$t('home.hero.email')}
 				</a>
 			</div>
 		</div>
@@ -153,7 +153,7 @@ const stats: Stat[] = [
 							0
 						</div>
 						<div class="truncate text-[10px] uppercase tracking-wider text-neutral-500">
-							{stat.label}
+							{$t(`home.hero.stats.${stat.label}`)}
 						</div>
 					</div>
 				</div>

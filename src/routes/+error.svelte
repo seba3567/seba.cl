@@ -5,13 +5,12 @@ import {
 	MagnifyingGlass,
 	Warning,
 } from 'phosphor-svelte';
+import { t } from 'svelte-i18n';
 import { page } from '$app/state';
 import { Button } from '$lib/components/ui/button';
 
 const status = $derived(page.status);
-const message = $derived(
-	page.error?.message ?? 'Algo se rompió del lado del servidor.',
-);
+const message = $derived(page.error?.message ?? $t('error.serverBody'));
 const stack = $derived(
 	(page.error as (Error & { stack?: string }) | null)?.stack,
 );
@@ -33,11 +32,12 @@ function isNotFound(): boolean {
 			class="mb-8 inline-flex items-center gap-2 rounded-full border border-mint-400/20 bg-mint-500/5 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-mint-300"
 		>
 			<span class="relative flex size-1.5">
-				<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint-400 opacity-75"
+				<span
+					class="absolute inline-flex h-full w-full animate-ping rounded-full bg-mint-400 opacity-75"
 				></span>
 				<span class="relative inline-flex size-1.5 rounded-full bg-mint-400"></span>
 			</span>
-			Error {status}
+			{$t('error.title', { values: { status } })}
 		</div>
 
 		<!-- Big status code + headline -->
@@ -50,15 +50,14 @@ function isNotFound(): boolean {
 			class="mt-4 text-balance text-2xl font-semibold tracking-[-0.02em] text-neutral-100 sm:text-3xl"
 		>
 			{#if isNotFound()}
-				Esta página no existe.
+				{$t('error.notFoundTitle')}
 			{:else}
-				Algo se rompió.
+				{$t('error.serverBody')}
 			{/if}
 		</h1>
 		<p class="mt-3 max-w-md text-sm text-neutral-400 sm:text-base">
 			{#if isNotFound()}
-				La ruta que pediste no está en este sitio. Revisá la URL, o volvé al inicio
-				y usá la búsqueda (Ctrl/⌘ + K) para encontrar lo que buscás.
+				{$t('error.notFoundBody')}
 			{:else}
 				{message}
 			{/if}
@@ -68,15 +67,19 @@ function isNotFound(): boolean {
 		<div class="mt-10 flex flex-wrap items-center gap-3">
 			<Button onclick={() => history.back()} variant="outline" size="sm">
 				<ArrowLeft size={14} weight="bold" data-icon="inline-start" />
-				Volver
+				{$t('common.back')}
 			</Button>
 			<Button onclick={() => (location.href = '/')} size="sm">
-				Inicio
+				{$t('common.home')}
 				<ArrowUpRight size={14} weight="bold" data-icon="inline-end" />
 			</Button>
-			<Button onclick={() => window.dispatchEvent(new CustomEvent('seba:open-search'))} variant="ghost" size="sm">
+			<Button
+				onclick={() => window.dispatchEvent(new CustomEvent('seba:open-search'))}
+				variant="ghost"
+				size="sm"
+			>
 				<MagnifyingGlass size={14} weight="bold" data-icon="inline-start" />
-				Buscar
+				{$t('common.search')}
 			</Button>
 		</div>
 
@@ -85,9 +88,11 @@ function isNotFound(): boolean {
 			<details
 				class="mt-12 rounded-lg border border-white/5 bg-neutral-950/40 p-4 font-mono text-xs text-neutral-500"
 			>
-				<summary class="cursor-pointer select-none text-neutral-400 hover:text-neutral-200">
+				<summary
+					class="cursor-pointer select-none text-neutral-400 hover:text-neutral-200"
+				>
 					<Warning size={12} weight="bold" class="-mt-0.5 mr-1.5 inline" />
-					Stack trace (dev)
+					{$t('error.stack')}
 				</summary>
 				<pre class="mt-3 overflow-x-auto whitespace-pre-wrap break-words">{stack}</pre>
 			</details>

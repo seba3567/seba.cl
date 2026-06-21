@@ -1,6 +1,7 @@
 <script lang="ts">
 import { animate, stagger } from 'animejs';
 import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import AboutPanel from '$lib/components/anticall/AboutPanel.svelte';
 import BetaPanel from '$lib/components/anticall/BetaPanel.svelte';
 import GalleryPanel from '$lib/components/anticall/GalleryPanel.svelte';
@@ -12,6 +13,9 @@ import Lightbox from '$lib/components/Lightbox.svelte';
 import PanelDots from '$lib/components/PanelDots.svelte';
 import PrivacyDialog from '$lib/components/PrivacyDialog.svelte';
 import { galleryItems } from '$lib/data/anticall';
+
+const pageTitle = $derived($t('anticall.metaTitle'));
+const pageDescription = $derived($t('anticall.metaDescription'));
 
 // ----- Horizontal scroll state -----
 const SECTIONS = [
@@ -111,11 +115,8 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>AntiCallCL · seba3567.cl</title>
-	<meta
-		name="description"
-		content="AntiCallCL — gestor local de llamadas no deseadas para Android (Flutter + Kotlin). Filtra por prefijo, sin nube, sin cuentas. Beta abierta."
-	/>
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
 </svelte:head>
 
 <!-- Horizontal scroll track — h-screen locks the track to exactly

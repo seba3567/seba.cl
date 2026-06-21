@@ -1,6 +1,7 @@
 <script lang="ts">
 import { ArrowUpRight, Flask, Lock, Sparkle, Star } from 'phosphor-svelte';
 import { onMount } from 'svelte';
+import { t } from 'svelte-i18n';
 import { revealChars, revealOnScroll } from '$lib/animations';
 import AntiCallLogo from '$lib/components/AntiCallLogo.svelte';
 import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
@@ -16,6 +17,9 @@ const PLAY_STORE =
 const PRIVACY = 'https://seba3567.github.io/anticall_pages/';
 const APP_DETAIL = '/apps/anticall';
 const CONTACT_EMAIL = 'seba3567.dev@gmail.com';
+
+const pageTitle = $derived($t('apps.metaTitle'));
+const pageDescription = $derived($t('apps.metaDescription'));
 
 let titleEl: HTMLElement | undefined = $state();
 let listEl: HTMLElement | undefined = $state();
@@ -44,11 +48,8 @@ onMount(() => {
 </script>
 
 <svelte:head>
-	<title>Apps · seba3567.cl</title>
-	<meta
-		name="description"
-		content="Aplicaciones publicadas de Sebastián Muñoz · AntiCallCL (Android, beta abierta)."
-	/>
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
 </svelte:head>
 
 <main class="relative mx-auto w-full max-w-6xl flex-1 px-6 sm:px-10">
