@@ -1,222 +1,228 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/state';
-	import {
-		GithubLogo,
-		List,
-		MagnifyingGlass,
-		DeviceMobile,
-		ShieldCheck,
-		CaretDown,
-		ArrowUpRight,
-	} from 'phosphor-svelte';
-	import * as NavigationMenu from '$lib/components/ui/navigation-menu';
-	import * as Sheet from '$lib/components/ui/sheet';
-	import { Separator } from '$lib/components/ui/separator';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import { animate } from 'animejs';
-	import SearchPanel from './SearchPanel.svelte';
+import { animate } from 'animejs';
+import {
+	ArrowUpRight,
+	CaretDown,
+	DeviceMobile,
+	GithubLogo,
+	List,
+	MagnifyingGlass,
+	type ShieldCheck,
+} from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { page } from '$app/state';
+import { Badge } from '$lib/components/ui/badge';
+import { Button } from '$lib/components/ui/button';
+import * as NavigationMenu from '$lib/components/ui/navigation-menu';
+import { Separator } from '$lib/components/ui/separator';
+import * as Sheet from '$lib/components/ui/sheet';
+import SearchPanel from './SearchPanel.svelte';
 
-	type Props = {
-		username?: string;
-		repoCount?: number;
-	};
-	let { username = 'seba3567', repoCount = 0 }: Props = $props();
+type Props = {
+	username?: string;
+	repoCount?: number;
+};
+let { username = 'seba3567', repoCount = 0 }: Props = $props();
 
-	const currentPath = $derived(page.url?.pathname ?? '/');
-	const isHome = $derived(currentPath === '/');
-	const isProjects = $derived(currentPath.startsWith('/proyectos'));
-	const isApps = $derived(currentPath.startsWith('/apps'));
+const currentPath = $derived(page.url?.pathname ?? '/');
+const isHome = $derived(currentPath === '/');
+const isProjects = $derived(currentPath.startsWith('/proyectos'));
+const isApps = $derived(currentPath.startsWith('/apps'));
 
-	/**
-	 * Dynamic breadcrumb from the current URL.
-	 * Each segment has a label and (for non-terminal) an href.
-	 * Used in the brand sub-label so the path is visible in the nav,
-	 * not floating above the page content.
-	 */
-	type Crumb = { label: string; href: string | null };
-	const crumbs = $derived.by<Crumb[]>(() => {
-		const path = currentPath;
-		if (path === '/') return [{ label: 'inicio', href: null }];
-		const segs = path.split('/').filter(Boolean);
-		const out: Crumb[] = [{ label: 'inicio', href: '/' }];
-		let acc = '';
-		for (let i = 0; i < segs.length; i++) {
-			acc += '/' + segs[i];
-			out.push({
-				label: segs[i],
-				href: i === segs.length - 1 ? null : acc,
-			});
+/**
+ * Dynamic breadcrumb from the current URL.
+ * Each segment has a label and (for non-terminal) an href.
+ * Used in the brand sub-label so the path is visible in the nav,
+ * not floating above the page content.
+ */
+type Crumb = { label: string; href: string | null };
+const crumbs = $derived.by<Crumb[]>(() => {
+	const path = currentPath;
+	if (path === '/') return [{ label: 'inicio', href: null }];
+	const segs = path.split('/').filter(Boolean);
+	const out: Crumb[] = [{ label: 'inicio', href: '/' }];
+	let acc = '';
+	for (let i = 0; i < segs.length; i++) {
+		acc += `/${segs[i]}`;
+		out.push({
+			label: segs[i],
+			href: i === segs.length - 1 ? null : acc,
+		});
+	}
+	return out;
+});
+
+let searchOpen = $state(false);
+let mobileOpen = $state(false);
+let searchTriggerEl: HTMLButtonElement | undefined = $state();
+let avatarEl: HTMLDivElement | undefined = $state();
+let avatarWrapEl: HTMLDivElement | undefined = $state();
+
+type NavGroupItem = {
+	title: string;
+	href: string;
+	description: string;
+	icon: typeof ShieldCheck;
+	tag?: string;
+	section?: string;
+};
+
+type NavGroup = {
+	trigger: string;
+	href: string;
+	match: (path: string) => boolean;
+	items: NavGroupItem[];
+};
+
+const navGroups: NavGroup[] = [
+	{
+		trigger: 'Apps',
+		href: '/apps',
+		match: (p) => p.startsWith('/apps'),
+		items: [
+			// Solo Catálogo: las apps específicas (AntiCallCL, Beta,
+			// Play Store) ahora viven en /apps/anticall (horizontal
+			// scroll). El dropdown se mantiene como punto de entrada
+			// al catálogo general.
+			{
+				title: 'Catálogo',
+				href: '/apps',
+				description: 'Apps publicadas y en beta',
+				icon: DeviceMobile,
+				section: 'general',
+			},
+		],
+	},
+];
+
+function isActive(href: string): boolean {
+	return currentPath === href;
+}
+function isExternal(href: string): boolean {
+	return /^https?:|^mailto:/.test(href);
+}
+
+// Scroll progress removed (BackToTop + horizontal scroll handle this now)
+onMount(() => {
+	// Listen for global "open search" events from anywhere
+	const onOpenSearch = () => (searchOpen = true);
+	window.addEventListener('seba:open-search', onOpenSearch as EventListener);
+
+	// '/' opens search globally
+	const onKey = (e: KeyboardEvent) => {
+		const t = e.target;
+		const isTyping =
+			t instanceof HTMLElement &&
+			(t.tagName === 'INPUT' ||
+				t.tagName === 'TEXTAREA' ||
+				t.isContentEditable);
+		if (e.key === '/' && !searchOpen && !isTyping) {
+			e.preventDefault();
+			searchOpen = true;
 		}
-		return out;
-	});
-
-	let searchOpen = $state(false);
-	let mobileOpen = $state(false);
-	let searchTriggerEl: HTMLButtonElement | undefined = $state();
-	let avatarEl: HTMLDivElement | undefined = $state();
-	let avatarWrapEl: HTMLDivElement | undefined = $state();
-
-	type NavGroupItem = {
-		title: string;
-		href: string;
-		description: string;
-		icon: typeof ShieldCheck;
-		tag?: string;
-		section?: string;
 	};
+	window.addEventListener('keydown', onKey);
 
-	type NavGroup = {
-		trigger: string;
-		href: string;
-		match: (path: string) => boolean;
-		items: NavGroupItem[];
-	};
-
-	const navGroups: NavGroup[] = [
-		{
-			trigger: 'Apps',
-			href: '/apps',
-			match: (p) => p.startsWith('/apps'),
-			items: [
-				// Solo Catálogo: las apps específicas (AntiCallCL, Beta,
-				// Play Store) ahora viven en /apps/anticall (horizontal
-				// scroll). El dropdown se mantiene como punto de entrada
-				// al catálogo general.
-				{
-					title: 'Catálogo',
-					href: '/apps',
-					description: 'Apps publicadas y en beta',
-					icon: DeviceMobile,
-					section: 'general',
-				},
-			],
-		},
-	];
-
-	function isActive(href: string): boolean {
-		return currentPath === href;
-	}
-	function isExternal(href: string): boolean {
-		return /^https?:|^mailto:/.test(href);
-	}
-
-	// Scroll progress removed (BackToTop + horizontal scroll handle this now)
-	onMount(() => {
-
-		// Listen for global "open search" events from anywhere
-		const onOpenSearch = () => (searchOpen = true);
-		window.addEventListener('seba:open-search', onOpenSearch as EventListener);
-
-		// '/' opens search globally
-		const onKey = (e: KeyboardEvent) => {
-			const t = e.target;
-			const isTyping =
-				t instanceof HTMLElement &&
-				(t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable);
-			if (e.key === '/' && !searchOpen && !isTyping) {
-				e.preventDefault();
-				searchOpen = true;
-			}
-		};
-		window.addEventListener('keydown', onKey);
-
-		// Tiny pulse on the search button to draw attention
-		let pulseTimer: ReturnType<typeof setTimeout> | null = null;
-		const triggerPulse = () => {
-			if (!searchTriggerEl) return;
-			pulseTimer = setTimeout(() => {
-				if (searchTriggerEl && !searchOpen) {
-					animate(searchTriggerEl, {
-						scale: [1, 1.04, 1],
-						duration: 600,
-						ease: 'inOut(2)',
-					});
-				}
-			}, 1500);
-		};
-		triggerPulse();
-
-		// 3D avatar: entrance (scale + rotateY) + hover tilt
-		let avatarCleanups: Array<() => void> = [];
-		const aEl = avatarEl;
-		const wEl = avatarWrapEl;
-		if (aEl) {
-			animate(aEl, {
-				scale: [0.4, 1],
-				rotateY: [-90, 0],
-				opacity: [0, 1],
-				duration: 900,
-				ease: 'out(4)',
-				delay: 200,
-			});
-
-			// Subtle continuous "breathing" tilt so the 3D feels alive
-			const breathe = animate(aEl, {
-				rotateX: [0, 4, 0, -2, 0],
-				duration: 6000,
-				ease: 'inOut(2)',
-				loop: true,
-			});
-			avatarCleanups.push(() => {
-				try {
-					breathe.revert();
-				} catch {
-					/* noop */
-				}
-			});
-
-			// Hover tilt (more pronounced)
-			if (wEl) {
-				const onEnter = () => {
-					animate(aEl, {
-						rotateY: 18,
-						rotateX: 10,
-						scale: 1.06,
-						duration: 500,
-						ease: 'out(3)',
-					});
-				};
-				const onLeave = () => {
-					animate(aEl, {
-						rotateY: 0,
-						rotateX: 0,
-						scale: 1,
-						duration: 700,
-						ease: 'out(4)',
-					});
-				};
-				wEl.addEventListener('mouseenter', onEnter);
-				wEl.addEventListener('mouseleave', onLeave);
-				avatarCleanups.push(() => {
-					wEl.removeEventListener('mouseenter', onEnter);
-					wEl.removeEventListener('mouseleave', onLeave);
+	// Tiny pulse on the search button to draw attention
+	let pulseTimer: ReturnType<typeof setTimeout> | null = null;
+	const triggerPulse = () => {
+		if (!searchTriggerEl) return;
+		pulseTimer = setTimeout(() => {
+			if (searchTriggerEl && !searchOpen) {
+				animate(searchTriggerEl, {
+					scale: [1, 1.04, 1],
+					duration: 600,
+					ease: 'inOut(2)',
 				});
 			}
+		}, 1500);
+	};
+	triggerPulse();
+
+	// 3D avatar: entrance (scale + rotateY) + hover tilt
+	let avatarCleanups: Array<() => void> = [];
+	const aEl = avatarEl;
+	const wEl = avatarWrapEl;
+	if (aEl) {
+		animate(aEl, {
+			scale: [0.4, 1],
+			rotateY: [-90, 0],
+			opacity: [0, 1],
+			duration: 900,
+			ease: 'out(4)',
+			delay: 200,
+		});
+
+		// Subtle continuous "breathing" tilt so the 3D feels alive
+		const breathe = animate(aEl, {
+			rotateX: [0, 4, 0, -2, 0],
+			duration: 6000,
+			ease: 'inOut(2)',
+			loop: true,
+		});
+		avatarCleanups.push(() => {
+			try {
+				breathe.revert();
+			} catch {
+				/* noop */
+			}
+		});
+
+		// Hover tilt (more pronounced)
+		if (wEl) {
+			const onEnter = () => {
+				animate(aEl, {
+					rotateY: 18,
+					rotateX: 10,
+					scale: 1.06,
+					duration: 500,
+					ease: 'out(3)',
+				});
+			};
+			const onLeave = () => {
+				animate(aEl, {
+					rotateY: 0,
+					rotateX: 0,
+					scale: 1,
+					duration: 700,
+					ease: 'out(4)',
+				});
+			};
+			wEl.addEventListener('mouseenter', onEnter);
+			wEl.addEventListener('mouseleave', onLeave);
+			avatarCleanups.push(() => {
+				wEl.removeEventListener('mouseenter', onEnter);
+				wEl.removeEventListener('mouseleave', onLeave);
+			});
 		}
-
-		return () => {
-			window.removeEventListener('seba:open-search', onOpenSearch as EventListener);
-			window.removeEventListener('keydown', onKey);
-			if (pulseTimer) clearTimeout(pulseTimer);
-			avatarCleanups.forEach((fn) => fn());
-		};
-	});
-
-	function scrollToSection(e: MouseEvent, id: string) {
-		// If we're on the home page, intercept the click and horizontal-scroll
-		// the home track. Otherwise let the link navigate normally.
-		if (typeof window === 'undefined') return;
-		const onHome = window.location.pathname === '/';
-		const target = document.getElementById(id);
-		if (!onHome || !target) return;
-		e.preventDefault();
-		const track = document.getElementById('home-track');
-		if (!track) return;
-		const left = target.offsetLeft - track.offsetLeft;
-		track.scrollTo({ left, behavior: 'smooth' });
 	}
+
+	return () => {
+		window.removeEventListener(
+			'seba:open-search',
+			onOpenSearch as EventListener,
+		);
+		window.removeEventListener('keydown', onKey);
+		if (pulseTimer) clearTimeout(pulseTimer);
+		avatarCleanups.forEach((fn) => {
+			fn();
+		});
+	};
+});
+
+function scrollToSection(e: MouseEvent, id: string) {
+	// If we're on the home page, intercept the click and horizontal-scroll
+	// the home track. Otherwise let the link navigate normally.
+	if (typeof window === 'undefined') return;
+	const onHome = window.location.pathname === '/';
+	const target = document.getElementById(id);
+	if (!onHome || !target) return;
+	e.preventDefault();
+	const track = document.getElementById('home-track');
+	if (!track) return;
+	const left = target.offsetLeft - track.offsetLeft;
+	track.scrollTo({ left, behavior: 'smooth' });
+}
 </script>
 
 <!-- Scroll progress bar removed: replaced by BackToTop button + horizontal scroll. -->

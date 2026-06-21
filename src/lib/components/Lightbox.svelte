@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { animate, stagger, type AnimationParams } from 'animejs';
+	import { animate, stagger } from 'animejs';
 
 	function prefersReducedMotion(): boolean {
 		if (typeof window === 'undefined' || !window.matchMedia) return false;

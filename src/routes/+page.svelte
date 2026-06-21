@@ -1,324 +1,338 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { page } from '$app/state';
-	import {
-		GithubLogo,
-		EnvelopeSimple,
-		ArrowUpRight,
-		PhoneX,
-		Rocket,
-		Stack,
-		Cpu,
-		DeviceMobile,
-		Code,
-		Database,
-		Kanban,
-	} from 'phosphor-svelte';
-	import * as Card from '$lib/components/ui/card';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Separator } from '$lib/components/ui/separator';
-	import GlassCard from '$lib/components/GlassCard.svelte';
-	import ChileFlag from '$lib/components/ChileFlag.svelte';
-	import ContactDialog from '$lib/components/ContactDialog.svelte';
-	import { animate, stagger } from 'animejs';
-	import type { PageData } from './$types';
+import { animate, stagger } from 'animejs';
+import {
+	ArrowUpRight,
+	Code,
+	Cpu,
+	Database,
+	DeviceMobile,
+	EnvelopeSimple,
+	GithubLogo,
+	Kanban,
+	PhoneX,
+	Rocket,
+	Stack,
+} from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { page } from '$app/state';
+import ChileFlag from '$lib/components/ChileFlag.svelte';
+import ContactDialog from '$lib/components/ContactDialog.svelte';
+import GlassCard from '$lib/components/GlassCard.svelte';
+import { Badge } from '$lib/components/ui/badge';
+import * as Card from '$lib/components/ui/card';
+import { Separator } from '$lib/components/ui/separator';
+import type { PageData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+let { data }: { data: PageData } = $props();
 
-	// Contact dialog state. Email entry uses this instead of a
-	// `mailto:` link, so the real address never ships to the client.
-	let contactOpen = $state(false);
+// Contact dialog state. Email entry uses this instead of a
+// `mailto:` link, so the real address never ships to the client.
+let contactOpen = $state(false);
 
-	const AVATAR_URL = 'https://avatars.githubusercontent.com/u/44386561?v=4';
+const AVATAR_URL = 'https://avatars.githubusercontent.com/u/44386561?v=4';
 
-	const profile = {
-		name: 'Sebastián Muñoz',
-		handle: '@seba3567',
-		location: 'Chile',
-		tagline: 'Ingeniero de Software y Datos.',
-		intro:
-			'Backend, datos, mobile, QA. Combino análisis de datos, arquitectura backend y calidad de software para convertir requerimientos en soluciones mantenibles y medibles.',
+const profile = {
+	name: 'Sebastián Muñoz',
+	handle: '@seba3567',
+	location: 'Chile',
+	tagline: 'Ingeniero de Software y Datos.',
+	intro:
+		'Backend, datos, mobile, QA. Combino análisis de datos, arquitectura backend y calidad de software para convertir requerimientos en soluciones mantenibles y medibles.',
+};
+
+const stack = [
+	{ label: 'En uso', items: 'TypeScript · Django · SQL · Python', value: 4 },
+	{
+		label: 'En progreso',
+		items: 'Kotlin · Dart · Go · Ruby',
+		value: 4,
+	},
+	{ label: 'Base', items: 'JavaScript · Lua · REST · Docker', value: 5 },
+];
+
+const specialties = [
+	{
+		icon: Database,
+		title: 'Ciencia de Datos',
+		items: [
+			'Inteligencia de Negocios',
+			'Modelado y análisis de datos',
+			'Visualización y storytelling con datos',
+			'Análisis estadístico aplicado',
+		],
+	},
+	{
+		icon: Code,
+		title: 'Desarrollo de Software',
+		items: [
+			'Diseño de arquitectura backend',
+			'APIs robustas y mantenibles',
+			'Aseguramiento de calidad y testing',
+			'Versionado y colaboración técnica',
+		],
+	},
+	{
+		icon: Kanban,
+		title: 'Gestión Técnica',
+		items: [
+			'Trabajo ágil (Scrum/Kanban)',
+			'Levantamiento y refinamiento de requerimientos',
+			'Documentación técnica clara',
+			'Enfoque en mejora continua',
+		],
+	},
+];
+
+const contact = [
+	{ label: 'GitHub', handle: '@seba3567', href: 'https://github.com/seba3567' },
+	// Email: la dirección real vive solo en el backend (CONTACT_TO).
+	// El handle visible es genérico a propósito para no exponer
+	// la casilla al bundle del cliente.
+	{ label: 'Email', handle: 'Formulario seguro', href: '' },
+];
+
+// ----- Horizontal scroll state -----
+const SECTIONS = [
+	{ id: 'hero', label: 'Inicio' },
+	{ id: 'seleccion', label: 'Selección' },
+	{ id: 'stack', label: 'Stack' },
+	{ id: 'especialidades', label: 'Especialidades' },
+	{ id: 'contacto', label: 'Contacto' },
+] as const;
+
+type SectionId = (typeof SECTIONS)[number]['id'];
+let trackEl: HTMLElement | undefined = $state();
+let activeSection: string = $state('hero');
+let mounted = $state(false);
+
+function scrollToSection(id: string) {
+	const track = trackEl;
+	if (!track) return;
+	const el = document.getElementById(id);
+	if (!el) return;
+	track.scrollTo({
+		left: el.offsetLeft - track.offsetLeft,
+		behavior: 'smooth',
+	});
+}
+
+onMount(() => {
+	mounted = true;
+	const track = trackEl;
+	if (!track) return;
+
+	// Map vertical wheel to horizontal scroll
+	const onWheel = (e: WheelEvent) => {
+		// If user is on touchpad with explicit horizontal scroll, let it through
+		if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+		// Vertical wheel → horizontal
+		e.preventDefault();
+		const step = e.deltaY === 0 ? e.deltaX : e.deltaY;
+		track.scrollBy({ left: step, behavior: 'auto' });
 	};
+	track.addEventListener('wheel', onWheel, { passive: false });
 
-	const stack = [
-		{ label: 'En uso', items: 'TypeScript · Django · SQL · Python', value: 4 },
-		{
-			label: 'En progreso',
-			items: 'Kotlin · Dart · Go · Ruby',
-			value: 4,
+	// Track active section via IntersectionObserver
+	const obs = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+					activeSection = (entry.target as HTMLElement).id;
+				}
+			}
 		},
-		{ label: 'Base', items: 'JavaScript · Lua · REST · Docker', value: 5 },
-	];
-
-	const specialties = [
-		{
-			icon: Database,
-			title: 'Ciencia de Datos',
-			items: [
-				'Inteligencia de Negocios',
-				'Modelado y análisis de datos',
-				'Visualización y storytelling con datos',
-				'Análisis estadístico aplicado',
-			],
-		},
-		{
-			icon: Code,
-			title: 'Desarrollo de Software',
-			items: [
-				'Diseño de arquitectura backend',
-				'APIs robustas y mantenibles',
-				'Aseguramiento de calidad y testing',
-				'Versionado y colaboración técnica',
-			],
-		},
-		{
-			icon: Kanban,
-			title: 'Gestión Técnica',
-			items: [
-				'Trabajo ágil (Scrum/Kanban)',
-				'Levantamiento y refinamiento de requerimientos',
-				'Documentación técnica clara',
-				'Enfoque en mejora continua',
-			],
-		},
-	];
-
-	const contact = [
-		{ label: 'GitHub', handle: '@seba3567', href: 'https://github.com/seba3567' },
-		// Email: la dirección real vive solo en el backend (CONTACT_TO).
-		// El handle visible es genérico a propósito para no exponer
-		// la casilla al bundle del cliente.
-		{ label: 'Email', handle: 'Formulario seguro', href: '' },
-	];
-
-	// ----- Horizontal scroll state -----
-	const SECTIONS = [
-		{ id: 'hero', label: 'Inicio' },
-		{ id: 'seleccion', label: 'Selección' },
-		{ id: 'stack', label: 'Stack' },
-		{ id: 'especialidades', label: 'Especialidades' },
-		{ id: 'contacto', label: 'Contacto' },
-	] as const;
-
-	type SectionId = (typeof SECTIONS)[number]['id'];
-	let trackEl: HTMLElement | undefined = $state();
-	let activeSection: string = $state('hero');
-	let mounted = $state(false);
-
-	function scrollToSection(id: string) {
-		const track = trackEl;
-		if (!track) return;
-		const el = document.getElementById(id);
-		if (!el) return;
-		track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+		{ root: track, threshold: [0.5, 0.75] },
+	);
+	for (const s of SECTIONS) {
+		const el = document.getElementById(s.id);
+		if (el) obs.observe(el);
 	}
 
-	onMount(() => {
-		mounted = true;
-		const track = trackEl;
-		if (!track) return;
-
-		// Map vertical wheel to horizontal scroll
-		const onWheel = (e: WheelEvent) => {
-			// If user is on touchpad with explicit horizontal scroll, let it through
-			if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-			// Vertical wheel → horizontal
-			e.preventDefault();
-			const step = e.deltaY === 0 ? e.deltaX : e.deltaY;
-			track.scrollBy({ left: step, behavior: 'auto' });
-		};
-		track.addEventListener('wheel', onWheel, { passive: false });
-
-		// Track active section via IntersectionObserver
-		const obs = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-						activeSection = (entry.target as HTMLElement).id;
-					}
-				}
-			},
-			{ root: track, threshold: [0.5, 0.75] },
-		);
-		for (const s of SECTIONS) {
-			const el = document.getElementById(s.id);
-			if (el) obs.observe(el);
-		}
-
-		// Entrance animations
-		animate('.panel-h1', {
-			opacity: [0, 1],
-			translateY: [60, 0],
-			duration: 900,
-			ease: 'out(4)',
-			delay: 200,
-		});
-		animate('[data-panel-anim]', {
-			opacity: [0, 1],
-			translateX: [-30, 0],
-			delay: stagger(80, { start: 400 }),
-			duration: 700,
-			ease: 'out(3)',
-		});
-
-		// Char-by-char reveal on the hero name (first text node only)
-		const heroH1 = document.querySelector<HTMLElement>('#hero .panel-h1');
-		if (heroH1) {
-			// Walk only the first text node "Sebastián" — keep <br> and <span> intact
-			const walker = document.createTreeWalker(heroH1, NodeFilter.SHOW_TEXT);
-			const textNode = walker.nextNode() as Text | null;
-			if (textNode && textNode.textContent) {
-				const raw = textNode.textContent;
-				const frag = document.createDocumentFragment();
-				for (const ch of raw) {
-					if (ch === ' ') {
-						frag.appendChild(document.createTextNode(' '));
-					} else {
-						const span = document.createElement('span');
-						span.textContent = ch;
-						span.style.display = 'inline-block';
-						span.style.opacity = '0';
-						span.style.transform = 'translateY(40px)';
-						span.style.willChange = 'transform, opacity';
-						frag.appendChild(span);
-					}
-				}
-				textNode.replaceWith(frag);
-				const chars = heroH1.querySelectorAll<HTMLElement>('span');
-				if (chars.length) {
-					animate(chars, {
-						opacity: [0, 1],
-						translateY: [40, 0],
-						delay: stagger(28, { start: 350 }),
-						duration: 700,
-						ease: 'out(4)',
-					});
-				}
-			}
-		}
-
-		// Count-up on stat cards (intersection-triggered)
-		const statCards = document.querySelectorAll<HTMLElement>('[data-stat-card]');
-		const statObserver = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (!entry.isIntersecting) continue;
-					const card = entry.target as HTMLElement;
-					const counter = card.querySelector<HTMLElement>('[data-counter]');
-					if (!counter) continue;
-					const finalRaw = counter.dataset.final ?? '0';
-					const isNumeric = /^\d+$/.test(finalRaw);
-					if (!isNumeric) {
-						// Non-numeric like "90+" — just snap to final with a tiny scale
-						counter.textContent = finalRaw;
-						animate(counter, {
-							scale: [0.6, 1],
-							opacity: [0, 1],
-							duration: 600,
-							ease: 'out(3)',
-						});
-					} else {
-						const to = Number.parseInt(finalRaw, 10);
-						const obj = { v: 0 };
-						animate(obj, {
-							v: to,
-							duration: 1100,
-							delay: 200,
-							ease: 'out(4)',
-							onUpdate: () => {
-								counter.textContent = Math.round(obj.v).toString();
-							},
-							onComplete: () => {
-								counter.textContent = String(to);
-							},
-						});
-					}
-					// Subtle scale-up on the whole card
-					animate(card, {
-						scale: [0.96, 1],
-						opacity: [0.4, 1],
-						duration: 800,
-						ease: 'out(3)',
-					});
-					statObserver.unobserve(card);
-				}
-			},
-			{ threshold: 0.4 },
-		);
-		statCards.forEach((c) => statObserver.observe(c));
-
-		// Magnetic hover for primary CTAs
-		const magneticEls = document.querySelectorAll<HTMLElement>('[data-magnetic]');
-		const magneticCleanups: Array<() => void> = [];
-		for (const el of magneticEls) {
-			const strength = 8;
-			const onMove = (e: MouseEvent) => {
-				const rect = el.getBoundingClientRect();
-				const x = e.clientX - rect.left - rect.width / 2;
-				const y = e.clientY - rect.top - rect.height / 2;
-				animate(el, {
-					translateX: (x / rect.width) * strength,
-					translateY: (y / rect.height) * strength,
-					duration: 400,
-					ease: 'out(3)',
-				});
-			};
-			const onLeave = () => {
-				animate(el, {
-					translateX: 0,
-					translateY: 0,
-					duration: 600,
-					ease: 'out(4)',
-				});
-			};
-			el.addEventListener('mousemove', onMove);
-			el.addEventListener('mouseleave', onLeave);
-			magneticCleanups.push(() => {
-				el.removeEventListener('mousemove', onMove);
-				el.removeEventListener('mouseleave', onLeave);
-			});
-		}
-
-		// Pulse on the active slide dot
-		const dotObserver = new MutationObserver(() => {
-			const activeDot = document.querySelector<HTMLElement>('.bg-mint-300.rounded-full');
-			if (activeDot) {
-				animate(activeDot, {
-					scale: [1, 1.4, 1],
-					opacity: [1, 0.6, 1],
-					duration: 1200,
-					ease: 'inOut(2)',
-				});
-			}
-		});
-		const dotContainer = document.querySelector('.fixed.inset-x-0.bottom-6');
-		if (dotContainer) dotObserver.observe(dotContainer, { childList: true, subtree: true, attributes: true });
-
-		return () => {
-			track.removeEventListener('wheel', onWheel);
-			obs.disconnect();
-			statObserver.disconnect();
-			dotObserver.disconnect();
-			magneticCleanups.forEach((fn) => fn());
-		};
+	// Entrance animations
+	animate('.panel-h1', {
+		opacity: [0, 1],
+		translateY: [60, 0],
+		duration: 900,
+		ease: 'out(4)',
+		delay: 200,
+	});
+	animate('[data-panel-anim]', {
+		opacity: [0, 1],
+		translateX: [-30, 0],
+		delay: stagger(80, { start: 400 }),
+		duration: 700,
+		ease: 'out(3)',
 	});
 
-	function langColor(name: string | null): string {
-		if (!name) return '#888';
-		const map: Record<string, string> = {
-			TypeScript: '#3178c6',
-			JavaScript: '#f1e05a',
-			Python: '#3572A5',
-			Svelte: '#ff3e00',
-			Kotlin: '#A97BFF',
-			Dart: '#00B4AB',
-			Go: '#00ADD8',
-			Rust: '#dea584',
-			HTML: '#e34c26',
-			Java: '#b07219',
-		};
-		return map[name] ?? '#888';
+	// Char-by-char reveal on the hero name (first text node only)
+	const heroH1 = document.querySelector<HTMLElement>('#hero .panel-h1');
+	if (heroH1) {
+		// Walk only the first text node "Sebastián" — keep <br> and <span> intact
+		const walker = document.createTreeWalker(heroH1, NodeFilter.SHOW_TEXT);
+		const textNode = walker.nextNode() as Text | null;
+		if (textNode?.textContent) {
+			const raw = textNode.textContent;
+			const frag = document.createDocumentFragment();
+			for (const ch of raw) {
+				if (ch === ' ') {
+					frag.appendChild(document.createTextNode(' '));
+				} else {
+					const span = document.createElement('span');
+					span.textContent = ch;
+					span.style.display = 'inline-block';
+					span.style.opacity = '0';
+					span.style.transform = 'translateY(40px)';
+					span.style.willChange = 'transform, opacity';
+					frag.appendChild(span);
+				}
+			}
+			textNode.replaceWith(frag);
+			const chars = heroH1.querySelectorAll<HTMLElement>('span');
+			if (chars.length) {
+				animate(chars, {
+					opacity: [0, 1],
+					translateY: [40, 0],
+					delay: stagger(28, { start: 350 }),
+					duration: 700,
+					ease: 'out(4)',
+				});
+			}
+		}
 	}
+
+	// Count-up on stat cards (intersection-triggered)
+	const statCards = document.querySelectorAll<HTMLElement>('[data-stat-card]');
+	const statObserver = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (!entry.isIntersecting) continue;
+				const card = entry.target as HTMLElement;
+				const counter = card.querySelector<HTMLElement>('[data-counter]');
+				if (!counter) continue;
+				const finalRaw = counter.dataset.final ?? '0';
+				const isNumeric = /^\d+$/.test(finalRaw);
+				if (!isNumeric) {
+					// Non-numeric like "90+" — just snap to final with a tiny scale
+					counter.textContent = finalRaw;
+					animate(counter, {
+						scale: [0.6, 1],
+						opacity: [0, 1],
+						duration: 600,
+						ease: 'out(3)',
+					});
+				} else {
+					const to = Number.parseInt(finalRaw, 10);
+					const obj = { v: 0 };
+					animate(obj, {
+						v: to,
+						duration: 1100,
+						delay: 200,
+						ease: 'out(4)',
+						onUpdate: () => {
+							counter.textContent = Math.round(obj.v).toString();
+						},
+						onComplete: () => {
+							counter.textContent = String(to);
+						},
+					});
+				}
+				// Subtle scale-up on the whole card
+				animate(card, {
+					scale: [0.96, 1],
+					opacity: [0.4, 1],
+					duration: 800,
+					ease: 'out(3)',
+				});
+				statObserver.unobserve(card);
+			}
+		},
+		{ threshold: 0.4 },
+	);
+	statCards.forEach((c) => {
+		statObserver.observe(c);
+	});
+
+	// Magnetic hover for primary CTAs
+	const magneticEls = document.querySelectorAll<HTMLElement>('[data-magnetic]');
+	const magneticCleanups: Array<() => void> = [];
+	for (const el of magneticEls) {
+		const strength = 8;
+		const onMove = (e: MouseEvent) => {
+			const rect = el.getBoundingClientRect();
+			const x = e.clientX - rect.left - rect.width / 2;
+			const y = e.clientY - rect.top - rect.height / 2;
+			animate(el, {
+				translateX: (x / rect.width) * strength,
+				translateY: (y / rect.height) * strength,
+				duration: 400,
+				ease: 'out(3)',
+			});
+		};
+		const onLeave = () => {
+			animate(el, {
+				translateX: 0,
+				translateY: 0,
+				duration: 600,
+				ease: 'out(4)',
+			});
+		};
+		el.addEventListener('mousemove', onMove);
+		el.addEventListener('mouseleave', onLeave);
+		magneticCleanups.push(() => {
+			el.removeEventListener('mousemove', onMove);
+			el.removeEventListener('mouseleave', onLeave);
+		});
+	}
+
+	// Pulse on the active slide dot
+	const dotObserver = new MutationObserver(() => {
+		const activeDot = document.querySelector<HTMLElement>(
+			'.bg-mint-300.rounded-full',
+		);
+		if (activeDot) {
+			animate(activeDot, {
+				scale: [1, 1.4, 1],
+				opacity: [1, 0.6, 1],
+				duration: 1200,
+				ease: 'inOut(2)',
+			});
+		}
+	});
+	const dotContainer = document.querySelector('.fixed.inset-x-0.bottom-6');
+	if (dotContainer)
+		dotObserver.observe(dotContainer, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+		});
+
+	return () => {
+		track.removeEventListener('wheel', onWheel);
+		obs.disconnect();
+		statObserver.disconnect();
+		dotObserver.disconnect();
+		magneticCleanups.forEach((fn) => {
+			fn();
+		});
+	};
+});
+
+function langColor(name: string | null): string {
+	if (!name) return '#888';
+	const map: Record<string, string> = {
+		TypeScript: '#3178c6',
+		JavaScript: '#f1e05a',
+		Python: '#3572A5',
+		Svelte: '#ff3e00',
+		Kotlin: '#A97BFF',
+		Dart: '#00B4AB',
+		Go: '#00ADD8',
+		Rust: '#dea584',
+		HTML: '#e34c26',
+		Java: '#b07219',
+	};
+	return map[name] ?? '#888';
+}
 </script>
 
 <svelte:head>

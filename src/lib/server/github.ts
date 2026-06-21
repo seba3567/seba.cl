@@ -133,10 +133,6 @@ async function githubFetch<T>(url: string): Promise<T> {
 	const data = (await res.json()) as T;
 	cache.set(url, { value: data, expiresAt: Date.now() + CACHE_TTL_MS });
 	lastApiCallAt = Date.now();
-	console.log(
-		`[github] OK · ${url.split('/').slice(-1)[0] || url} · ` +
-			`next refresh in ${API_COOLDOWN_MS / 1000}s`,
-	);
 	return data;
 }
 
@@ -270,6 +266,11 @@ function triggerBackgroundRefresh(user: string, fn: () => Promise<unknown>) {
 		});
 }
 
+// Cold-start dedupe: if 2+ requests arrive in the same tick when
+// the cache is empty, share the same promise instead of both
+// hitting GitHub. Keys are scoped per-user.
+const coldStartInFlight = new Map<string, Promise<unknown>>();
+
 /**
  * getCachedRepos: returns the cached public repos for the user.
  *
@@ -298,13 +299,21 @@ export async function getCachedRepos(user: string): Promise<PublicRepo[]> {
 		return cached.value as PublicRepo[];
 	}
 
-	// Cold start: no cache, must fetch.
-	try {
-		return await fetchPublicRepos(user);
-	} catch (err) {
-		console.error(`[github] cold-start fetch failed for ${user}:`, err);
-		return [];
-	}
+	// Cold start: no cache, must fetch. Dedup concurrent requests
+	// so we don't fire 2 GitHub calls when 2 page-loads race.
+	const inflightKey = `repos#${user}`;
+	const existing = coldStartInFlight.get(inflightKey);
+	if (existing) return existing as Promise<PublicRepo[]>;
+	const promise = fetchPublicRepos(user)
+		.catch((err) => {
+			console.error(`[github] cold-start fetch failed for ${user}:`, err);
+			return [] as PublicRepo[];
+		})
+		.finally(() => {
+			coldStartInFlight.delete(inflightKey);
+		});
+	coldStartInFlight.set(inflightKey, promise);
+	return promise;
 }
 
 /**
@@ -333,12 +342,21 @@ export async function getCachedTopRepos(
 		return all.slice(0, limit);
 	}
 
-	try {
-		return await fetchTopRepos(user, limit);
-	} catch (err) {
-		console.error(`[github] cold-start fetch (top) failed for ${user}:`, err);
-		return [];
-	}
+	// Cold start: no cache, must fetch. Dedup concurrent requests
+	// the same way as getCachedRepos.
+	const inflightKey = `top#${user}#${limit}`;
+	const existing = coldStartInFlight.get(inflightKey);
+	if (existing) return existing as Promise<GitHubRepo[]>;
+	const promise = fetchTopRepos(user, limit)
+		.catch((err) => {
+			console.error(`[github] cold-start fetch (top) failed for ${user}:`, err);
+			return [] as GitHubRepo[];
+		})
+		.finally(() => {
+			coldStartInFlight.delete(inflightKey);
+		});
+	coldStartInFlight.set(inflightKey, promise);
+	return promise;
 }
 
 export function computeStats(repos: PublicRepo[]): RepoStats {

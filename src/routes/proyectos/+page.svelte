@@ -1,116 +1,123 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { ArrowUpRight, GithubLogo, X } from 'phosphor-svelte';
-	import type { PageData } from './$types';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import * as Progress from '$lib/components/ui/progress';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Separator } from '$lib/components/ui/separator';
-	import OptimizedPicture from '$lib/components/OptimizedPicture.svelte';
-	import SiteFooter from '$lib/components/SiteFooter.svelte';
-	import { revealOnScroll, revealChars } from '$lib/animations';
+import { ArrowUpRight, GithubLogo, X } from 'phosphor-svelte';
+import { onMount } from 'svelte';
+import { revealChars, revealOnScroll } from '$lib/animations';
+import SiteFooter from '$lib/components/SiteFooter.svelte';
+import { Badge } from '$lib/components/ui/badge';
+import * as Progress from '$lib/components/ui/progress';
+import { Separator } from '$lib/components/ui/separator';
+import * as Tabs from '$lib/components/ui/tabs';
+import type { PageData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+let { data }: { data: PageData } = $props();
 
-	let query = $state('');
-	let language = $state<string | null>(null);
-	let onlyFeatured = $state(false);
-	let statusTab = $state<'all' | 'live' | 'wip' | 'archived'>('all');
+let query = $state('');
+let language = $state<string | null>(null);
+let onlyFeatured = $state(false);
+let statusTab = $state<'all' | 'live' | 'wip' | 'archived'>('all');
 
-	const featuredSlugs = $derived(
-		new Set(data.featuredProjects.flatMap((p) => p.relatedRepos ?? [p.slug])),
-	);
+const featuredSlugs = $derived(
+	new Set(data.featuredProjects.flatMap((p) => p.relatedRepos ?? [p.slug])),
+);
 
-	// Status inferred from archive flag + pushed_at age
-	function statusOf(repo: (typeof data.repos)[number]): 'live' | 'wip' | 'archived' {
-		if (repo.archived) return 'archived';
-		const days = (Date.now() - new Date(repo.pushed_at).getTime()) / 86_400_000;
-		return days < 365 ? 'wip' : 'live';
-	}
+// Status inferred from archive flag + pushed_at age
+function statusOf(
+	repo: (typeof data.repos)[number],
+): 'live' | 'wip' | 'archived' {
+	if (repo.archived) return 'archived';
+	const days = (Date.now() - new Date(repo.pushed_at).getTime()) / 86_400_000;
+	return days < 365 ? 'wip' : 'live';
+}
 
-	const counts = $derived.by(() => {
-		const c = { all: data.repos.length, live: 0, wip: 0, archived: 0 };
-		for (const r of data.repos) c[statusOf(r)]++;
-		return c;
-	});
+const counts = $derived.by(() => {
+	const c = { all: data.repos.length, live: 0, wip: 0, archived: 0 };
+	for (const r of data.repos) c[statusOf(r)]++;
+	return c;
+});
 
-	const filteredRepos = $derived(
-		data.repos.filter((r) => {
-			if (onlyFeatured && !featuredSlugs.has(r.name)) return false;
-			if (language && r.language !== language) return false;
-			if (statusTab !== 'all' && statusOf(r) !== statusTab) return false;
-			if (query) {
-				const q = query.toLowerCase();
-				const haystack = `${r.name} ${r.description ?? ''} ${r.topics.join(' ')}`.toLowerCase();
-				if (!haystack.includes(q)) return false;
-			}
-			return true;
-		}),
-	);
-
-	const stats = $derived([
-		{ value: data.stats.total, label: 'repos' },
-		{ value: data.stats.stars, label: 'stars' },
-		{ value: data.stats.languages.length, label: 'languages' },
-	]);
-
-	const featured3 = $derived(data.repos.slice(0, 3));
-
-	const tabs = [
-		{ value: 'all', label: 'Todos' },
-		{ value: 'live', label: 'Live' },
-		{ value: 'wip', label: 'Activos' },
-		{ value: 'archived', label: 'Archivados' },
-	] as const;
-
-	let titleEl: HTMLElement | undefined = $state();
-
-	onMount(() => {
-		if (titleEl) {
-			revealChars(titleEl, { staggerMs: 38, offsetY: 80, duration: 1100, delay: 200 });
+const filteredRepos = $derived(
+	data.repos.filter((r) => {
+		if (onlyFeatured && !featuredSlugs.has(r.name)) return false;
+		if (language && r.language !== language) return false;
+		if (statusTab !== 'all' && statusOf(r) !== statusTab) return false;
+		if (query) {
+			const q = query.toLowerCase();
+			const haystack =
+				`${r.name} ${r.description ?? ''} ${r.topics.join(' ')}`.toLowerCase();
+			if (!haystack.includes(q)) return false;
 		}
-		revealOnScroll(document.body, {
-			selector: '[data-reveal-tab]',
-			staggerMs: 80,
-			offsetY: 28,
-			duration: 800,
+		return true;
+	}),
+);
+
+const stats = $derived([
+	{ value: data.stats.total, label: 'repos' },
+	{ value: data.stats.stars, label: 'stars' },
+	{ value: data.stats.languages.length, label: 'languages' },
+]);
+
+const featured3 = $derived(data.repos.slice(0, 3));
+
+const tabs = [
+	{ value: 'all', label: 'Todos' },
+	{ value: 'live', label: 'Live' },
+	{ value: 'wip', label: 'Activos' },
+	{ value: 'archived', label: 'Archivados' },
+] as const;
+
+let titleEl: HTMLElement | undefined = $state();
+
+onMount(() => {
+	if (titleEl) {
+		revealChars(titleEl, {
+			staggerMs: 38,
+			offsetY: 80,
+			duration: 1100,
+			delay: 200,
 		});
-	});
-
-	$effect(() => {
-		// when tab/query changes, animate the new grid items
-		void statusTab;
-		void query;
-		void language;
-		void onlyFeatured;
-		// small defer so the DOM updates first
-		setTimeout(() => {
-			revealOnScroll(document.body, {
-				selector: '[data-grid-item]',
-				staggerMs: 25,
-				offsetY: 18,
-				duration: 500,
-				once: false,
-			});
-		}, 50);
-	});
-
-	function langColor(name: string | null): string {
-		if (!name) return '#888';
-		const map: Record<string, string> = {
-			TypeScript: '#3178c6',
-			JavaScript: '#f1e05a',
-			Python: '#3572A5',
-			Svelte: '#ff3e00',
-			Kotlin: '#A97BFF',
-			Dart: '#00B4AB',
-			Go: '#00ADD8',
-			Rust: '#dea584',
-			HTML: '#e34c26',
-			Java: '#b07219',
-		};
-		return map[name] ?? '#888';
 	}
+	revealOnScroll(document.body, {
+		selector: '[data-reveal-tab]',
+		staggerMs: 80,
+		offsetY: 28,
+		duration: 800,
+	});
+});
+
+$effect(() => {
+	// when tab/query changes, animate the new grid items
+	void statusTab;
+	void query;
+	void language;
+	void onlyFeatured;
+	// small defer so the DOM updates first
+	setTimeout(() => {
+		revealOnScroll(document.body, {
+			selector: '[data-grid-item]',
+			staggerMs: 25,
+			offsetY: 18,
+			duration: 500,
+			once: false,
+		});
+	}, 50);
+});
+
+function langColor(name: string | null): string {
+	if (!name) return '#888';
+	const map: Record<string, string> = {
+		TypeScript: '#3178c6',
+		JavaScript: '#f1e05a',
+		Python: '#3572A5',
+		Svelte: '#ff3e00',
+		Kotlin: '#A97BFF',
+		Dart: '#00B4AB',
+		Go: '#00ADD8',
+		Rust: '#dea584',
+		HTML: '#e34c26',
+		Java: '#b07219',
+	};
+	return map[name] ?? '#888';
+}
 </script>
 
 <svelte:head>

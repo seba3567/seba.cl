@@ -14,7 +14,7 @@
  * JPG/PNG; the pipeline emits AVIF as the optimized output.
  */
 
-import { readdir, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
+import { readdir, stat } from 'node:fs/promises';
 import { join, relative, extname, basename, dirname } from 'node:path';
 import sharp from 'sharp';
 

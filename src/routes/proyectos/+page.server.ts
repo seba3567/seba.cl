@@ -1,10 +1,6 @@
-import type { PageServerLoad } from './$types';
-import {
-	computeStats,
-	type RepoStats,
-	getCachedRepos,
-} from '$lib/server/github';
 import { featuredProjects } from '$lib/data/featured';
+import { computeStats, getCachedRepos } from '$lib/server/github';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
 	const GITHUB_USER = 'seba3567';
@@ -17,10 +13,13 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	const stats = computeStats(repos);
 
 	setHeaders({
-		'cache-control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
+		'cache-control':
+			'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
 	});
 
-	const languages = [...new Set(repos.map((r) => r.language).filter(Boolean) as string[])].sort();
+	const languages = [
+		...new Set(repos.map((r) => r.language).filter(Boolean) as string[]),
+	].sort();
 
 	return {
 		username: GITHUB_USER,

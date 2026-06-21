@@ -1,5 +1,5 @@
+import { getCachedTopRepos } from '$lib/server/github';
 import type { PageServerLoad } from './$types';
-import { fetchTopRepos, getCachedTopRepos, type GitHubRepo } from '$lib/server/github';
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
 	const GITHUB_USER = 'seba3567';
@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	setHeaders({
 		// CDN can cache for an hour; stale-while-revalidate tolerates
 		// up to 24h. Server-side cache (15min TTL) is the real gate.
-		'cache-control': 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
+		'cache-control':
+			'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
 	});
 
 	return {
