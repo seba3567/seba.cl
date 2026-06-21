@@ -339,7 +339,7 @@
 			</div>
 
 			<!-- Results -->
-			<div bind:this={listEl} class="max-h-[60vh] overflow-y-auto p-3 sm:p-4">
+			<div bind:this={listEl} class="scroll-thin max-h-[60vh] overflow-y-auto p-3 sm:p-4">
 				{#if flat.length === 0}
 					<div class="px-4 py-12 text-center">
 						<p class="text-sm text-neutral-500">

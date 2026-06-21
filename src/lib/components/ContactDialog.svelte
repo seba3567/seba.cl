@@ -218,7 +218,7 @@
 			</div>
 
 			<!-- Body -->
-			<div class="max-h-[calc(92vh-56px)] overflow-y-auto p-5 sm:p-6" data-contact-root>
+			<div class="scroll-thin max-h-[calc(92vh-56px)] overflow-y-auto p-5 sm:p-6" data-contact-root>
 				{#if status === 'ok'}
 					<!-- Success state -->
 					<div
