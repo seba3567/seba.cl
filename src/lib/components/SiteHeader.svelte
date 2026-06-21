@@ -11,6 +11,7 @@
 		Flask,
 		ShieldCheck,
 		Storefront,
+		Tabs,
 	} from 'phosphor-svelte';
 	import * as NavigationMenu from '$lib/components/ui/navigation-menu';
 	import * as Sheet from '$lib/components/ui/sheet';
@@ -170,7 +171,7 @@
 
 <header class="sticky top-4 z-40 mx-auto w-full max-w-6xl px-4">
 	<div
-		class="glass-liquid flex items-center justify-between gap-2 rounded-full px-3 py-2 sm:gap-3 sm:px-4"
+		class="glass-liquid flex items-center justify-between gap-2 rounded-xl px-3 py-2 sm:gap-3 sm:px-4"
 	>
 		<!-- Brand -->
 		<a
@@ -200,7 +201,7 @@
 				<NavigationMenu.Item>
 					<NavigationMenu.Link
 						href="/"
-						class="rounded-full px-3 py-1.5 text-xs font-medium transition-all {isActive('/')
+						class="rounded-md px-3 py-1.5 text-xs font-medium transition-all {isActive('/')
 							? 'bg-white/10 text-neutral-50'
 							: 'text-neutral-300 hover:bg-white/5 hover:text-neutral-100'}"
 					>
@@ -211,7 +212,7 @@
 				{#each navGroups as group (group.trigger)}
 					<NavigationMenu.Item>
 						<NavigationMenu.Trigger
-							class="rounded-full bg-transparent px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-white/5 hover:text-neutral-100 data-[popup-open]:bg-white/5 data-[popup-open]:text-neutral-100"
+							class="rounded-md bg-transparent px-3 py-1.5 text-xs font-medium text-neutral-300 hover:bg-white/5 hover:text-neutral-100 data-[popup-open]:bg-white/5 data-[popup-open]:text-neutral-100"
 						>
 							{group.trigger}
 						</NavigationMenu.Trigger>
@@ -256,7 +257,7 @@
 				type="button"
 				onclick={() => (searchOpen = true)}
 				aria-label="Buscar"
-				class="hidden items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-white/10 sm:inline-flex"
+				class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-400 transition-all hover:scale-[1.02] hover:border-white/20 hover:bg-white/10 sm:inline-flex"
 			>
 				<MagnifyingGlass size={12} weight="bold" />
 				<span class="font-mono">Buscar…</span>
@@ -270,9 +271,19 @@
 				target="_blank"
 				rel="noreferrer noopener"
 				aria-label="GitHub @{username}"
-				class="hidden size-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-neutral-300 transition-all hover:scale-110 hover:border-white/20 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
+				class="hidden size-8 items-center justify-center rounded-md border border-white/10 bg-white/5 text-neutral-300 transition-all hover:scale-110 hover:border-white/20 hover:bg-white/10 hover:text-neutral-100 sm:inline-flex"
 			>
 				<GithubLogo size={14} weight="bold" />
+			</a>
+			<a
+				href="https://intranet.seba3567.cl/"
+				target="_blank"
+				rel="noreferrer noopener"
+				aria-label="Intranet"
+				title="Abrir intranet.seba3567.cl en nueva pestaña"
+				class="hidden size-8 items-center justify-center rounded-md border border-violet-400/20 bg-violet-500/5 text-violet-300 transition-all hover:scale-110 hover:border-violet-400/40 hover:bg-violet-500/15 sm:inline-flex"
+			>
+				<Tabs size={14} weight="bold" />
 			</a>
 
 			<Sheet.Root bind:open={mobileOpen}>

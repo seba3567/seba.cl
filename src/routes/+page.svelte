@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount, untrack } from 'svelte';
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import {
 		ArrowDown,
@@ -160,25 +160,8 @@
 	const INTRANET = 'https://intranet.seba3567.cl/';
 
 	// ----- Horizontal scroll state -----
-	const SECTIONS = [
-		{ id: 'hero', label: 'Inicio' },
-		{ id: 'seleccion', label: 'Selección' },
-		{ id: 'stack', label: 'Stack' },
-		{ id: 'especialidades', label: 'Especialidades' },
-		{ id: 'contacto', label: 'Contacto' },
-	] as const;
-
 	let trackEl: HTMLElement | undefined = $state();
-	let activeSection: string = $state('hero');
 	let mounted = $state(false);
-
-	function scrollToSection(id: string) {
-		const track = trackEl;
-		if (!track) return;
-		const el = document.getElementById(id);
-		if (!el) return;
-		track.scrollTo({ left: el.offsetLeft - track.offsetLeft, behavior: 'smooth' });
-	}
 
 	onMount(() => {
 		mounted = true;
@@ -195,22 +178,6 @@
 			track.scrollBy({ left: step, behavior: 'auto' });
 		};
 		track.addEventListener('wheel', onWheel, { passive: false });
-
-		// Track active section via IntersectionObserver
-		const obs = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-						activeSection = (entry.target as HTMLElement).id;
-					}
-				}
-			},
-			{ root: track, threshold: [0.5, 0.75] },
-		);
-		for (const s of SECTIONS) {
-			const el = document.getElementById(s.id);
-			if (el) obs.observe(el);
-		}
 
 		// Entrance animations
 		animate('.panel-h1', {
@@ -230,14 +197,7 @@
 
 		return () => {
 			track.removeEventListener('wheel', onWheel);
-			obs.disconnect();
 		};
-	});
-
-	$effect(() => {
-		// Re-run stagger when active section changes (subtle re-pulse on dot)
-		void activeSection;
-		untrack(() => {});
 	});
 </script>
 
@@ -251,7 +211,7 @@
 
 <!-- Horizontal scroll track -->
 <div id="home-track" bind:this={trackEl} class="home-horizontal relative">
-	<!-- ============= PANEL 1: HERO ============= -->
+	<!-- Panel 1: Hero -->
 	<section
 		id="hero"
 		class="panel relative flex min-h-screen w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
@@ -606,37 +566,7 @@
 	</section>
 </div>
 
-<!-- Slide indicator (dots, NOT a bar) -->
-<div class="fixed bottom-6 left-1/2 z-30 -translate-x-1/2">
-	<GlassCard
-		variant="strong"
-		class="flex items-center gap-1 rounded-full px-2 py-1.5"
-	>
-		{#each SECTIONS as s, i (s.id)}
-			<button
-				type="button"
-				onclick={() => scrollToSection(s.id)}
-				aria-label={'Ir a ' + s.label}
-				title={s.label}
-				class="group/dot flex items-center gap-1.5 rounded-full px-2 py-1 transition-all hover:bg-white/5"
-			>
-				<span
-					class="size-1.5 rounded-full transition-all duration-500 {s.id === activeSection
-						? 'w-5 bg-violet-300'
-						: 'bg-neutral-600 group-hover/dot:bg-neutral-400'}"
-				></span>
-				<span
-					class="hidden font-mono text-[10px] uppercase tracking-wider text-neutral-400 transition-opacity duration-300 sm:inline {s.id ===
-					activeSection
-						? 'opacity-100'
-						: 'opacity-0'}"
-				>
-					{s.label}
-				</span>
-			</button>
-		{/each}
-	</GlassCard>
-</div>
+<!-- Slide indicator removed: clean horizontal scroll without UI overlay. -->
 
 <style>
 	/* Horizontal scroll track for the home page */
