@@ -47,7 +47,7 @@
 	</div>
 {:else}
 	<img
-		src="/assets/icono.avif"
+		src="/iconos/anticall/icono.avif"
 		alt="AntiCallCL"
 		class="shrink-0 {className}"
 		width={size}
@@ -57,7 +57,7 @@
 			const img = e.currentTarget as HTMLImageElement;
 			if (!img.dataset.triedWebp) {
 				img.dataset.triedWebp = '1';
-				img.src = '/assets/icono.webp';
+				img.src = '/iconos/anticall/icono.webp';
 			} else {
 				fallback = true;
 			}
