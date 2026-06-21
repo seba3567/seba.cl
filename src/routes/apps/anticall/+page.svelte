@@ -206,29 +206,6 @@
 	/>
 </svelte:head>
 
-<!-- Location chip: centered, just below the navbar.
-     top-24 (96px) leaves a clear 20px gap from the navbar
-     (navbar ends at ~76px). z-30 keeps it under the navbar
-     (z-40) so hover/click on the nav still works.
-     Width auto + max-w prevents it from being centered on
-     very wide screens (which would look detached from the page). -->
-<div
-	class="pointer-events-none fixed inset-x-0 top-24 z-30 flex justify-center px-4"
->
-	<div
-		class="pointer-events-auto flex items-center gap-1.5 rounded-md border border-white/5 bg-neutral-950/60 px-2.5 py-1 font-mono text-[10px] text-neutral-400 backdrop-blur transition-colors hover:border-white/10"
-	>
-		<a
-			href="/apps"
-			class="transition-colors hover:text-neutral-200"
-		>
-			/apps
-		</a>
-		<span class="text-neutral-700">/</span>
-		<span class="text-neutral-200">anticall</span>
-	</div>
-</div>
-
 <!-- Horizontal scroll track — h-screen locks the track to exactly
      one viewport so the body can't scroll past it into the next
      route's content. h-[100dvh] is the mobile-safe fallback for
@@ -239,12 +216,11 @@
 	class="anticall-horizontal relative h-screen w-screen overflow-hidden"
 >
 	<!-- ============= PANEL 1: HERO =============
-	     The first panel gets padding-top: 7rem via the :first-of-type
-	     rule in the <style> block below — clears the fixed breadcrumb
-	     at top-20. Other panels use the standard pt-20 (navbar only). -->
+	     The breadcrumb now lives in the SiteHeader (navbar) so this
+	     panel uses the standard pt-20 (navbar clearance only). -->
 	<section
 		id="hero"
-		class="panel relative flex h-full w-screen flex-col justify-center px-6 sm:px-12 lg:px-20"
+		class="panel relative flex h-full w-screen flex-col justify-center px-6 pt-20 sm:px-12 lg:px-20"
 	>
 		<div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
 			<!-- Left: title + intro + CTAs -->
@@ -818,12 +794,6 @@
 		scroll-snap-stop: always;
 		overflow-y: auto;
 		overscroll-behavior: contain;
-	}
-	/* The first panel needs more top padding to clear the
-	   fixed breadcrumb at top-24 (~96px) + its height (~28px)
-	   + a small gap. Total clearance needed ≈ 130px. */
-	:global(.anticall-horizontal .panel:first-of-type) {
-		padding-top: 8.5rem; /* 136px — navbar + breadcrumb + gap */
 	}
 </style>
 

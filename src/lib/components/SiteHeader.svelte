@@ -29,6 +29,29 @@
 	const isProjects = $derived(currentPath.startsWith('/proyectos'));
 	const isApps = $derived(currentPath.startsWith('/apps'));
 
+	/**
+	 * Dynamic breadcrumb from the current URL.
+	 * Each segment has a label and (for non-terminal) an href.
+	 * Used in the brand sub-label so the path is visible in the nav,
+	 * not floating above the page content.
+	 */
+	type Crumb = { label: string; href: string | null };
+	const crumbs = $derived.by<Crumb[]>(() => {
+		const path = currentPath;
+		if (path === '/') return [{ label: 'inicio', href: null }];
+		const segs = path.split('/').filter(Boolean);
+		const out: Crumb[] = [{ label: 'inicio', href: '/' }];
+		let acc = '';
+		for (let i = 0; i < segs.length; i++) {
+			acc += '/' + segs[i];
+			out.push({
+				label: segs[i],
+				href: i === segs.length - 1 ? null : acc,
+			});
+		}
+		return out;
+	});
+
 	let searchOpen = $state(false);
 	let mobileOpen = $state(false);
 	let searchTriggerEl: HTMLButtonElement | undefined = $state();
@@ -202,39 +225,61 @@
 	<div
 		class="glass-liquid flex items-center justify-between gap-2 rounded-xl px-3 py-2 sm:gap-3 sm:px-4"
 	>
-		<!-- Brand: GitHub avatar in a 3D card with emerald accent -->
-		<a
-			href="/"
-			class="group flex items-center gap-2.5 rounded-md px-1 py-1 transition-opacity hover:opacity-90"
-			aria-label="Inicio"
-		>
-			<div bind:this={avatarWrapEl} class="avatar-3d-wrap">
-				<div
-					bind:this={avatarEl}
-					class="avatar-3d relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-mint-500 ring-1 ring-mint-400/30"
-				>
-					<img
-						src="https://avatars.githubusercontent.com/u/44386561?v=4"
-						alt="Sebastián Muñoz"
-						class="size-full object-cover"
-						loading="eager"
-						decoding="async"
-					/>
-					<span
-						class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-mint-500/30 via-transparent to-mint-300/10 mix-blend-overlay"
-					></span>
-					<span
-						class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10 rounded-md"
-					></span>
+		<!-- Brand: avatar + name (link to /) + dynamic breadcrumb (sibling, not child) -->
+		<div class="flex items-center gap-2.5">
+			<a
+				href="/"
+				class="group flex items-center gap-2.5 rounded-md px-1 py-1 transition-opacity hover:opacity-90"
+				aria-label="Inicio"
+			>
+				<div bind:this={avatarWrapEl} class="avatar-3d-wrap">
+					<div
+						bind:this={avatarEl}
+						class="avatar-3d relative flex size-9 items-center justify-center overflow-hidden rounded-md bg-mint-500 ring-1 ring-mint-400/30"
+					>
+						<img
+							src="https://avatars.githubusercontent.com/u/44386561?v=4"
+							alt="Sebastián Muñoz"
+							class="size-full object-cover"
+							loading="eager"
+							decoding="async"
+						/>
+						<span
+							class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-mint-500/30 via-transparent to-mint-300/10 mix-blend-overlay"
+						></span>
+						<span
+							class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10 rounded-md"
+						></span>
+					</div>
 				</div>
-			</div>
-			<div class="hidden flex-col leading-tight sm:flex">
-				<span class="text-sm font-semibold tracking-tight text-neutral-50">seba3567</span>
-				<span class="font-mono text-[10px] text-neutral-500">
-					/ {isHome ? 'inicio' : isApps ? 'apps' : isProjects ? 'proyectos' : 'sitio'}
-				</span>
-			</div>
-		</a>
+				<span class="hidden text-sm font-semibold tracking-tight text-neutral-50 sm:inline"
+					>seba3567</span
+				>
+			</a>
+
+			<!-- Dynamic breadcrumb: / inicio | / apps | / anticall.
+			     Terminal segment (current page) is non-link. -->
+			<nav
+				aria-label="Breadcrumb"
+				class="hidden items-center gap-1 font-mono text-[10px] text-neutral-500 sm:flex"
+			>
+				{#each crumbs as c, i (i)}
+					{#if i > 0}
+						<span class="text-neutral-700" aria-hidden="true">/</span>
+					{/if}
+					{#if c.href}
+						<a
+							href={c.href}
+							class="transition-colors hover:text-neutral-200"
+						>
+							{c.label}
+						</a>
+					{:else}
+						<span class="text-neutral-300">{c.label}</span>
+					{/if}
+				{/each}
+			</nav>
+		</div>
 
 		<!-- Desktop nav -->
 		<NavigationMenu.Root viewport={false} class="hidden md:flex">
