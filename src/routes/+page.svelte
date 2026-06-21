@@ -22,8 +22,11 @@
 	import * as Card from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Separator } from '$lib/components/ui/separator';
+	import * as Avatar from '$lib/components/ui/avatar';
 	import GlassCard from '$lib/components/GlassCard.svelte';
 	import SectionHeading from '$lib/components/SectionHeading.svelte';
+
+	const AVATAR_URL = 'https://avatars.githubusercontent.com/u/44386561?v=4';
 
 	const profile = {
 		name: 'Sebastián Muñoz',
@@ -39,7 +42,7 @@
 			'Ingeniero en Informática orientado a resultados de negocio, combinando análisis de datos, arquitectura backend y calidad de software para convertir requerimientos en soluciones mantenibles y medibles.',
 		introShort: 'Backend · Datos · Mobile · Calidad',
 		location: 'Chile · Remote-friendly',
-		education: 'Ingeniería en Informática · DuocUC',
+		education: 'Ingeniería en Informática',
 		specialization: 'Ciencia de Datos, Backend y QA',
 		languages: ['Español (nativo)', 'Inglés (intermedio-alto)'],
 		valueProps: [
@@ -259,11 +262,16 @@
 				></div>
 				<div class="space-y-4">
 					<div class="flex items-center gap-3">
-						<div
-							class="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 text-base font-bold text-neutral-950"
+						<Avatar.Root
+							class="size-12 rounded-2xl border border-white/15 bg-white/5 p-0 ring-2 ring-violet-400/20 transition-all group-hover:ring-violet-400/40"
 						>
-							SM
-						</div>
+							<Avatar.Image src={AVATAR_URL} alt={profile.name} class="rounded-xl" />
+							<Avatar.Fallback
+								class="flex size-full items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-amber-500 text-sm font-bold text-neutral-950"
+							>
+								SM
+							</Avatar.Fallback>
+						</Avatar.Root>
 						<div class="min-w-0">
 							<div class="truncate text-sm font-semibold text-neutral-100">
 								{profile.name}
@@ -392,6 +400,62 @@
 						{/each}
 					</Card.Content>
 				</Card.Root>
+			{/each}
+		</div>
+	</section>
+
+	<!-- ============= SELECTED WORK ============= -->
+	<section id="work" class="scroll-mt-24 py-12">
+		<SectionHeading
+			eyebrow="Selected work"
+			title="Proyectos destacados."
+			description="Una muestra curada — entrá a /proyectos para ver los 90+ repos."
+		>
+			<a
+				href="/proyectos"
+				class="mt-3 inline-flex items-center gap-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-100"
+			>
+				Ver todos
+				<ArrowUpRight size={10} weight="bold" />
+			</a>
+		</SectionHeading>
+
+		<div class="mt-8 grid auto-rows-[180px] grid-cols-2 gap-3 sm:grid-cols-4">
+			{#each [{ title: 'AntiCallCL', sub: 'Android · Kotlin', accent: 'violet', n: '01', href: 'https://github.com/seba3567/anticall_pages', span: 'col-span-2 row-span-2' }, { title: 'autoskills', sub: 'TS · CLI', accent: 'cyan', n: '02', href: 'https://github.com/seba3567/autoskills', span: '' }, { title: 'frontend.skeleton', sub: 'Svelte 5', accent: 'amber', n: '03', href: 'https://github.com/seba3567/frontend.skeleton', span: '' }, { title: 'telefonia_ido', sub: 'Python', accent: 'sky', n: '04', href: 'https://github.com/seba3567/telefonia_ido', span: 'col-span-2' }, { title: 'Svelte advanced', sub: 'Svelte 5', accent: 'emerald', n: '05', href: 'https://github.com/seba3567/Svelte-avanced-components', span: '' }, { title: 'seba.cl', sub: 'este sitio', accent: 'fuchsia', n: '06', href: '/proyectos', span: '' }] as w (w.n)}
+				{@const accent =
+					w.accent === 'violet' ? { ring: 'ring-violet-400/30', text: 'text-violet-300', bg: 'from-violet-500/20' } :
+					w.accent === 'cyan' ? { ring: 'ring-cyan-400/30', text: 'text-cyan-300', bg: 'from-cyan-500/20' } :
+					w.accent === 'amber' ? { ring: 'ring-amber-400/30', text: 'text-amber-300', bg: 'from-amber-500/20' } :
+					w.accent === 'sky' ? { ring: 'ring-sky-400/30', text: 'text-sky-300', bg: 'from-sky-500/20' } :
+					w.accent === 'emerald' ? { ring: 'ring-emerald-400/30', text: 'text-emerald-300', bg: 'from-emerald-500/20' } :
+					{ ring: 'ring-fuchsia-400/30', text: 'text-fuchsia-300', bg: 'from-fuchsia-500/20' }}
+				<a
+					href={w.href}
+					target={w.href.startsWith('/') ? undefined : '_blank'}
+					rel={w.href.startsWith('/') ? undefined : 'noreferrer noopener'}
+					class="group glass glass-hover relative flex flex-col justify-between overflow-hidden rounded-2xl p-4 ring-1 {accent.ring} {w.span}"
+				>
+					<div
+						aria-hidden="true"
+						class="pointer-events-none absolute -top-16 -right-16 size-40 rounded-full bg-gradient-to-br {accent.bg} to-transparent opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+					></div>
+					<div class="relative flex items-start justify-between">
+						<span class="font-mono text-[10px] text-neutral-500">{w.n}</span>
+						<ArrowUpRight
+							size={12}
+							weight="bold"
+							class="text-neutral-500 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-neutral-200"
+						/>
+					</div>
+					<div class="relative">
+						<div class="font-mono text-base font-semibold text-neutral-50 sm:text-lg">
+							{w.title}
+						</div>
+						<div class="mt-0.5 font-mono text-[10px] uppercase tracking-wider {accent.text}">
+							{w.sub}
+						</div>
+					</div>
+				</a>
 			{/each}
 		</div>
 	</section>
