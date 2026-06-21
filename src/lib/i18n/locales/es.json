@@ -339,14 +339,16 @@
 			"kind": "GitHub Releases",
 			"loading": "Buscando releases en GitHub…",
 			"noneYet": "Sin ROMs publicadas todavía.",
-			"noneYetHint": "Publicá una release en el repo {repo} y aparecerá acá en 15 minutos."
+			"noneYetHint": "Publicá una release en el repo {repo} y aparecerá acá en 15 minutos.",
+			"viewOnGithub": "Ver en GitHub"
 		},
 		"kernels": {
 			"title": "Kernels",
 			"kind": "GitHub Releases",
 			"loading": "Buscando kernels en GitHub…",
 			"noneYet": "Sin kernels publicados todavía.",
-			"noneYetHint": "Publicá una release en el repo {repo} y aparecerá acá en 15 minutos."
+			"noneYetHint": "Publicá una release en el repo {repo} y aparecerá acá en 15 minutos.",
+			"viewOnGithub": "Ver en GitHub"
 		},
 		"release": {
 			"prerelease": "Pre-release",
@@ -355,6 +357,30 @@
 			"daysAgo": "Hace {n} días",
 			"monthsAgo": "Hace {n} meses",
 			"yearsAgo": "Hace {n} años"
+		},
+		"stats": {
+			"devices": "Devices",
+			"roms": "ROMs",
+			"kernels": "Kernels",
+			"lastSync": "Última sync"
+		},
+		"howItWorks": {
+			"eyebrow": "Cómo funciona",
+			"title": "Setup en 3 pasos",
+			"subtitle": "El catálogo, las ROMs y los kernels se sincronizan solos desde GitHub. No necesitás correr ningún script — solo publicá releases.",
+			"step1Label": "01 · Catálogo",
+			"step1Title": "Devices en YAML",
+			"step1Body": "El catálogo vive en un YAML que mantenés vos. Solo devices con status active o beta aparecen en la grilla.",
+			"step2Label": "02 · ROMs",
+			"step2Title": "Releases por device",
+			"step2Body": "Cada device tiene un repo. Las releases de GitHub se listan acá con sus assets y SHA-256.",
+			"step3Label": "03 · Kernels",
+			"step3Title": "Kernels standalone",
+			"step3Body": "Misma convención, distinto repo. Los kernels se publican aparte de la ROM principal.",
+			"ctaLabel": "Listo para empezar",
+			"ctaTitle": "Editá el YAML de devices",
+			"ctaBody": "Hacé un fork, agregá tu device con status active, y en 15 minutos aparece acá.",
+			"ctaButton": "Abrir devices-json"
 		},
 		"refresh": {
 			"button": "Refrescar",

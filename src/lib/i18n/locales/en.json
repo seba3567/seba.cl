@@ -302,6 +302,7 @@
 			"dataSource": "Auto-synced from GitHub"
 		},
 		"devices": {
+			"eyebrow": "Catalog",
 			"title": "Supported devices",
 			"subtitle": "Tap a card to see the available ROMs and kernels.",
 			"select": "View builds",
@@ -339,7 +340,8 @@
 			"kind": "GitHub Releases",
 			"loading": "Fetching releases from GitHub…",
 			"noneYet": "No ROMs published yet.",
-			"noneYetHint": "Publish a release on the {repo} repo and it'll show up here within 15 minutes."
+			"noneYetHint": "Publish a release on the {repo} repo and it'll show up here within 15 minutes.",
+			"viewOnGithub": "View on GitHub"
 		},
 		"kernels": {
 			"title": "Kernels",
@@ -365,6 +367,30 @@
 			"justNow": "Just now",
 			"oneMinAgo": "1 min ago",
 			"minutesAgo": "{n} min ago"
+		},
+		"stats": {
+			"devices": "Devices",
+			"roms": "ROMs",
+			"kernels": "Kernels",
+			"lastSync": "Last sync"
+		},
+		"howItWorks": {
+			"eyebrow": "How it works",
+			"title": "Set up in 3 steps",
+			"subtitle": "Catalog, ROMs, and kernels auto-sync from GitHub. No scripts to run — just publish releases.",
+			"step1Label": "01 · Catalog",
+			"step1Title": "Devices in YAML",
+			"step1Body": "The catalog lives in a YAML you maintain. Only active or beta devices show up in the grid.",
+			"step2Label": "02 · ROMs",
+			"step2Title": "Releases per device",
+			"step2Body": "Each device has a GitHub repo. Its releases show up here with their assets and SHA-256.",
+			"step3Label": "03 · Kernels",
+			"step3Title": "Standalone kernels",
+			"step3Body": "Same convention, different repo. Kernels are published apart from the main ROM.",
+			"ctaLabel": "Ready to start",
+			"ctaTitle": "Edit the devices YAML",
+			"ctaBody": "Fork it, add a device with status active, and it'll show up here within 15 minutes.",
+			"ctaButton": "Open devices-json"
 		}
 	},
 	"contact": {
